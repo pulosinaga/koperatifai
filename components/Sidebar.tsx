@@ -1,16 +1,19 @@
 
 import React, { useState } from 'react';
-import { AppView } from '../types';
+import { AppView, UserRole } from '../types';
 
 interface SidebarProps {
   currentView: AppView;
   setView: (view: AppView) => void;
+  role: UserRole;
+  onLogout: () => void;
 }
 
 interface NavItem {
   id: AppView;
   label: string;
   icon: string;
+  roles?: UserRole[];
 }
 
 interface NavCategory {
@@ -19,7 +22,7 @@ interface NavCategory {
   items: NavItem[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['Utama', 'Ekosistem Bisnis', 'Tata Kelola', 'Strategi']);
 
@@ -29,12 +32,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       icon: '🏠',
       items: [
         { id: AppView.DASHBOARD, label: 'Dashboard', icon: '📊' },
-        { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Digital', icon: '📖' },
-        { id: AppView.DIGITAL_PIGGYBANK, label: 'Celengan Digital', icon: '🪙' },
+        { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Digital', icon: '📖', roles: [UserRole.MEMBER, UserRole.LEADER] },
+        { id: AppView.DIGITAL_PIGGYBANK, label: 'Celengan Digital', icon: '🪙', roles: [UserRole.MEMBER] },
         { id: AppView.NEWS_UPDATES, label: 'Berita & Info', icon: '📰' },
-        { id: AppView.LOAN_HISTORY, label: 'Riwayat Pinjaman', icon: '📜' },
         { id: AppView.AI_ADVISOR, label: 'Asisten AI', icon: '🤖' },
-        { id: AppView.SMART_EDUCATION, label: 'Smart Education', icon: '🎓' },
+        { id: AppView.SMART_EDUCATION, label: 'Smart Education', icon: '🎓', roles: [UserRole.MEMBER] },
         { id: AppView.COMMUNITY_FORUM, label: 'Forum Anggota', icon: '💬' },
       ],
     },
@@ -42,15 +44,12 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       label: 'Ekosistem Bisnis',
       icon: '🛒',
       items: [
-        { id: AppView.TRANSACTION_FLOW, label: 'Urutan Transaksi', icon: '🛣️' },
-        { id: AppView.LOAN_READINESS, label: 'Kesiapan Pinjaman', icon: '🔓' },
-        { id: AppView.AI_COLLATERAL, label: 'Jaminan Digital AI', icon: '💎' },
         { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Anggota', icon: '🛍️' },
-        { id: AppView.MERCHANT_DASHBOARD, label: 'Dashboard Toko', icon: '🏪' },
-        { id: AppView.LOAN_SIMULATOR, label: 'Simulator Pinjaman', icon: '🧮' },
-        { id: AppView.AI_CREDIT_COMMITTEE, label: 'Komite Kredit AI', icon: '🧠' },
-        { id: AppView.LOAN_WORKFLOW, label: 'Alur Pinjaman', icon: '🔄' },
-        { id: AppView.MEMBER_QRIS, label: 'QRIS Pembayaran', icon: '🤳' },
+        { id: AppView.MERCHANT_DASHBOARD, label: 'Dashboard Toko', icon: '🏪', roles: [UserRole.MEMBER] },
+        { id: AppView.LOAN_SIMULATOR, label: 'Simulator Pinjaman', icon: '🧮', roles: [UserRole.MEMBER, UserRole.LEADER] },
+        { id: AppView.AI_CREDIT_COMMITTEE, label: 'Komite Kredit AI', icon: '🧠', roles: [UserRole.BOARD, UserRole.AUDITOR] },
+        { id: AppView.LOAN_WORKFLOW, label: 'Alur Pinjaman', icon: '🔄', roles: [UserRole.STAFF, UserRole.BOARD] },
+        { id: AppView.MEMBER_QRIS, label: 'QRIS Pembayaran', icon: '🤳', roles: [UserRole.MEMBER] },
         { id: AppView.GLOBAL_SHU_SIMULATION, label: 'Simulasi SHU', icon: '💰' },
       ],
     },
@@ -58,47 +57,28 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       label: 'Tata Kelola',
       icon: '⚖️',
       items: [
-        { id: AppView.VOUCHING_SYSTEM, label: 'Saksi Digital', icon: '🤝' },
-        { id: AppView.AI_COLLECTOR, label: 'Penagihan Santun AI', icon: '🕊️' },
-        { id: AppView.AUDIT_TRAIL, label: 'Jejak Audit AI', icon: '🕵️‍♂️' },
-        { id: AppView.CAPITAL_SECURITY, label: 'Keamanan Modal', icon: '🛡️' },
-        { id: AppView.AI_TREASURY, label: 'Manajemen Aset AI', icon: '💎' },
-        { id: AppView.CRISIS_SIMULATOR, label: 'Simulasi Krisis', icon: '🆘' },
-        { id: AppView.AI_CREDIT_SCORING, label: 'AI Credit Scoring', icon: '🧠' },
-        { id: AppView.FRAUD_DETECTION, label: 'Deteksi Fraud', icon: '🛡️' },
+        { id: AppView.ACCOUNTING, label: 'Pembukuan Real-time', icon: '📒', roles: [UserRole.BOARD, UserRole.STAFF, UserRole.AUDITOR] },
+        { id: AppView.TRANSPARENCY_PROTOCOL, label: 'Anti-Korupsi AI', icon: '🛡️', roles: [UserRole.AUDITOR, UserRole.BOARD] },
+        { id: AppView.CYBER_SECURITY_SHIELD, label: 'Perisai Cyber', icon: '🛡️', roles: [UserRole.FOUNDER, UserRole.AUDITOR] },
+        { id: AppView.AUDIT_TRAIL, label: 'Jejak Audit AI', icon: '🕵️‍♂️', roles: [UserRole.AUDITOR, UserRole.FOUNDER] },
+        { id: AppView.CAPITAL_SECURITY, label: 'Keamanan Modal', icon: '🛡️', roles: [UserRole.BOARD, UserRole.FOUNDER] },
+        { id: AppView.AI_TREASURY, label: 'Manajemen Aset AI', icon: '💎', roles: [UserRole.BOARD, UserRole.FOUNDER] },
+        { id: AppView.CRISIS_SIMULATOR, label: 'Simulasi Krisis', icon: '🆘', roles: [UserRole.FOUNDER, UserRole.BOARD] },
         { id: AppView.E_RAT, label: 'e-RAT (Voting)', icon: '🗳️' },
-        { id: AppView.VALUATION_TRACKER, label: 'Live Valuation', icon: '📈' },
-        { id: AppView.SYSTEM_HEALTH, label: 'Kesehatan Sistem', icon: '🛡️' },
+        { id: AppView.SYSTEM_HEALTH, label: 'Kesehatan Sistem', icon: '🛡️', roles: [UserRole.STAFF, UserRole.FOUNDER] },
       ],
     },
     {
       label: 'Strategi',
       icon: '🧠',
       items: [
-        { id: AppView.INVESTOR_PORTAL, label: 'Portal Investor', icon: '👔' },
-        { id: AppView.MILLION_DOLLAR_ROADMAP, label: 'Roadmap $1M', icon: '🗺️' },
-        { id: AppView.PIONEER_MANAGEMENT, label: 'Kelompok Pionir', icon: '🥇' },
-        { id: AppView.MARKET_PENETRATION, label: 'Penetrasi Wilayah', icon: '🗺️' },
-        { id: AppView.DAILY_OPERATIONS, label: 'Pelaksanaan Harian', icon: '📅' },
-        { id: AppView.FIELD_TRANSACTIONS, label: 'Transaksi Lapangan', icon: '🛵' },
-        { id: AppView.DUTA_SETTLEMENT, label: 'Setoran Kas Duta', icon: '🏦' },
-        { id: AppView.INCLUSION_STRATEGY, label: 'Strategi Inklusi', icon: '🤝' },
-        { id: AppView.FOUNDER_PLAYBOOK, label: 'Founder Playbook', icon: '📓' },
-        { id: AppView.DUTA_ESTABLISHMENT, label: 'Syarat Duta Wilayah', icon: '🚩' },
-        { id: AppView.LEADER_OPERATIONS, label: 'Sistem Kerja Duta', icon: '💼' },
-        { id: AppView.LEADER_COMPENSATION, label: 'Simulasi Gaji Duta', icon: '💸' },
-        { id: AppView.TECH_PROCESS, label: 'Proses Teknis', icon: '⚡' },
-        { id: AppView.PROMOTION_KIT, label: 'Kit Promosi', icon: '🚀' },
-        { id: AppView.COMMUNITY_LEADERS, label: 'Peta Duta', icon: '🤝' },
-        { id: AppView.TECH_SETUP, label: 'Konfigurasi Teknis', icon: '⚙️' },
-      ],
-    },
-    {
-      label: 'Sertifikasi',
-      icon: '🏆',
-      items: [
-        { id: AppView.MEMBERSHIP_CERTIFICATE, label: 'Sertifikat Saham', icon: '📜' },
-        { id: AppView.MEMBERSHIP_PROFILE, label: 'Profil Pemilik', icon: '👤' },
+        { id: AppView.BUSINESS_PLAN, label: 'Rencana Bisnis & SHU', icon: '📈', roles: [UserRole.FOUNDER, UserRole.BOARD] },
+        { id: AppView.PITCH_DECK, label: 'Pitch Deck Pionir', icon: '🎤', roles: [UserRole.FOUNDER] },
+        { id: AppView.LAUNCH_ROADMAP, label: 'Roadmap 100 Hari', icon: '🚀', roles: [UserRole.FOUNDER] },
+        { id: AppView.INVESTOR_PORTAL, label: 'Portal Investor', icon: '👔', roles: [UserRole.FOUNDER] },
+        { id: AppView.MILLION_DOLLAR_ROADMAP, label: 'Roadmap $1M', icon: '🗺️', roles: [UserRole.FOUNDER] },
+        { id: AppView.LEADER_COMPENSATION, label: 'Gaji Duta', icon: '💸', roles: [UserRole.LEADER, UserRole.BOARD] },
+        { id: AppView.TECH_SETUP, label: 'Konfigurasi Teknis', icon: '⚙️', roles: [UserRole.STAFF, UserRole.FOUNDER] },
       ],
     },
   ];
@@ -139,8 +119,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
 
       <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto custom-scrollbar overflow-x-hidden">
         {categories.map((category) => {
+          const visibleItems = category.items.filter(item => !item.roles || item.roles.includes(role));
+          if (visibleItems.length === 0) return null;
+
           const isExpanded = expandedCategories.includes(category.label);
-          const hasActiveChild = category.items.some(item => item.id === currentView);
+          const hasActiveChild = visibleItems.some(item => item.id === currentView);
 
           return (
             <div key={category.label} className="space-y-1">
@@ -165,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
 
               {(!isSidebarCollapsed && isExpanded) && (
                 <div className="space-y-1 ml-2 animate-in slide-in-from-top-2 duration-200">
-                  {category.items.map((item) => (
+                  {visibleItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => setView(item.id)}
@@ -185,6 +168,27 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
           );
         })}
       </nav>
+
+      {/* User Session Footer */}
+      <div className="p-4 border-t border-indigo-900 bg-indigo-950/50">
+         <div className={`flex items-center gap-3 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
+            <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-xl shadow-lg shrink-0">👤</div>
+            {!isSidebarCollapsed && (
+               <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold truncate">Budi Utama</p>
+                  <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">{role}</p>
+               </div>
+            )}
+         </div>
+         {!isSidebarCollapsed && (
+            <button 
+              onClick={onLogout}
+              className="mt-4 w-full py-2 bg-rose-500/10 text-rose-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all"
+            >
+               LOGOUT
+            </button>
+         )}
+      </div>
     </div>
   );
 };

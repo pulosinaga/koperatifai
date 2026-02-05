@@ -85,10 +85,20 @@ import AICollector from './components/AICollector';
 import InvestorPortal from './components/InvestorPortal';
 import LoanReadiness from './components/LoanReadiness';
 import AICollateral from './components/AICollateral';
-import { AppView } from './types';
+import TransparencyProtocol from './components/TransparencyProtocol';
+import AIGuardSimulation from './components/AIGuardSimulation';
+import CyberSecurityShield from './components/CyberSecurityShield';
+import DigitalInsurance from './components/DigitalInsurance';
+import LaunchRoadmap from './components/LaunchRoadmap';
+import PitchDeck from './components/PitchDeck';
+import BusinessPlan from './components/BusinessPlan';
+import DigitalContract from './components/DigitalContract';
+import LoginScreen from './components/LoginScreen';
+import { AppView, UserRole } from './types';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
+  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
@@ -104,10 +114,14 @@ const App: React.FC = () => {
     };
   }, []);
 
+  if (!currentRole) {
+    return <LoginScreen onLogin={(role) => setCurrentRole(role)} />;
+  }
+
   const renderContent = () => {
     switch (currentView) {
       case AppView.DASHBOARD:
-        return <Dashboard setView={setCurrentView} />;
+        return <Dashboard setView={setCurrentView} role={currentRole} />;
       case AppView.TRANSACTIONS:
         return <TransactionHistory />;
       case AppView.LOAN_SIMULATOR:
@@ -140,6 +154,8 @@ const App: React.FC = () => {
         return <LeanOperations />;
       case AppView.REAL_WORLD_FEASIBILITY:
         return <RealWorldFeasibility />;
+      case AppView.COMMUNITY_MOBILIZATION:
+        return <CommunityMobilization />;
       case AppView.GOVERNMENT_RELATIONS:
         return <GovernmentRelations />;
       case AppView.STARTUP_POSITIONING:
@@ -250,14 +266,30 @@ const App: React.FC = () => {
         return <LoanReadiness />;
       case AppView.AI_COLLATERAL:
         return <AICollateral />;
+      case AppView.TRANSPARENCY_PROTOCOL:
+        return <TransparencyProtocol />;
+      case AppView.AI_GUARD_SIMULATION:
+        return <AIGuardSimulation />;
+      case AppView.CYBER_SECURITY_SHIELD:
+        return <CyberSecurityShield />;
+      case AppView.DIGITAL_INSURANCE:
+        return <DigitalInsurance />;
+      case AppView.LAUNCH_ROADMAP:
+        return <LaunchRoadmap />;
+      case AppView.PITCH_DECK:
+        return <PitchDeck />;
+      case AppView.BUSINESS_PLAN:
+        return <BusinessPlan />;
+      case AppView.DIGITAL_CONTRACT:
+        return <DigitalContract />;
       default:
-        return <Dashboard setView={setCurrentView} />;
+        return <Dashboard setView={setCurrentView} role={currentRole} />;
     }
   };
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
-      <Sidebar currentView={currentView} setView={setCurrentView} />
+      <Sidebar currentView={currentView} setView={setCurrentView} role={currentRole} onLogout={() => setCurrentRole(null)} />
       
       <main className="flex-1 overflow-y-auto flex flex-col">
         {!isOnline && (
@@ -275,6 +307,9 @@ const App: React.FC = () => {
                 className="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-72 transition-all group-hover:bg-slate-200/50"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+            </div>
+            <div className="px-3 py-1 bg-indigo-50 border border-indigo-100 rounded-full">
+               <p className="text-[9px] font-black text-indigo-600 uppercase tracking-widest">{currentRole} VIEW</p>
             </div>
           </div>
           <div className="flex items-center gap-6">

@@ -9,10 +9,19 @@ const FoundersPlaybook: React.FC = () => {
     { t: 'Aturan 4: Zero Burn Rate', d: 'Jangan gunakan dana anggota untuk iklan atau bakar uang. Pertumbuhan harus organik melalui sistem referral dan manfaat nyata.', icon: '🔥' }
   ];
 
-  const steps = [
-    { title: 'Tahun 1: Validasi', desc: 'Fokus pada 100 anggota pertama yang loyal. Bangun kepercayaan mutlak.' },
-    { title: 'Tahun 2: Integrasi', desc: 'Hubungkan dengan ekosistem bank nasional dan mulailah lisensi teknologi.' },
-    { title: 'Tahun 3: Ekspansi Asia', desc: 'Bawa model KoperatifAI ke negara berkembang lainnya melalui aliansi internasional.' }
+  const dualRoles = [
+    { 
+      title: 'Founder (Architect)', 
+      focus: 'Visi, Teknologi AI, IP Protection, & Skalabilitas Nasional.',
+      status: 'Permanen (Aset Intelektual Anda)',
+      icon: '💎' 
+    },
+    { 
+      title: 'Chairman (Executor)', 
+      focus: 'Otorisasi Kredit, Manajemen Likuiditas, & Rapat Anggota.',
+      status: 'Elektif (Dipilih Anggota tiap 5 Tahun)',
+      icon: '👔' 
+    }
   ];
 
   return (
@@ -31,9 +40,32 @@ const FoundersPlaybook: React.FC = () => {
               </div>
            </div>
            <p className="text-slate-400 text-lg leading-relaxed max-w-2xl">
-              Selamat! Anda telah membangun mesin ekonomi tercanggih. Sekarang, saatnya belajar cara **Mengemudikannya** menuju kesuksesan finansial dan sosial.
+              Membangun koperasi digital berarti menjalankan dua peran sekaligus: sebagai **Pemilik Inovasi** dan **Penjaga Amanah Anggota**.
            </p>
         </div>
+      </div>
+
+      {/* NEW: Dual Role Strategy */}
+      <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-sm space-y-10">
+         <div className="text-center space-y-2">
+            <h3 className="text-3xl font-black text-slate-800 italic">Strategi "Dua Topi" Founder</h3>
+            <p className="text-slate-500">Bagaimana Anda membagi waktu antara membangun sistem dan melayani rakyat.</p>
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {dualRoles.map((role, i) => (
+               <div key={i} className={`p-8 rounded-[3rem] border-2 transition-all ${i === 0 ? 'bg-indigo-50 border-indigo-200' : 'bg-emerald-50 border-emerald-200'}`}>
+                  <div className="text-5xl mb-6">{role.icon}</div>
+                  <h4 className="text-xl font-black text-slate-800 mb-2">{role.title}</h4>
+                  <p className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-60">{role.status}</p>
+                  <p className="text-sm text-slate-600 leading-relaxed font-medium italic">"{role.focus}"</p>
+               </div>
+            ))}
+         </div>
+         <div className="p-8 bg-slate-900 rounded-[2.5rem] text-white text-center">
+            <p className="text-xs italic text-slate-400">
+               "Anda adalah **Founder selamanya** bagi teknologinya, tapi Anda adalah **Pengurus sementara** bagi organisasinya. Ini adalah rahasia agar koperasi tetap demokratis namun Founder tetap kaya dari royalti IP."
+            </p>
+         </div>
       </div>
 
       {/* The 4 Golden Rules */}
@@ -45,51 +77,6 @@ const FoundersPlaybook: React.FC = () => {
               <p className="text-slate-500 mt-4 leading-relaxed text-sm">{rule.d}</p>
            </div>
          ))}
-      </div>
-
-      {/* Strategic Roadmap */}
-      <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-sm space-y-12">
-         <div className="text-center space-y-2">
-            <h3 className="text-2xl font-black text-slate-800">Tangga Menuju $10.000.000</h3>
-            <p className="text-slate-400 text-sm">Rencana taktis jangka menengah untuk KoperatifAI.</p>
-         </div>
-         <div className="flex flex-col lg:flex-row gap-8">
-            {steps.map((s, i) => (
-              <div key={i} className="flex-1 bg-slate-50 p-8 rounded-[3rem] border border-slate-100 hover:bg-indigo-50 hover:border-indigo-200 transition-all text-center space-y-4">
-                 <div className="w-12 h-12 bg-white rounded-full mx-auto flex items-center justify-center font-black text-indigo-600 shadow-sm">{i+1}</div>
-                 <h4 className="font-bold text-slate-800">{s.title}</h4>
-                 <p className="text-xs text-slate-500 leading-relaxed italic">{s.desc}</p>
-              </div>
-            ))}
-         </div>
-      </div>
-
-      {/* Crisis Management Box */}
-      <div className="bg-rose-900 rounded-[3rem] p-12 text-white overflow-hidden relative">
-         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl"></div>
-         <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
-            <div className="flex-1 space-y-6">
-               <h3 className="text-3xl font-black italic">Manajemen Krisis (Anti-Fail)</h3>
-               <p className="text-rose-100 text-lg leading-relaxed">
-                  Apa yang harus dilakukan jika terjadi gagal bayar masal?
-               </p>
-               <div className="space-y-4">
-                  <div className="flex gap-4 p-5 bg-white/10 rounded-2xl border border-white/10">
-                     <span className="text-2xl">🛡️</span>
-                     <p className="text-sm">Aktifkan **Dana Cadangan Risiko** secara otomatis dari Federasi Inkopdit.</p>
-                  </div>
-                  <div className="flex gap-4 p-5 bg-white/10 rounded-2xl border border-white/10">
-                     <span className="text-2xl">🧠</span>
-                     <p className="text-sm">AI akan melakukan **Restrukturisasi Pinjaman** massal dengan tenor yang lebih panjang untuk menstabilkan arus kas anggota.</p>
-                  </div>
-               </div>
-            </div>
-            <div className="w-full lg:w-72 bg-white rounded-[3rem] p-8 text-rose-900 text-center shadow-2xl">
-               <div className="text-5xl mb-4">🆘</div>
-               <h4 className="font-black">Panic Button Protocol</h4>
-               <p className="text-[10px] uppercase font-bold mt-2 text-rose-400">Security Level: Omega</p>
-            </div>
-         </div>
       </div>
 
       {/* Final Guidance Message */}
