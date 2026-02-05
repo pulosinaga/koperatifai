@@ -77,6 +77,14 @@ import DutaSettlement from './components/DutaSettlement';
 import AuditTrail from './components/AuditTrail';
 import MarketPenetration from './components/MarketPenetration';
 import PioneerManagement from './components/PioneerManagement';
+import TransactionFlow from './components/TransactionFlow';
+import VouchingSystem from './components/VouchingSystem';
+import DigitalPassbook from './components/DigitalPassbook';
+import AICreditCommittee from './components/AICreditCommittee';
+import AICollector from './components/AICollector';
+import InvestorPortal from './components/InvestorPortal';
+import LoanReadiness from './components/LoanReadiness';
+import AICollateral from './components/AICollateral';
 import { AppView } from './types';
 
 const App: React.FC = () => {
@@ -226,6 +234,22 @@ const App: React.FC = () => {
         return <MarketPenetration />;
       case AppView.PIONEER_MANAGEMENT:
         return <PioneerManagement />;
+      case AppView.TRANSACTION_FLOW:
+        return <TransactionFlow />;
+      case AppView.VOUCHING_SYSTEM:
+        return <VouchingSystem />;
+      case AppView.DIGITAL_PASSBOOK:
+        return <DigitalPassbook />;
+      case AppView.AI_CREDIT_COMMITTEE:
+        return <AICreditCommittee />;
+      case AppView.AI_COLLECTOR:
+        return <AICollector />;
+      case AppView.INVESTOR_PORTAL:
+        return <InvestorPortal />;
+      case AppView.LOAN_READINESS:
+        return <LoanReadiness />;
+      case AppView.AI_COLLATERAL:
+        return <AICollateral />;
       default:
         return <Dashboard setView={setCurrentView} />;
     }

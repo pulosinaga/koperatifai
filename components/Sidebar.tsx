@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       icon: '🏠',
       items: [
         { id: AppView.DASHBOARD, label: 'Dashboard', icon: '📊' },
+        { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Digital', icon: '📖' },
         { id: AppView.DIGITAL_PIGGYBANK, label: 'Celengan Digital', icon: '🪙' },
         { id: AppView.NEWS_UPDATES, label: 'Berita & Info', icon: '📰' },
         { id: AppView.LOAN_HISTORY, label: 'Riwayat Pinjaman', icon: '📜' },
@@ -41,9 +42,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       label: 'Ekosistem Bisnis',
       icon: '🛒',
       items: [
+        { id: AppView.TRANSACTION_FLOW, label: 'Urutan Transaksi', icon: '🛣️' },
+        { id: AppView.LOAN_READINESS, label: 'Kesiapan Pinjaman', icon: '🔓' },
+        { id: AppView.AI_COLLATERAL, label: 'Jaminan Digital AI', icon: '💎' },
         { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Anggota', icon: '🛍️' },
         { id: AppView.MERCHANT_DASHBOARD, label: 'Dashboard Toko', icon: '🏪' },
         { id: AppView.LOAN_SIMULATOR, label: 'Simulator Pinjaman', icon: '🧮' },
+        { id: AppView.AI_CREDIT_COMMITTEE, label: 'Komite Kredit AI', icon: '🧠' },
         { id: AppView.LOAN_WORKFLOW, label: 'Alur Pinjaman', icon: '🔄' },
         { id: AppView.MEMBER_QRIS, label: 'QRIS Pembayaran', icon: '🤳' },
         { id: AppView.GLOBAL_SHU_SIMULATION, label: 'Simulasi SHU', icon: '💰' },
@@ -53,9 +58,10 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       label: 'Tata Kelola',
       icon: '⚖️',
       items: [
+        { id: AppView.VOUCHING_SYSTEM, label: 'Saksi Digital', icon: '🤝' },
+        { id: AppView.AI_COLLECTOR, label: 'Penagihan Santun AI', icon: '🕊️' },
         { id: AppView.AUDIT_TRAIL, label: 'Jejak Audit AI', icon: '🕵️‍♂️' },
         { id: AppView.CAPITAL_SECURITY, label: 'Keamanan Modal', icon: '🛡️' },
-        { id: AppView.SECURITY_PROTOCOL, label: 'Protokol Keamanan', icon: '🛡️' },
         { id: AppView.AI_TREASURY, label: 'Manajemen Aset AI', icon: '💎' },
         { id: AppView.CRISIS_SIMULATOR, label: 'Simulasi Krisis', icon: '🆘' },
         { id: AppView.AI_CREDIT_SCORING, label: 'AI Credit Scoring', icon: '🧠' },
@@ -69,6 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
       label: 'Strategi',
       icon: '🧠',
       items: [
+        { id: AppView.INVESTOR_PORTAL, label: 'Portal Investor', icon: '👔' },
+        { id: AppView.MILLION_DOLLAR_ROADMAP, label: 'Roadmap $1M', icon: '🗺️' },
         { id: AppView.PIONEER_MANAGEMENT, label: 'Kelompok Pionir', icon: '🥇' },
         { id: AppView.MARKET_PENETRATION, label: 'Penetrasi Wilayah', icon: '🗺️' },
         { id: AppView.DAILY_OPERATIONS, label: 'Pelaksanaan Harian', icon: '📅' },
@@ -83,7 +91,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
         { id: AppView.PROMOTION_KIT, label: 'Kit Promosi', icon: '🚀' },
         { id: AppView.COMMUNITY_LEADERS, label: 'Peta Duta', icon: '🤝' },
         { id: AppView.TECH_SETUP, label: 'Konfigurasi Teknis', icon: '⚙️' },
-        { id: AppView.MILLION_DOLLAR_ROADMAP, label: 'Roadmap $1M', icon: '🗺️' },
       ],
     },
     {

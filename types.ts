@@ -75,7 +75,20 @@ export enum AppView {
   DUTA_SETTLEMENT = 'DUTA_SETTLEMENT',
   AUDIT_TRAIL = 'AUDIT_TRAIL',
   MARKET_PENETRATION = 'MARKET_PENETRATION',
-  PIONEER_MANAGEMENT = 'PIONEER_MANAGEMENT'
+  PIONEER_MANAGEMENT = 'PIONEER_MANAGEMENT',
+  TRANSACTION_FLOW = 'TRANSACTION_FLOW',
+  VOUCHING_SYSTEM = 'VOUCHING_SYSTEM',
+  DIGITAL_PASSBOOK = 'DIGITAL_PASSBOOK',
+  AI_CREDIT_COMMITTEE = 'AI_CREDIT_COMMITTEE',
+  AI_COLLECTOR = 'AI_COLLECTOR',
+  INVESTOR_PORTAL = 'INVESTOR_PORTAL',
+  LOAN_READINESS = 'LOAN_READINESS',
+  AI_COLLATERAL = 'AI_COLLATERAL'
+}
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
 }
 
 export interface Transaction {
@@ -84,17 +97,5 @@ export interface Transaction {
   description: string;
   date: string;
   amount: number;
-  status: 'completed' | 'pending' | 'failed';
-}
-
-export interface MemberStats {
-  savings: number;
-  obligatorySavings: number;
-  loanBalance: number;
-  dividends: number;
-}
-
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
+  status: 'completed' | 'pending';
 }
