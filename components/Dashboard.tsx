@@ -9,12 +9,12 @@ interface DashboardProps {
 }
 
 const data = [
-  { name: 'Jan', value: 4000, members: 800 },
-  { name: 'Feb', value: 3000, members: 850 },
-  { name: 'Mar', value: 2000, members: 920 },
-  { name: 'Apr', value: 2780, members: 1040 },
-  { name: 'Mei', value: 1890, members: 1120 },
-  { name: 'Jun', value: 2390, members: 1248 },
+  { name: 'Peb', value: 4000, members: 800 },
+  { name: 'Mar', value: 3000, members: 850 },
+  { name: 'Apr', value: 2000, members: 920 },
+  { name: 'Mei', value: 2780, members: 1040 },
+  { name: 'Jun', value: 1890, members: 1120 },
+  { name: 'Jul', value: 2390, members: 1248 },
 ];
 
 const COLORS = ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff'];
@@ -24,11 +24,29 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
   // RENDER MEMBER DASHBOARD
   if (role === UserRole.MEMBER) {
     return (
-      <div className="space-y-6 animate-in fade-in duration-500">
-        <header>
-          <h2 className="text-2xl font-bold text-slate-800">Ringkasan Pemilik</h2>
-          <p className="text-slate-500 mt-1">Selamat datang kembali, Budi. Aset Anda sedang bertumbuh.</p>
+      <div className="space-y-8 animate-in fade-in duration-500">
+        <header className="flex justify-between items-end">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800">Ringkasan Pemilik</h2>
+            <p className="text-slate-500 mt-1">Selamat malam kembali, Budi. Aset Anda sedang bekerja.</p>
+          </div>
+          <div className="px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center gap-2">
+             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+             <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">SHU Optimizer Active</p>
+          </div>
         </header>
+
+        {/* Launch Promo Banner */}
+        <div className="bg-indigo-600 rounded-3xl p-6 text-white flex items-center justify-between shadow-xl shadow-indigo-200">
+           <div className="flex gap-4 items-center">
+              <div className="text-4xl">🚀</div>
+              <div>
+                 <h4 className="font-black italic text-lg">Pesta SHU Grand Launch!</h4>
+                 <p className="text-indigo-100 text-xs">Dapatkan <b>Double Bonus SHU</b> untuk pembayaran PBB & Tiket Travel minggu ini.</p>
+              </div>
+           </div>
+           <button onClick={() => setView(AppView.BILL_PAYMENTS)} className="px-6 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase">Cek Promo</button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
@@ -49,14 +67,40 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
           </div>
         </div>
 
+        {/* Updated: Quick Transactions Section */}
+        <div className="space-y-4">
+           <h4 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Transaksi Cepat</h4>
+           <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+              {[
+                { label: 'Beli Pulsa', icon: '📱', color: 'bg-emerald-50 text-emerald-600' },
+                { label: 'Token Listrik', icon: '⚡', color: 'bg-amber-50 text-amber-600' },
+                { label: 'Bayar PBB', icon: '🏛️', color: 'bg-slate-100 text-slate-600' },
+                { label: 'Tiket Travel', icon: '🚆', color: 'bg-orange-50 text-orange-600' },
+                { label: 'Bayar Wifi', icon: '🌐', color: 'bg-blue-50 text-blue-600' },
+                { label: 'Kirim Uang', icon: '💸', color: 'bg-indigo-50 text-indigo-600' },
+              ].map((action, i) => (
+                <button 
+                  key={i}
+                  onClick={() => setView(AppView.BILL_PAYMENTS)}
+                  className="bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center text-center gap-3 group"
+                >
+                   <div className={`w-12 h-12 ${action.color} rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform`}>
+                      {action.icon}
+                   </div>
+                   <span className="text-[10px] font-black uppercase tracking-tighter text-slate-800">{action.label}</span>
+                </button>
+              ))}
+           </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-              <h4 className="font-bold text-slate-800 text-sm uppercase mb-6">Aktivitas Terakhir</h4>
+              <h4 className="font-bold text-slate-800 text-sm uppercase mb-6 italic">Aktivitas Terakhir (Pebruari 2026)</h4>
               <div className="space-y-4">
                  {[
-                   { t: 'Belanja Marketplace', d: 'Beras Organik', a: '- Rp 75.000', c: 'text-rose-600' },
-                   { t: 'Nabung Sukarela', d: 'VA Transfer', a: '+ Rp 500.000', c: 'text-emerald-600' },
-                   { t: 'SHU Reward', d: 'Referral Bonus', a: '+ Rp 50.000', c: 'text-indigo-600' },
+                   { t: 'Bayar Pajak PBB 2026', d: 'NOP 32.75.xxx - 05 Peb', a: '- Rp 245.000', c: 'text-rose-600' },
+                   { t: 'Beli Tiket Kereta', d: 'KA Turangga - 05 Peb', a: '- Rp 350.000', c: 'text-rose-600' },
+                   { t: 'Nabung Sukarela', d: 'VA Transfer - 02 Peb', a: '+ Rp 500.000', c: 'text-emerald-600' },
                  ].map((item, i) => (
                    <div key={i} className="flex justify-between items-center py-3 border-b border-slate-50 last:border-0">
                       <div><p className="text-sm font-bold">{item.t}</p><p className="text-[10px] text-slate-400">{item.d}</p></div>
@@ -65,11 +109,12 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
                  ))}
               </div>
            </div>
-           <div className="bg-slate-900 p-8 rounded-3xl text-white flex flex-col justify-center text-center space-y-4">
-              <div className="text-5xl">🎓</div>
-              <h4 className="text-xl font-bold italic">"Selesaikan 1 Modul Lagi!"</h4>
-              <p className="text-xs text-slate-400">Naikkan limit pinjaman Anda sebesar Rp 1 Juta dengan menyelesaikan modul 'Manajemen Hutang'.</p>
-              <button onClick={() => setView(AppView.SMART_EDUCATION)} className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase">Mulai Belajar</button>
+           <div className="bg-slate-900 p-8 rounded-3xl text-white flex flex-col justify-center text-center space-y-4 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl"></div>
+              <div className="text-5xl z-10">🎓</div>
+              <h4 className="text-xl font-bold italic z-10">"Target Literasi Pebruari"</h4>
+              <p className="text-xs text-slate-400 z-10">Naikkan limit pinjaman Anda sebesar Rp 1 Juta dengan menyelesaikan modul 'Manajemen Hutang'.</p>
+              <button onClick={() => setView(AppView.SMART_EDUCATION)} className="px-6 py-3 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase shadow-lg z-10">Mulai Belajar</button>
            </div>
         </div>
       </div>
@@ -83,7 +128,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
         <header className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-slate-800 italic">Founder Command Center</h2>
-            <p className="text-slate-500">Memantau visi dan nilai entitas secara global.</p>
+            <p className="text-slate-500">Kondisi ekosistem per 05 Pebruari 2026.</p>
           </div>
           <div className="flex gap-4">
              <div className="p-4 bg-indigo-600 text-white rounded-2xl shadow-xl shadow-indigo-100 text-center min-w-[150px]">
@@ -99,8 +144,8 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
               <h3 className="text-3xl font-black text-slate-800 italic">1,248 <span className="text-sm font-medium text-slate-400">Owners</span></h3>
            </div>
            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-              <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Regional Expansion</p>
-              <h3 className="text-3xl font-black text-slate-800 italic">12 <span className="text-sm font-medium text-slate-400">Wilayah</span></h3>
+              <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Daily Digital GTV</p>
+              <h3 className="text-3xl font-black text-slate-800 italic">Rp 4.2M <span className="text-sm font-medium text-slate-400">Processed</span></h3>
            </div>
            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
               <p className="text-[10px] font-black text-slate-400 uppercase mb-1">IP Protection Status</p>
@@ -114,12 +159,12 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
               <div className="w-16 h-16 bg-white/10 rounded-3xl flex items-center justify-center text-3xl">👔</div>
               <div>
                  <h4 className="text-xl font-black italic">Akses Eksekutif (Ketua Pengurus)</h4>
-                 <p className="text-xs text-indigo-300">Anda sedang merangkap sebagai pengelola likuiditas harian.</p>
+                 <p className="text-xs text-indigo-300">Pantau likuiditas harian di bulan Pebruari 2026.</p>
               </div>
            </div>
            <div className="flex gap-4">
               <button onClick={() => setView(AppView.ACCOUNTING)} className="px-6 py-3 bg-white text-indigo-900 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Buka Brankas Digital</button>
-              <button onClick={() => setView(AppView.AI_CREDIT_COMMITTEE)} className="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Approve Pinjaman</button>
+              <button onClick={() => setView(AppView.AICreditCommittee)} className="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Approve Pinjaman</button>
            </div>
         </div>
 
@@ -145,7 +190,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
         <div>
           <h2 className="text-2xl font-bold text-slate-800 italic">Management Dashboard</h2>
           <div className="flex items-center gap-3 mt-1">
-            <p className="text-slate-500">Monitoring operasional harian.</p>
+            <p className="text-slate-500">Monitoring operasional Pebruari 2026.</p>
             <span className="flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full border border-emerald-100 uppercase tracking-tighter">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
               Real-time Ledger Sync
@@ -185,7 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-80 flex flex-col">
-            <h4 className="font-bold text-slate-800 text-sm uppercase mb-6">Yield & Performance</h4>
+            <h4 className="font-bold text-slate-800 text-sm uppercase mb-6 italic">Yield & Performance (H1 2026)</h4>
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>

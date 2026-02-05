@@ -10,14 +10,14 @@ const TransactionHistory: React.FC = () => {
 
   // Mocking a larger dataset to simulate scalability
   const allTransactions: Transaction[] = useMemo(() => [
-    { id: 'TX001', type: 'deposit', description: 'Simpanan Sukarela - Juni', date: '12 Jun 2024', amount: 500000, status: 'completed' },
-    { id: 'TX002', type: 'loan_installment', description: 'Angsuran Pinjaman #04', date: '10 Jun 2024', amount: 1250000, status: 'completed' },
-    { id: 'TX003', type: 'deposit', description: 'Simpanan Wajib - Juni', date: '02 Jun 2024', amount: 100000, status: 'completed' },
-    { id: 'TX004', type: 'withdrawal', description: 'Penarikan Sukarela', date: '28 Mei 2024', amount: 2000000, status: 'completed' },
-    { id: 'TX005', type: 'dividend', description: 'Bonus Referral Anggota', date: '15 Mei 2024', amount: 50000, status: 'completed' },
-    { id: 'TX006', type: 'deposit', description: 'Simpanan Sukarela - Mei', date: '12 Mei 2024', amount: 500000, status: 'completed' },
-    { id: 'TX007', type: 'loan_installment', description: 'Angsuran Pinjaman #03', date: '10 Mei 2024', amount: 1250000, status: 'completed' },
-    { id: 'TX008', type: 'deposit', description: 'Simpanan Wajib - Mei', date: '02 Mei 2024', amount: 100000, status: 'completed' },
+    { id: 'TX001', type: 'deposit', description: 'Simpanan Sukarela - Pebruari', date: '05 Peb 2026', amount: 500000, status: 'completed' },
+    { id: 'TX002', type: 'loan_installment', description: 'Angsuran Pinjaman #04', date: '04 Peb 2026', amount: 1250000, status: 'completed' },
+    { id: 'TX003', type: 'deposit', description: 'Simpanan Wajib - Pebruari', date: '02 Peb 2026', amount: 100000, status: 'completed' },
+    { id: 'TX004', type: 'withdrawal', description: 'Penarikan Sukarela', date: '28 Jan 2026', amount: 2000000, status: 'completed' },
+    { id: 'TX005', type: 'dividend', description: 'Bonus Referral Anggota', date: '15 Jan 2026', amount: 50000, status: 'completed' },
+    { id: 'TX006', type: 'deposit', description: 'Simpanan Sukarela - Januari', date: '12 Jan 2026', amount: 500000, status: 'completed' },
+    { id: 'TX007', type: 'loan_installment', description: 'Angsuran Pinjaman #03', date: '10 Jan 2026', amount: 1250000, status: 'completed' },
+    { id: 'TX008', type: 'deposit', description: 'Simpanan Wajib - Januari', date: '02 Jan 2026', amount: 100000, status: 'completed' },
   ], []);
 
   const filteredData = useMemo(() => {
@@ -48,7 +48,7 @@ const TransactionHistory: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-slate-800">Riwayat Transaksi</h2>
-            <p className="text-slate-500 text-sm">Optimalisasi performa aktif: Menangani {allTransactions.length} records.</p>
+            <p className="text-slate-500 text-sm">Optimalisasi performa aktif: Menangani {allTransactions.length} records per 05 Peb 2026.</p>
           </div>
           <div className="relative group w-full md:w-64">
             <input 

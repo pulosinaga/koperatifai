@@ -35,7 +35,7 @@ const AccountingReports: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Pembukuan & Laporan</h2>
-          <p className="text-slate-500 text-sm">Periode Laporan: Juni 2024 (Otomatis/Real-time)</p>
+          <p className="text-slate-500 text-sm">Periode Laporan: Pebruari 2026 (Otomatis/Real-time)</p>
         </div>
         <div className="flex gap-2">
           <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">
@@ -72,7 +72,7 @@ const AccountingReports: React.FC = () => {
           {/* ASSETS SIDE */}
           <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden h-fit">
             <div className="p-6 bg-slate-50 border-b border-slate-100">
-              <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">AKTIVA (Aset)</h3>
+              <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">AKTIVA (Aset) - Peb 2026</h3>
             </div>
             <div className="divide-y divide-slate-50">
               {balanceSheet.assets.map((item, i) => (
@@ -136,7 +136,7 @@ const AccountingReports: React.FC = () => {
         <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-8 border-b border-slate-100 text-center">
             <h3 className="text-xl font-black text-slate-800">Laporan Sisa Hasil Usaha (SHU)</h3>
-            <p className="text-slate-400 text-xs mt-1 uppercase tracking-widest font-bold">Periode Berjalan 2024</p>
+            <p className="text-slate-400 text-xs mt-1 uppercase tracking-widest font-bold">Periode Berjalan Pebruari 2026</p>
           </div>
           <div className="p-8 space-y-8">
             <section>
@@ -176,8 +176,7 @@ const AccountingReports: React.FC = () => {
                   <span className="font-bold text-slate-800">Total Beban</span>
                   <span className="font-bold text-slate-800">Rp 62.500.000</span>
                 </div>
-              </div>
-            </section>
+              </section>
 
             <div className="p-6 bg-slate-900 rounded-2xl flex justify-between items-center text-white">
               <div>
@@ -207,9 +206,9 @@ const AccountingReports: React.FC = () => {
             </thead>
             <tbody className="text-sm divide-y divide-slate-50">
               {[
-                { date: '12 Jun 2024', acc: 'Kas di Tangan', ref: '101', d: 500000, k: 0 },
+                { date: '05 Peb 2026', acc: 'Kas di Tangan', ref: '101', d: 500000, k: 0 },
                 { date: '', acc: '   Simpanan Sukarela (Budi)', ref: '201', d: 0, k: 500000 },
-                { date: '10 Jun 2024', acc: 'Kas di Tangan', ref: '101', d: 1250000, k: 0 },
+                { date: '04 Peb 2026', acc: 'Kas di Tangan', ref: '101', d: 1250000, k: 0 },
                 { date: '', acc: '   Piutang Pinjaman Anggota', ref: '103', d: 0, k: 1000000 },
                 { date: '', acc: '   Pendapatan Jasa Pinjaman', ref: '401', d: 0, k: 250000 },
               ].map((row, i) => (

@@ -6,9 +6,9 @@ const NewsAndUpdates: React.FC = () => {
     {
       id: 1,
       tag: 'PERTUMBUHAN',
-      title: 'Tembus 1.200 Anggota Aktif di Bulan Juni 2024!',
+      title: 'Tembus 1.200 Anggota Aktif di Bulan Pebruari 2026!',
       desc: 'Kepercayaan anggota terus meningkat. Total dana kolektif kini telah mencapai Rp 12,4 Miliar. Terima kasih atas partisipasi seluruh anggota.',
-      date: '12 Juni 2024',
+      date: '05 Pebruari 2026',
       icon: '🚀',
       image: 'bg-emerald-500'
     },
@@ -17,7 +17,7 @@ const NewsAndUpdates: React.FC = () => {
       tag: 'KEBIJAKAN',
       title: 'Penurunan Bunga Pinjaman Mikro: Hanya 0.9% Flat.',
       desc: 'Sesuai kesepakatan e-RAT, AI Treasury memutuskan untuk menurunkan bunga pinjaman modal usaha guna memicu kebangkitan UMKM di ekosistem kita.',
-      date: '10 Juni 2024',
+      date: '02 Pebruari 2026',
       icon: '📉',
       image: 'bg-indigo-500'
     },
@@ -26,7 +26,7 @@ const NewsAndUpdates: React.FC = () => {
       tag: 'COMMUNITY',
       title: 'Kisah Sukses: Pak Budi & Warung Bakso Berbasis QRIS.',
       desc: 'Bagaimana integrasi QRIS KoperatifAI membantu Pak Budi meningkatkan omzet hingga 40% dalam 3 bulan terakhir melalui data stok AI.',
-      date: '05 Juni 2024',
+      date: '28 Januari 2026',
       icon: '🍜',
       image: 'bg-amber-500'
     },
@@ -35,7 +35,7 @@ const NewsAndUpdates: React.FC = () => {
       tag: 'SYSTEM',
       title: 'Peningkatan Keamanan: Sentinel AI Guard 4.0.',
       desc: 'Audit otomatis kini 2x lebih cepat mendeteksi anomali transaksi. Dana Anda kini dilindungi oleh protokol enkripsi terbaru yang diakui global.',
-      date: '01 Juni 2024',
+      date: '15 Januari 2026',
       icon: '🛡️',
       image: 'bg-rose-500'
     }
@@ -59,7 +59,7 @@ const NewsAndUpdates: React.FC = () => {
           <div className="w-full lg:w-72 bg-white/5 backdrop-blur-xl p-8 rounded-[3rem] border border-white/10 text-center shadow-2xl">
              <div className="text-5xl mb-4">📰</div>
              <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">Update Terakhir</p>
-             <p className="text-xl font-black text-indigo-400">Hari ini, 10:45 AM</p>
+             <p className="text-xl font-black text-indigo-400">Pebruari 2026</p>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@ const NewsAndUpdates: React.FC = () => {
               <div className="space-y-1">
                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
                  <h4 className="text-2xl font-black text-slate-800 tracking-tighter">{stat.value}</h4>
-                 <p className="text-[10px] font-bold text-emerald-600">{stat.change} vs Bln Lalu</p>
+                 <p className="text-[10px] font-bold text-emerald-600">{stat.change} vs Jan 2026</p>
               </div>
               <div className="text-3xl grayscale group-hover:grayscale-0 transition-all">{stat.icon}</div>
            </div>
@@ -119,23 +119,12 @@ const NewsAndUpdates: React.FC = () => {
          <div className="flex-1 space-y-4 relative z-10">
             <h4 className="text-3xl font-black italic">Misi Selanjutnya: "Peta Inklusi 1 Juta Rakyat"</h4>
             <p className="text-slate-400 text-lg leading-relaxed">
-               Bulan depan, KoperatifAI akan meluncurkan fitur **Saksi Digital 2.0** yang memungkinkan verifikasi anggota baru melalui panggilan video AI terenkripsi. Persiapkan diri Anda untuk menyambut gelombang anggota baru!
+               Bulan depan (Maret 2026), KoperatifAI akan meluncurkan fitur **Saksi Digital 2.0** yang memungkinkan verifikasi anggota baru melalui panggilan video AI terenkripsi. Persiapkan diri Anda untuk menyambut gelombang anggota baru!
             </p>
             <div className="flex gap-4 pt-4">
                <button className="px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:bg-indigo-700 transition-all">Lihat Roadmap Detail</button>
                <button className="px-8 py-3 bg-white/5 border border-white/10 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all">Kirim Ide Fitur</button>
             </div>
-         </div>
-      </div>
-
-      {/* Weekly Tip Callout */}
-      <div className="p-10 bg-indigo-50 border border-indigo-100 rounded-[3rem] flex flex-col md:flex-row items-center gap-10">
-         <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-sm border border-indigo-100">💡</div>
-         <div className="flex-1">
-            <h4 className="text-xl font-bold text-indigo-900 italic">"Info adalah Aset, Transparansi adalah Kekuatan."</h4>
-            <p className="text-indigo-700/70 text-sm leading-relaxed mt-1">
-               Semakin sering Anda mengecek perkembangan berita di halaman ini, semakin mahir Anda dalam memahami arah ekonomi komunitas kita. Jadilah anggota yang proaktif dalam menyebarkan kabar baik KoperatifAI!
-            </p>
          </div>
       </div>
     </div>

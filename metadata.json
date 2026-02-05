@@ -3,6 +3,7 @@
   "description": "A modern platform for online credit cooperatives featuring AI-driven financial advisory, loan simulations, and member management to maximize community growth.",
   "requestFramePermissions": [
     "microphone",
-    "camera"
+    "camera",
+    "geolocation"
   ]
 }

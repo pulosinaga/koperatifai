@@ -93,6 +93,18 @@ import LaunchRoadmap from './components/LaunchRoadmap';
 import PitchDeck from './components/PitchDeck';
 import BusinessPlan from './components/BusinessPlan';
 import DigitalContract from './components/DigitalContract';
+import JDIHIntegration from './components/JDIHIntegration';
+import BrandingIdentity from './components/BrandingIdentity';
+import SmartProcurement from './components/SmartProcurement';
+import BillPayments from './components/BillPayments';
+import CoopVsBank from './components/CoopVsBank';
+import RemittanceService from './components/RemittanceService';
+import LeaderLiquidity from './components/LeaderLiquidity';
+import DutaVetting from './components/DutaVetting';
+import PensionFund from './components/PensionFund';
+import ProductiveElderDashboard from './components/ProductiveElderDashboard';
+import ElderImpactHub from './components/ElderImpactHub';
+import LegacyVault from './components/LegacyVault';
 import LoginScreen from './components/LoginScreen';
 import { AppView, UserRole } from './types';
 
@@ -256,9 +268,9 @@ const App: React.FC = () => {
         return <VouchingSystem />;
       case AppView.DIGITAL_PASSBOOK:
         return <DigitalPassbook />;
-      case AppView.AI_CREDIT_COMMITTEE:
+      case AppView.AICreditCommittee:
         return <AICreditCommittee />;
-      case AppView.AI_COLLECTOR:
+      case AppView.AICollector:
         return <AICollector />;
       case AppView.INVESTOR_PORTAL:
         return <InvestorPortal />;
@@ -282,6 +294,30 @@ const App: React.FC = () => {
         return <BusinessPlan />;
       case AppView.DIGITAL_CONTRACT:
         return <DigitalContract />;
+      case AppView.JDIH_REGULATIONS:
+        return <JDIHIntegration />;
+      case AppView.BRANDING_IDENTITY:
+        return <BrandingIdentity />;
+      case AppView.SMART_PROCUREMENT:
+        return <SmartProcurement />;
+      case AppView.BILL_PAYMENTS:
+        return <BillPayments />;
+      case AppView.COOP_VS_BANK:
+        return <CoopVsBank />;
+      case AppView.REMITTANCE:
+        return <RemittanceService />;
+      case AppView.LEADER_LIQUIDITY:
+        return <LeaderLiquidity />;
+      case AppView.DUTA_VETTING:
+        return <DutaVetting />;
+      case AppView.PENSION_FUND:
+        return <PensionFund />;
+      case AppView.PRODUCTIVE_ELDER_DASHBOARD:
+        return <ProductiveElderDashboard />;
+      case AppView.ELDER_IMPACT_HUB:
+        return <ElderImpactHub />;
+      case AppView.LEGACY_VAULT:
+        return <LegacyVault />;
       default:
         return <Dashboard setView={setCurrentView} role={currentRole} />;
     }

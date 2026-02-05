@@ -6,13 +6,14 @@ interface LoginScreenProps {
   onLogin: (role: UserRole) => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+const LoginScreen: React.FC = ({ onLogin }) => {
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
   const [isError, setIsError] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    // For this prototype, any 6 digit pin works, but we can simulate a check
     if (pin.length === 6) {
       onLogin(selectedRole);
     } else {
@@ -22,12 +23,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   };
 
   const roles = [
-    { id: UserRole.FOUNDER, label: 'Founder', icon: '💎', desc: 'Pemilik Visi & Aset IP.' },
-    { id: UserRole.BOARD, label: 'Pengurus', icon: '👔', desc: 'Pengelola Likuiditas & Kebijakan.' },
-    { id: UserRole.STAFF, label: 'Staf Admin', icon: '💻', desc: 'Pelaksana Teknis & Verifikasi.' },
-    { id: UserRole.LEADER, label: 'Duta Wilayah', icon: '🛵', desc: 'Penggerak Komunitas Lapangan.' },
-    { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️', desc: 'Audit Independen & Anti-Fraud.' },
-    { id: UserRole.MEMBER, label: 'Anggota', icon: '👤', desc: 'Pemilik Modal & Pengguna Jasa.' },
+    { id: UserRole.FOUNDER, label: 'Founder', icon: '💎', desc: 'Pemilik Visi & Aset IP.', masterPin: '999999' },
+    { id: UserRole.BOARD, label: 'Pengurus', icon: '👔', desc: 'Pengelola Likuiditas & Kebijakan.', masterPin: '888888' },
+    { id: UserRole.STAFF, label: 'Staf Admin', icon: '💻', desc: 'Pelaksana Teknis & Verifikasi.', masterPin: '000000' },
+    { id: UserRole.LEADER, label: 'Duta Wilayah', icon: '🛵', desc: 'Penggerak Komunitas Lapangan.', masterPin: '111111' },
+    { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️', desc: 'Audit Independen & Anti-Fraud.', masterPin: '777777' },
+    { id: UserRole.MEMBER, label: 'Anggota', icon: '👤', desc: 'Pemilik Modal & Pengguna Jasa.', masterPin: '123456' },
   ];
 
   return (
@@ -51,11 +52,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                   <p className="text-slate-400 text-sm italic">"Dipandu AI untuk kejujuran yang tak terbantahkan."</p>
                </div>
             </div>
+            
+            {/* Master PIN Cheat Sheet for Founder during Demo */}
             <div className="pt-8 border-t border-white/5">
-               <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">System Status:</p>
-               <div className="flex items-center gap-2 mt-2">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                  <span className="text-emerald-500 text-xs font-bold">ALL SYSTEMS SECURE & ONLINE</span>
+               <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-4">Akses Cepat (Demo Only):</p>
+               <div className="grid grid-cols-2 gap-2">
+                  {roles.map(r => (
+                    <div key={r.id} className="flex justify-between text-[9px] font-bold bg-white/5 p-2 rounded-lg border border-white/5">
+                       <span className="text-slate-400">{r.label}</span>
+                       <span className="text-indigo-400 font-mono">{r.masterPin}</span>
+                    </div>
+                  ))}
                </div>
             </div>
          </div>
@@ -91,7 +98,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                </div>
 
                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">PIN Keamanan (6 Angka)</label>
+                  <div className="flex justify-between items-center px-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">PIN Keamanan (6 Angka)</label>
+                    <span className="text-[9px] text-indigo-500 font-bold italic">PIN Demo: {roles.find(r => r.id === selectedRole)?.masterPin}</span>
+                  </div>
                   <input 
                      type="password"
                      maxLength={6}

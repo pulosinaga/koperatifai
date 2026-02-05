@@ -12,7 +12,7 @@ const AICreditCommittee: React.FC = () => {
     { subject: 'Savings', A: 85, fullMark: 100 },
     { subject: 'Pasar', A: 70, fullMark: 100 },
     { subject: 'Literasi', A: 95, fullMark: 100 },
-    { subject: 'Vouching', A: 100, fullMark: 100 },
+    { subject: 'Social (10)', A: 100, fullMark: 100 },
     { subject: 'History', A: 90, fullMark: 100 },
   ];
 
@@ -23,10 +23,11 @@ const AICreditCommittee: React.FC = () => {
     
     const logs = [
       "Mengambil data simpanan 6 bulan terakhir...",
-      "Memeriksa integritas 3 Saksi Digital (Pionir verified)...",
+      "Memeriksa Integritas 'Lingkaran Sepuluh' (10 Saksi Digital)...",
+      "Validasi Reputasi kolektif 10 penjamin (Status: Platinum)...",
+      "Menganalisis rasio hutang vs jaminan moral kolektif 10 orang...",
       "Menghitung volume transaksi di Marketplace...",
       "Validasi poin Smart Education (Module 1-5 Completed)...",
-      "Menganalisis rasio hutang vs modal kolektif wilayah...",
       "Finalizing Risk Score via Gemini Engine..."
     ];
 
@@ -51,18 +52,18 @@ const AICreditCommittee: React.FC = () => {
         <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
           <div className="flex-1 space-y-6">
             <span className="px-4 py-1.5 bg-indigo-500/20 text-indigo-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-indigo-500/20">
-              Automated Credit Approval
+              Decentralized Social Underwriting
             </span>
-            <h2 className="text-4xl font-black leading-tight italic">Komite Kredit AI: <br/>Adil, Cepat, & Objektif.</h2>
+            <h2 className="text-4xl font-black leading-tight italic">Komite Kredit AI: <br/>Analisis 10 Pilar Jaminan.</h2>
             <p className="text-slate-400 text-lg leading-relaxed max-w-2xl font-medium">
-              Keputusan pinjaman modal usaha kini diambil berdasarkan **Karakter Terukur**, bukan kedekatan dengan pengurus.
+              Keputusan pinjaman kini didasarkan pada kekuatan **Solidaritas 10 Orang**. AI memvalidasi riwayat ekonomi seluruh penjamin Anda.
             </p>
           </div>
           <div className="w-full lg:w-80 bg-white/5 backdrop-blur-xl p-8 rounded-[3rem] border border-white/10 text-center shadow-2xl">
-             <div className="text-6xl mb-4">🧠</div>
-             <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">Decision Time</p>
-             <p className="text-3xl font-black text-emerald-400 mt-1 italic">&lt; 10 Detik</p>
-             <p className="text-[9px] text-slate-500 mt-2 uppercase tracking-tighter">Zero Corruption Risk</p>
+             <div className="text-6xl mb-4">🧩</div>
+             <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">Guarantee Strength</p>
+             <p className="text-3xl font-black text-emerald-400 mt-1 italic">MAXIMUM (10/10)</p>
+             <p className="text-[9px] text-slate-500 mt-2 uppercase tracking-tighter italic">Secured by Social Capital</p>
           </div>
         </div>
       </div>
@@ -84,20 +85,13 @@ const AICreditCommittee: React.FC = () => {
                   <p className="text-2xl font-black text-indigo-600 mt-4 italic">Rp {amount.toLocaleString('id-ID')}</p>
                </div>
 
-               <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Tujuan Penggunaan</label>
-                  <select className="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold border-none outline-none focus:ring-2 focus:ring-indigo-600">
-                     <option>Stok Barang Dagangan (Retail)</option>
-                     <option>Pembelian Alat Produksi (UMKM)</option>
-                     <option>Renovasi Tempat Usaha</option>
-                     <option>Biaya Pendidikan (Social Support)</option>
-                  </select>
-               </div>
-
                <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100">
-                  <p className="text-xs text-indigo-900 leading-relaxed font-medium">
-                    "AI akan melakukan audit otomatis terhadap simpanan Anda dan 3 penjamin Anda sebelum memberikan keputusan."
-                  </p>
+                  <div className="flex gap-4 items-center">
+                     <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl shadow-sm">🤝</div>
+                     <p className="text-xs text-indigo-900 leading-relaxed font-bold">
+                       "10 Orang Penjamin Anda terdeteksi Aktif & Patuh. Ini meningkatkan peluang persetujuan hingga 98%."
+                     </p>
+                  </div>
                </div>
 
                <button 
@@ -107,7 +101,7 @@ const AICreditCommittee: React.FC = () => {
                     isAnalyzing ? 'bg-slate-200 text-slate-400' : 'bg-indigo-600 text-white hover:bg-indigo-700'
                   }`}
                >
-                  {isAnalyzing ? 'Sedang Menganalisis...' : 'Kirim Ke Komite AI →'}
+                  {isAnalyzing ? 'Sedang Memeriksa 10 Saksi...' : 'Kirim Ke Komite AI →'}
                </button>
             </div>
          </div>
@@ -119,7 +113,7 @@ const AICreditCommittee: React.FC = () => {
             {decision === 'IDLE' && !isAnalyzing ? (
                <div className="text-center space-y-6 relative z-10">
                   <div className="text-7xl opacity-20">📡</div>
-                  <p className="text-slate-500 font-bold italic">Menunggu Pengajuan...</p>
+                  <p className="text-slate-500 font-bold italic">Menunggu Validasi Kolektif 10 Orang...</p>
                </div>
             ) : isAnalyzing ? (
                <div className="w-full space-y-8 relative z-10">
@@ -143,59 +137,14 @@ const AICreditCommittee: React.FC = () => {
                </div>
             ) : decision === 'APPROVED' ? (
                <div className="text-center space-y-8 animate-in zoom-in duration-500 relative z-10">
-                  <div className="w-32 h-32 bg-emerald-500 rounded-full mx-auto flex items-center justify-center text-6xl shadow-[0_0_50px_-12px_rgba(16,185,129,0.5)]">✨</div>
+                  <div className="w-32 h-32 bg-emerald-500 rounded-full mx-auto flex items-center justify-center text-6xl shadow-[0_0_50px_-12px_rgba(16,185,129,0.5)]">🏛️</div>
                   <div className="space-y-2">
-                     <h4 className="text-3xl font-black italic text-emerald-400">DISETUJUI!</h4>
-                     <p className="text-slate-400">Pinjaman modal Anda dinyatakan **Aman** oleh sistem AI.</p>
+                     <h4 className="text-3xl font-black italic text-emerald-400">MODAL CAIR!</h4>
+                     <p className="text-slate-400">Dijamin oleh **10 Saksi Digital** berprestasi.</p>
                   </div>
-                  <div className="bg-white/5 p-6 rounded-3xl border border-white/10 space-y-4">
-                     <div className="flex justify-between items-center text-xs">
-                        <span className="text-slate-500">Margin Bunga:</span>
-                        <span className="font-black text-white">0.9% (Promo Pionir)</span>
-                     </div>
-                     <div className="flex justify-between items-center text-xs">
-                        <span className="text-slate-500">Reputasi Cashback:</span>
-                        <span className="font-black text-emerald-400">+5% dari total Jasa</span>
-                     </div>
-                  </div>
-                  <button className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl">Tanda Tangan Akad Digital</button>
+                  <button className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl">Tanda Tangan Akad Kolektif</button>
                </div>
             ) : null}
-         </div>
-      </div>
-
-      {/* Philosophy of AI Neutrality */}
-      <div className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-12">
-         <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center text-5xl shrink-0">⚖️</div>
-         <div className="flex-1 space-y-4">
-            <h4 className="text-2xl font-black text-slate-800">Kenapa Menyingkirkan Manusia dari Keputusan?</h4>
-            <p className="text-slate-500 text-lg leading-relaxed italic">
-               "Korupsi di koperasi sering terjadi karena komite kredit menyetujui pinjaman teman atau kerabat tanpa dasar data (Nepotisme). AI tidak memiliki teman dan tidak bisa disogok. Ia hanya peduli pada satu hal: **Kejujuran Anggota** yang terbukti dari datanya."
-            </p>
-         </div>
-      </div>
-
-      {/* Legal & Tech Context */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-         <div className="p-8 bg-slate-900 rounded-[3rem] text-white space-y-4 shadow-xl">
-            <h5 className="font-bold text-indigo-400 uppercase text-[10px] tracking-widest">Digital Governance Check</h5>
-            <ul className="space-y-4">
-               <li className="flex gap-4">
-                  <span className="text-emerald-500">🔒</span>
-                  <p className="text-xs text-slate-400">Keputusan AI dicatat di Ledger Kriptografi yang tidak bisa diubah.</p>
-               </li>
-               <li className="flex gap-4">
-                  <span className="text-emerald-500">🔓</span>
-                  <p className="text-xs text-slate-400">Anggota berhak mengajukan banding (Appeal) jika keputusan AI dirasa keliru.</p>
-               </li>
-            </ul>
-         </div>
-         <div className="p-8 bg-white border border-slate-100 rounded-[3rem] shadow-sm flex flex-col justify-center text-center">
-            <div className="text-4xl mb-4">✍️</div>
-            <h5 className="font-bold text-slate-800">Smart Contract Legalitas</h5>
-            <p className="text-[10px] text-slate-500 mt-2">
-               Draf perjanjian dibuat otomatis sesuai UU Perkoperasian & dijamin oleh sertifikat digital. Sah sebagai bukti hukum di pengadilan RI.
-            </p>
          </div>
       </div>
     </div>
