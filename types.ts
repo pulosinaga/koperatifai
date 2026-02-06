@@ -157,7 +157,8 @@ export enum AppView {
   DUTA_RECRUITMENT_DASHBOARD = 'DUTA_RECRUITMENT_DASHBOARD',
   DUTA_RIGHTS_OBLIGATIONS = 'DUTA_RIGHTS_OBLIGATIONS',
   DUTA_TERRITORY_EXPANSION = 'DUTA_TERRITORY_EXPANSION',
-  SPIRITUAL_JOURNEYS = 'SPIRITUAL_JOURNEYS'
+  SPIRITUAL_JOURNEYS = 'SPIRITUAL_JOURNEYS',
+  DEPLOYMENT_HUB = 'DEPLOYMENT_HUB'
 }
 
 export enum UserRole {
@@ -169,6 +170,7 @@ export enum UserRole {
   MEMBER = 'MEMBER',
 }
 
+// Fixed: Added exported interfaces to resolve module errors
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;

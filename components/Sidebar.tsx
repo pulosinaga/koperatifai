@@ -50,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
       icon: '👑',
       items: [
         { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit Utama', icon: '🛰️', roles: [UserRole.FOUNDER] },
+        { id: AppView.DEPLOYMENT_HUB, label: 'Sync Domain', icon: '🌐', roles: [UserRole.FOUNDER] },
         { id: AppView.IP_LICENSE_MONITOR, label: 'IP License', icon: '🔑', roles: [UserRole.FOUNDER] },
       ],
     },

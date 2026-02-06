@@ -10,7 +10,7 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "https://koperatifai.online",
   "display": "standalone",
   "theme_color": "#4338ca",
   "background_color": "#f8fafc"
