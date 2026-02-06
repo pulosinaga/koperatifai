@@ -139,6 +139,28 @@ import SovereignSafetyNetwork from './components/SovereignSafetyNetwork';
 import MicroFranchiseHub from './components/MicroFranchiseHub';
 import SHUDistribution from './components/SHUDistribution';
 import DutaSOP from './components/DutaSOP';
+import ManagerSelectionGuide from './components/ManagerSelectionGuide';
+import ElectionDashboard from './components/ElectionDashboard';
+import FoundingDeedGenerator from './components/FoundingDeedGenerator';
+import NationalScaleStrategy from './components/NationalScaleStrategy';
+import DualRoleStrategy from './components/DualRoleStrategy';
+import StrategicDirectiveCenter from './components/StrategicDirectiveCenter';
+import FounderRevenueHub from './components/FounderRevenueHub';
+import DutaManagementCenter from './components/DutaManagementCenter';
+import DutaFieldVerification from './components/DutaFieldVerification';
+import DutaPerformance from './components/DutaPerformance';
+import TerritoryCommand from './components/TerritoryCommand';
+import IPLicenseMonitor from './components/IPLicenseMonitor';
+import EcosystemRevenue from './components/EcosystemRevenue';
+import DutaScalingSimulator from './components/DutaScalingSimulator';
+import DutaRightsObligations from './components/DutaRightsObligations';
+import DutaTerritoryExpansion from './components/DutaTerritoryExpansion';
+import GlobalCommandCenter from './components/GlobalCommandCenter';
+import DutaRecruitmentDashboard from './components/DutaRecruitmentDashboard';
+import DutaContract from './components/DutaContract';
+import NationalSummit from './components/NationalSummit';
+import ShariaGovernance from './components/ShariaGovernance';
+import SpiritualJourneys from './components/SpiritualJourneys';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -148,6 +170,13 @@ const App: React.FC = () => {
   const handleLogin = (role: UserRole) => {
     setCurrentRole(role);
     setIsLoggedIn(true);
+    setCurrentView(AppView.DASHBOARD);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentRole(null);
+    setCurrentView(AppView.DASHBOARD);
   };
 
   const renderContent = () => {
@@ -155,6 +184,26 @@ const App: React.FC = () => {
 
     switch (currentView) {
       case AppView.DASHBOARD: return <Dashboard setView={setCurrentView} role={currentRole!} />;
+      case AppView.SPIRITUAL_JOURNEYS: return <SpiritualJourneys />;
+      case AppView.SHARIA_GOVERNANCE: return <ShariaGovernance />;
+      case AppView.NATIONAL_SUMMIT: return <NationalSummit />;
+      case AppView.GLOBAL_COMMAND_CENTER: return <GlobalCommandCenter />;
+      case AppView.DUTA_RECRUITMENT_DASHBOARD: return <DutaRecruitmentDashboard />;
+      case AppView.DUTA_CONTRACT: return <DutaContract />;
+      case AppView.DUTA_SCALING_SIMULATOR: return <DutaScalingSimulator />;
+      case AppView.ECOSYSTEM_REVENUE: return <EcosystemRevenue />;
+      case AppView.DUTA_PERFORMANCE: return <DutaPerformance />;
+      case AppView.TERRITORY_COMMAND: return <TerritoryCommand />;
+      case AppView.IP_LICENSE_MONITOR: return <IPLicenseMonitor />;
+      case AppView.DUTA_MANAGEMENT_CENTER: return <DutaManagementCenter />;
+      case AppView.DUTA_FIELD_VERIFICATION: return <DutaFieldVerification />;
+      case AppView.FOUNDER_REVENUE_HUB: return <FounderRevenueHub />;
+      case AppView.STRATEGIC_DIRECTIVE_CENTER: return <StrategicDirectiveCenter />;
+      case AppView.DUAL_ROLE_STRATEGY: return <DualRoleStrategy />;
+      case AppView.NATIONAL_SCALE_STRATEGY: return <NationalScaleStrategy />;
+      case AppView.FOUNDING_DEED_GENERATOR: return <FoundingDeedGenerator />;
+      case AppView.MANAGER_SELECTION_GUIDE: return <ManagerSelectionGuide />;
+      case AppView.E_ELECTION_DASHBOARD: return <ElectionDashboard />;
       case AppView.SHU_DISTRIBUTION: return <SHUDistribution />;
       case AppView.DUTA_SOP: return <DutaSOP />;
       case AppView.AUTONOMOUS_CHARITY: return <AutonomousCharity />;
@@ -291,6 +340,11 @@ const App: React.FC = () => {
       case AppView.COOP_HOUSING: return <CooperativeHousing />;
       case AppView.GOV_TAX_AI: return <GovTaxAI />;
       case AppView.GLOBAL_COOP_SWAP: return <GlobalCoopSwap />;
+      case AppView.AUTONOMOUS_CHARITY: return <AutonomousCharity />;
+      case AppView.SOVEREIGN_SAFETY_NETWORK: return <SovereignSafetyNetwork />;
+      case AppView.MICRO_FRANCHISE_HUB: return <MicroFranchiseHub />;
+      case AppView.DUTA_RIGHTS_OBLIGATIONS: return <DutaRightsObligations />;
+      case AppView.DUTA_TERRITORY_EXPANSION: return <DutaTerritoryExpansion />;
       default: return <Dashboard setView={setCurrentView} role={currentRole!} />;
     }
   };
@@ -298,7 +352,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex overflow-hidden font-sans">
       {isLoggedIn && currentRole && (
-        <Sidebar currentView={currentView} setView={setCurrentView} role={currentRole} />
+        <Sidebar currentView={currentView} setView={setCurrentView} role={currentRole} onLogout={handleLogout} />
       )}
       <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
         {renderContent()}

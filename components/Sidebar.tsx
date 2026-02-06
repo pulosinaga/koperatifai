@@ -6,10 +6,10 @@ interface SidebarProps {
   currentView: AppView;
   setView: (view: AppView) => void;
   role: UserRole;
+  onLogout: () => void;
 }
 
-const Sidebar: React.FC = SidebarProps => {
-  const { currentView, setView, role } = SidebarProps;
+const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout }) => {
   const menuItems = [
     {
       label: 'Utama',
@@ -21,30 +21,36 @@ const Sidebar: React.FC = SidebarProps => {
       ],
     },
     {
-      label: 'Duta Wilayah',
-      icon: '🛵',
+      label: 'Kedaulatan Nilai',
+      icon: '🌙',
       items: [
-        { id: AppView.DUTA_SOP, label: 'Buku Saku Duta', icon: '📖', roles: [UserRole.FOUNDER, UserRole.LEADER, UserRole.BOARD] },
-        { id: AppView.COMMUNITY_LEADERS, label: 'Duta Percontohan', icon: '🤝', roles: [UserRole.FOUNDER, UserRole.BOARD] },
-        { id: AppView.LEADER_COMPENSATION, label: 'Reward & Jasa', icon: '💰', roles: [UserRole.FOUNDER, UserRole.LEADER] },
+        { id: AppView.SHARIA_GOVERNANCE, label: 'Kepatuhan Syariah', icon: '⚖️', roles: [UserRole.FOUNDER, UserRole.BOARD, UserRole.MEMBER] },
+        { id: AppView.SPIRITUAL_JOURNEYS, label: 'Ziarah Rohani', icon: '⛪', roles: [UserRole.FOUNDER, UserRole.MEMBER] },
+        { id: AppView.COMMUNITY_IMPACT, label: 'Dampak Sosial', icon: '🌱', roles: [UserRole.FOUNDER, UserRole.MEMBER] },
       ],
     },
     {
-      label: 'Tata Kelola',
-      icon: '⚖️',
+      label: 'Solidaritas Nasional',
+      icon: '🤝',
       items: [
-        { id: AppView.JDIH_REGULATIONS, label: 'Pojok Hukum AI', icon: '🏛️' },
-        { id: AppView.COOP_HEALTH_CHECK, label: 'Audit KKP AI', icon: '🩺', roles: [UserRole.FOUNDER, UserRole.BOARD, UserRole.AUDITOR] },
-        { id: AppView.E_RAT, label: 'RAT Digital', icon: '🗳️' },
+        { id: AppView.NATIONAL_SUMMIT, label: 'Silaturahmi Nasional', icon: '🏟️', roles: [UserRole.FOUNDER, UserRole.BOARD, UserRole.LEADER] },
+        { id: AppView.COMMUNITY_FORUM, label: 'Forum Komunitas', icon: '🗣️', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.LEADER] },
+      ],
+    },
+    {
+      label: 'Duta Wilayah',
+      icon: '🛵',
+      items: [
+        { id: AppView.DUTA_CONTRACT, label: 'Akad Kerja Duta', icon: '📜', roles: [UserRole.LEADER, UserRole.FOUNDER] },
+        { id: AppView.DUTA_PERFORMANCE, label: 'Dashboard Duta', icon: '📈', roles: [UserRole.LEADER, UserRole.FOUNDER] },
       ],
     },
     {
       label: 'Founder Command',
       icon: '👑',
       items: [
-        { id: AppView.FOUNDER_REPORT, label: 'Master Report', icon: '📜', roles: [UserRole.FOUNDER] },
-        { id: AppView.AI_BOARDROOM, label: 'AI Boardroom', icon: '🔮', roles: [UserRole.FOUNDER] },
-        { id: AppView.VALUATION_TRACKER, label: 'Valuation Monitor', icon: '📈', roles: [UserRole.FOUNDER] },
+        { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit Utama', icon: '🛰️', roles: [UserRole.FOUNDER] },
+        { id: AppView.IP_LICENSE_MONITOR, label: 'IP License', icon: '🔑', roles: [UserRole.FOUNDER] },
       ],
     },
   ];
@@ -52,8 +58,8 @@ const Sidebar: React.FC = SidebarProps => {
   return (
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-full hidden lg:flex">
       <div className="p-8">
-        <h1 className="text-2xl font-black text-slate-800 italic tracking-tight">KoperatifAI</h1>
-        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mt-1">Digital Sovereign Coop</p>
+        <h1 className="text-2xl font-black text-slate-800 italic tracking-tight text-center lg:text-left">KoperatifAI</h1>
+        <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mt-1 text-center lg:text-left">Digital Sovereign Coop</p>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-4 space-y-8 custom-scrollbar">
@@ -65,7 +71,7 @@ const Sidebar: React.FC = SidebarProps => {
             </div>
             <div className="space-y-1">
               {category.items
-                .filter(item => !item.roles || item.roles.includes(role))
+                .filter(item => role === UserRole.FOUNDER || !item.roles || item.roles.includes(role))
                 .map((item) => (
                   <button
                     key={item.id}
@@ -85,14 +91,24 @@ const Sidebar: React.FC = SidebarProps => {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-100">
+      <div className="p-4 border-t border-slate-100 space-y-4">
         <div className="bg-slate-50 p-4 rounded-3xl flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center text-xl shadow-inner">👤</div>
-          <div>
-            <p className="text-xs font-bold text-slate-800 uppercase tracking-tighter">{role}</p>
+          <div className="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center text-xl shadow-inner">
+            {role === UserRole.FOUNDER ? '👑' : '👤'}
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <p className="text-[10px] font-black text-slate-800 uppercase tracking-tighter truncate">{role}</p>
             <p className="text-[10px] text-slate-400 font-medium">Budi Utama</p>
           </div>
         </div>
+        
+        <button
+          onClick={onLogout}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-rose-50 text-rose-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-100 transition-all border border-rose-100"
+        >
+          <span>🚪</span>
+          Logout
+        </button>
       </div>
     </aside>
   );
