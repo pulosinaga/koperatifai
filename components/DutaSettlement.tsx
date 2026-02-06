@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const DutaSettlement: React.FC = () => {
@@ -69,7 +70,6 @@ const DutaSettlement: React.FC = () => {
 
          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
-              // Renamed keys 't' and 'd' to 'title' and 'desc' to fix property access errors in the map callback
               { title: 'Kumpulkan Total', desc: 'Duta menghitung total cash harian.', icon: '💰', s: 1 },
               { title: 'Setor Tunai', desc: 'Setor ke ATM/Agen Bank via VA Duta.', icon: '🏦', s: 2 },
               { title: 'Scan Resi AI', desc: 'AI memvalidasi bukti setoran bank.', icon: '📸', s: 3 },
@@ -80,7 +80,6 @@ const DutaSettlement: React.FC = () => {
                     {item.icon}
                  </div>
                  <div>
-                    {/* Fixed: using title and desc property names to avoid type errors */}
                     <h5 className="font-bold text-slate-800 text-sm">{item.title}</h5>
                     <p className="text-[10px] text-slate-400 mt-1">{item.desc}</p>
                  </div>

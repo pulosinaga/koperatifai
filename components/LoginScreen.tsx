@@ -6,7 +6,8 @@ interface LoginScreenProps {
   onLogin: (role: UserRole) => void;
 }
 
-const LoginScreen: React.FC = ({ onLogin }) => {
+// Added correct prop typing for LoginScreen using the defined interface
+const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
   const [isError, setIsError] = useState(false);
