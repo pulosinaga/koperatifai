@@ -8,57 +8,62 @@
     <link rel="manifest" href="manifest.json">
     <title>KoperatifAI - Kedaulatan Digital</title>
     
-    <!-- Tailwind & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Babel Standalone untuk memproses TSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; padding: 0; }
-        #root:empty::before {
-            content: 'Inisialisasi Sistem KoperatifAI...';
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; }
+        #root:empty::before { content: ''; }
+        
+        .status-overlay {
+            position: fixed;
+            inset: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            color: #6366f1;
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: -0.025em;
-            animation: pulse 2s infinite;
+            background: #f8fafc;
+            z-index: 50;
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        .critical-error-box {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 2px solid #ef4444;
-            z-index: 99999;
-            max-width: 90%;
-            width: 400px;
+
+        .loader-ring {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #e2e8f0;
+            border-bottom-color: #4338ca;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #boot-logs {
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 10px;
+            color: #64748b;
             text-align: center;
+            max-width: 80%;
         }
     </style>
 
     <script>
-      // Global Environment Shim
       window.process = { env: { API_KEY: "" } };
+      // Tracking system
+      window.logBoot = (msg) => {
+        const el = document.getElementById('boot-logs');
+        if (el) el.innerHTML += '<div>> ' + msg + '</div>';
+        console.log('Boot:', msg);
+      };
     </script>
 
     <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0?dev",
-    "react-dom": "https://esm.sh/react-dom@19.0.0?dev",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client?dev",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
     "recharts": "https://esm.sh/recharts@2.15.0",
     "@google/genai": "https://esm.sh/@google/genai@1.3.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
@@ -67,34 +72,72 @@
 }
 </script>
 </head>
-<body class="bg-slate-50">
-    <div id="root"></div>
-    
-    <div id="fatal-error-overlay" style="display:none;">
-        <div class="critical-error-box">
-            <h2 style="color: #b91c1c; font-weight: 900; margin-bottom: 1rem;">SISTEM TERHENTI</h2>
-            <p id="fatal-error-msg" style="font-size: 0.875rem; color: #4b5563; margin-bottom: 1.5rem; font-family: monospace;"></p>
-            <button onclick="location.reload(true)" style="background: #4338ca; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: bold; border: none; cursor: pointer; width: 100%;">Muat Ulang Paksa</button>
-        </div>
+<body>
+    <div id="status-container" class="status-overlay">
+        <div class="loader-ring"></div>
+        <div style="margin-top: 15px; font-weight: 800; color: #4338ca;">KOPERATIFAI</div>
+        <div id="boot-logs"></div>
     </div>
 
-    <!-- Script Utama -->
-    <script 
-      type="text/babel" 
-      data-type="module" 
-      data-presets="react,typescript" 
-      src="./index.tsx"
-      crossorigin="anonymous"
-    ></script>
+    <div id="root"></div>
+    
+    <div id="fatal-error-overlay" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 2px solid #ef4444; z-index: 99999; width: 90%; max-width: 400px; text-align: center;">
+        <h2 style="color: #b91c1c; font-weight: 900; margin-bottom: 1rem;">GAGAL MEMUAT</h2>
+        <p id="fatal-error-msg" style="font-size: 0.75rem; color: #4b5563; margin-bottom: 1.5rem; font-family: monospace; white-space: pre-wrap; overflow-wrap: break-word; text-align: left; background: #fef2f2; padding: 10px; border-radius: 8px;"></p>
+        <button onclick="location.reload(true)" style="background: #4338ca; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: bold; border: none; cursor: pointer; width: 100%;">Coba Lagi</button>
+    </div>
 
     <script>
-        // Catch loading errors
+        // Manual Loader to bypass MIME type restrictions
+        async function loadApp() {
+            try {
+                window.logBoot("Menghubungkan ke jalur data...");
+                const response = await fetch('./index.tsx');
+                
+                if (!response.ok) {
+                    throw new Error("Gagal mengambil file index.tsx (Status: " + response.status + "). Pastikan file ada di server.");
+                }
+
+                window.logBoot("File terunduh. Memulai transformasi AI...");
+                const code = await response.text();
+                
+                const transformed = Babel.transform(code, {
+                    presets: ['react', 'typescript'],
+                    filename: 'index.tsx'
+                }).code;
+
+                window.logBoot("Sistem siap. Merender tampilan...");
+                
+                // Execute code
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.text = transformed;
+                document.body.appendChild(script);
+
+                // Hide loader after success
+                setTimeout(() => {
+                    const status = document.getElementById('status-container');
+                    if (status) status.style.display = 'none';
+                }, 500);
+
+            } catch (e) {
+                console.error(e);
+                const overlay = document.getElementById('fatal-error-overlay');
+                const msg = document.getElementById('fatal-error-msg');
+                if (overlay && msg) {
+                    overlay.style.display = 'block';
+                    msg.innerText = e.message + (e.stack ? '\n\n' + e.stack.split('\n').slice(0,3).join('\n') : '');
+                }
+            }
+        }
+
+        // Jalankan loader
+        loadApp();
+
+        // Catch unexpected global errors
         window.addEventListener('error', function(e) {
-            const overlay = document.getElementById('fatal-error-overlay');
-            const msg = document.getElementById('fatal-error-msg');
-            if (overlay && msg) {
-                overlay.style.display = 'block';
-                msg.innerText = e.message + '\n\nSource: ' + (e.filename || 'internal') + ':' + e.lineno;
+            if (e.message.includes('Script error')) {
+                window.logBoot("Mendeteksi pemblokiran keamanan browser. Mengalihkan ke mode aman...");
             }
         });
     </script>

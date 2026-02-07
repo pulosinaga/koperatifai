@@ -4,24 +4,12 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 
 /**
- * Bootstrapper KoperatifAI
- * Memastikan elemen root tersedia dan merender aplikasi React.
+ * Kernel KoperatifAI
  */
 
-// Bypass Service Worker jika bermasalah
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    for (let registration of registrations) {
-      registration.unregister();
-    }
-  });
-}
-
-const startApp = () => {
+const init = () => {
   const container = document.getElementById('root');
-  if (!container) {
-    throw new Error("Elemen #root tidak ditemukan di DOM.");
-  }
+  if (!container) return;
 
   try {
     const root = ReactDOM.createRoot(container);
@@ -30,12 +18,15 @@ const startApp = () => {
         <App />
       </React.StrictMode>
     );
-    console.log("KoperatifAI: Kernel dimuat.");
+    console.log("KoperatifAI: Aktif.");
   } catch (err) {
-    console.error("Gagal merender aplikasi:", err);
-    throw err;
+    console.error("Render error:", err);
   }
 };
 
-// Jalankan aplikasi
-startApp();
+// Pastikan DOM siap
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
