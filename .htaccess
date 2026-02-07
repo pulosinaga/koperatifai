@@ -5,26 +5,27 @@
   RewriteEngine On
   RewriteBase /
 
-  # Jika file fisik ada, langsung layani
+  # Jika file fisik atau direktori ada, layani langsung
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Pastikan file program tidak pernah diarahkan ke index.html
+  # Pastikan file program .ts dan .tsx dilayani dengan tipe yang benar dan tidak di-rewrite jika ada
   RewriteCond %{REQUEST_URI} \.(js|tsx|ts|jsx|css|json|png|jpg|jpeg|gif|svg|ico)$ [NC]
   RewriteRule ^ - [L]
 
-  # Fallback rute navigasi ke index.html
+  # Fallback rute navigasi aplikasi (Single Page App)
+  # Hanya redirect jika permintaan tidak mengarah ke file nyata
   RewriteRule ^ index.html [L]
 </IfModule>
 
 <IfModule mod_mime.c>
-  # Tambahkan tipe MIME agar server tidak bingung dengan file TypeScript
+  # Tambahkan tipe MIME agar server melayani file TS/TSX sebagai teks/javascript agar bisa diproses Babel
   AddType application/javascript .js .jsx .ts .tsx
 </IfModule>
 
 <IfModule mod_headers.c>
-  # Nonaktifkan cache selama masa perbaikan agar perubahan langsung terlihat
+  # Nonaktifkan cache untuk file sumber selama development agar perubahan segera terlihat
   <FilesMatch "\.(js|tsx|ts|css|html)$">
     Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
     Header set Pragma "no-cache"

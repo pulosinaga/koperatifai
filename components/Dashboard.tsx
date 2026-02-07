@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, AreaChart, Area } from 'recharts';
-import { AppView, UserRole } from '../types';
+import { AppView, UserRole } from '../types.ts';
 
 interface DashboardProps {
   setView: (view: AppView) => void;
