@@ -1,0 +1,26 @@
+
+# KoperatifAI Server Configuration
+<IfModule mod_mime.c>
+  # Memberitahu server bahwa .tsx adalah file teks/javascript
+  AddType application/javascript .ts
+  AddType application/javascript .tsx
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Jika file atau direktori fisik ada, gunakan langsung
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Jika tidak ada, arahkan ke index.html (untuk React Router)
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Mencegah caching berlebihan selama masa perbaikan
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 0 seconds"
+</IfModule>
