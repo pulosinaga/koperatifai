@@ -1,16 +1,8 @@
 
-const CACHE_NAME = 'koperatif-ai-v1';
+const CACHE_NAME = 'koperatif-ai-v2';
 const ASSETS_TO_CACHE = [
   '/',
-  '/index.html',
-  '/index.tsx',
-  '/App.tsx',
-  '/types.ts',
-  '/services/geminiService.ts',
-  '/components/Sidebar.tsx',
-  '/components/Dashboard.tsx',
-  '/components/LoanSimulator.tsx',
-  '/components/AIAdvisor.tsx'
+  '/index.html'
 ];
 
 self.addEventListener('install', (event) => {
@@ -19,6 +11,7 @@ self.addEventListener('install', (event) => {
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -29,21 +22,42 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  // We don't cache API calls to Gemini
-  if (event.request.url.includes('generativelanguage.googleapis.com')) {
+  // Ignore API calls and cross-origin requests
+  if (
+    event.request.url.includes('generativelanguage.googleapis.com') ||
+    !event.request.url.startsWith(self.location.origin)
+  ) {
     return;
   }
 
+  // Strategy: Network First, falling back to cache
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
+    fetch(event.request)
+      .then((response) => {
+        // Cache the new response if it's valid
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
         }
-      });
-    })
+        return response;
+      })
+      .catch(() => {
+        // If network fails, try cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // If both fail and it's a navigation request, show index.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('/index.html');
+          }
+        });
+      })
   );
 });

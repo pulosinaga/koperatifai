@@ -35,15 +35,22 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
           </div>
         </header>
 
-        <div className="bg-indigo-600 rounded-3xl p-6 text-white flex items-center justify-between shadow-xl shadow-indigo-200">
-           <div className="flex gap-4 items-center">
-              <div className="text-4xl">🚀</div>
+        {/* PROMO BANNER FOR LOAN SIMULATOR */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-[3rem] p-8 text-white flex flex-col md:flex-row items-center justify-between shadow-xl shadow-indigo-100 relative overflow-hidden group">
+           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:scale-110 transition-transform"></div>
+           <div className="flex gap-6 items-center z-10">
+              <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center text-4xl shadow-inner border border-white/20">🚀</div>
               <div>
-                 <h4 className="font-black italic text-lg">Butuh Modal Usaha Cepat?</h4>
-                 <p className="text-indigo-100 text-xs">Simulasikan pinjaman Anda sekarang dan nikmati bunga hanya 0.9%.</p>
+                 <h4 className="font-black italic text-xl">Butuh Modal Usaha Cepat?</h4>
+                 <p className="text-indigo-100 text-sm max-w-md">Simulasikan pinjaman Anda sekarang dengan bunga adil hanya 1.2% khusus untuk Anggota Pionir.</p>
               </div>
            </div>
-           <button onClick={() => setView(AppView.LOAN_SIMULATOR)} className="px-6 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase">Simulasi Sekarang</button>
+           <button 
+              onClick={() => setView(AppView.LOAN_SIMULATOR)} 
+              className="mt-6 md:mt-0 px-8 py-4 bg-white text-indigo-600 rounded-[2rem] text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-indigo-50 transition-all z-10 active:scale-95"
+           >
+              Mulai Simulasi
+           </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -71,7 +78,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
               {[
                 { label: 'Beli Pulsa', icon: '📱', color: 'bg-emerald-50 text-emerald-600', view: AppView.BILL_PAYMENTS },
                 { label: 'Token Listrik', icon: '⚡', color: 'bg-amber-50 text-amber-600', view: AppView.BILL_PAYMENTS },
-                { label: 'Pinjaman', icon: '🧮', color: 'bg-indigo-50 text-indigo-600', view: AppView.LOAN_SIMULATOR },
+                { label: 'Simulasi Kredit', icon: '🧮', color: 'bg-indigo-50 text-indigo-600', view: AppView.LOAN_SIMULATOR },
                 { label: 'Tiket Travel', icon: '🚆', color: 'bg-orange-50 text-orange-600', view: AppView.BILL_PAYMENTS },
                 { label: 'Tarik Tunai', icon: '📤', color: 'bg-rose-50 text-rose-600', view: AppView.TRANSACTIONS },
                 { label: 'Kirim Uang', icon: '💸', color: 'bg-indigo-50 text-indigo-600', view: AppView.TRANSACTIONS },

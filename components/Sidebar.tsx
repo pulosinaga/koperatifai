@@ -9,7 +9,6 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
-// Fix: Correctly assigned the generic type SidebarProps to React.FC
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout }) => {
   const menuItems = [
     {
@@ -17,6 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
       icon: '🏠',
       items: [
         { id: AppView.DASHBOARD, label: 'Dashboard', icon: '📊', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD, UserRole.STAFF, UserRole.LEADER, UserRole.AUDITOR] },
+        { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Digital', icon: '📖', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
         { id: AppView.TRANSACTIONS, label: 'Transaksi', icon: '💸', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD, UserRole.STAFF] },
         { id: AppView.SHU_DISTRIBUTION, label: 'Bagi Hasil (SHU)', icon: '✨', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD] },
       ],
@@ -26,6 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
       icon: '💳',
       items: [
         { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.VOUCHING_SYSTEM, label: 'Jaminan Sosial', icon: '🤝', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
         { id: AppView.LOAN_HISTORY, label: 'Riwayat Pinjaman', icon: '📜', roles: [UserRole.MEMBER, UserRole.FOUNDER, UserRole.BOARD] },
         { id: AppView.LOAN_READINESS, label: 'Kesiapan Kredit', icon: '📈', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
       ],
@@ -35,7 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
       icon: '🚀',
       items: [
         { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Anggota', icon: '🛒', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
-        { id: AppView.COURIER_DASHBOARD, label: 'Kurir Desa', icon: '🛵', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
         { id: AppView.SMART_PROCUREMENT, label: 'Grosir Rakyat', icon: '📦', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
         { id: AppView.MERCHANT_DASHBOARD, label: 'Toko Saya', icon: '🏪', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
         { id: AppView.ARISAN_DIGITAL, label: 'Arisan Digital', icon: '🌀', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
@@ -112,9 +112,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
         
         <button
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-rose-50 text-rose-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-100 transition-all border border-rose-100"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-rose-50 text-rose-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 group"
         >
-          <span>🚪</span>
+          <span className="text-lg group-hover:rotate-12 transition-transform">🚪</span>
           Logout
         </button>
       </div>
