@@ -1,19 +1,28 @@
 
-# KoperatifAI - Ultra Stability Fix
-Options -Indexes
-RewriteEngine On
-RewriteBase /
+# KoperatifAI - Hostinger Ultimate Stability Fix
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
 
-# Jika file .js atau file statis ada, layani langsung dan hentikan proses rewrite
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule \.(js|css|json|png|jpg|jpeg|gif|svg|ico|webmanifest)$ - [L]
+  # Jika file fisik ada, jangan lakukan apa-apa
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
 
-# Aturan untuk Single Page Application
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+  # Aturan khusus: JANGAN PERNAH redirect file statis ke index.html
+  # Ini mencegah error "Unexpected token '<'"
+  RewriteCond %{REQUEST_URI} \.(js|css|json|png|jpg|jpeg|gif|svg|ico|webmanifest)$ [NC]
+  RewriteRule ^ - [L]
+
+  # Arahkan sisanya ke index.html (Navigasi Frontend)
+  RewriteRule ^ index.html [L]
+</IfModule>
 
 <IfModule mod_headers.c>
-  Header set Access-Control-Allow-Origin "*"
-  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  # Pastikan browser tidak menyimpan cache file JS yang rusak
+  <FilesMatch "\.(js|css|html)$">
+    Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+  </FilesMatch>
+  # Tambahkan MIME Type yang benar
+  AddType application/javascript .js
 </IfModule>

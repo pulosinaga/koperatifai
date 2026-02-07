@@ -11,11 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- React & ReactDOM Global (UMD) - Menghilangkan Masalah Import -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel untuk JSX -->
+    <!-- Babel Standalone untuk memproses JSX langsung di browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -34,41 +30,44 @@
             display: none; position: fixed; inset: 0; background: white;
             z-index: 2000; padding: 2rem; text-align: center;
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .error-box {
+            max-width: 500px; margin: auto; padding: 2.5rem; background: #fff1f2;
+            border: 1px solid #fda4af; border-radius: 2.5rem;
+        }
     </style>
 
     <script>
-      // Global Environment Mock
+      // Mocking environment
       window.process = { env: { API_KEY: "" } };
       
-      window.onerror = function(message, source, lineno) {
-        // Abaikan error remeh dari ekstensi browser
-        if (message.includes('ResizeObserver') || message.includes('Extension')) return;
-
+      window.onerror = function(message, source, lineno, colno, error) {
+        // Abaikan error remeh browser
+        if (message.includes('ResizeObserver')) return;
+        
         const loader = document.getElementById('loader');
+        if (loader) loader.style.display = 'none';
+
         const display = document.getElementById('error-display');
         const text = document.getElementById('error-text');
-        
-        if (loader) loader.style.display = 'none';
         if (display && text) {
           display.style.display = 'flex';
           display.style.flexDirection = 'column';
           display.style.justifyContent = 'center';
-          text.innerText = `SISTEM TERHENTI\n\nMasalah: ${message}\nLokasi: ${source.split('/').pop()} (Baris ${lineno})\n\nSolusi: Tekan 'Muat Ulang' atau bersihkan cache browser.`;
+          text.innerText = `KERNEL_PANIC: ${message}\nSumber: ${source?.split('/').pop()}\nBaris: ${lineno}`;
         }
       };
     </script>
-<script type="importmap">
+
+    <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "recharts": "https://esm.sh/recharts@2.15.0",
+    "@google/genai": "https://esm.sh/@google/genai@1.3.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
-    "recharts": "https://esm.sh/recharts@^3.7.0"
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
@@ -81,30 +80,28 @@
     </div>
 
     <div id="error-display">
-        <div class="max-w-md mx-auto p-8 bg-rose-50 rounded-[3rem] border border-rose-100">
-            <h1 style="color: #ef4444; font-weight: 900; font-size: 24px;">ERROR KERNEL</h1>
-            <p id="error-text" style="font-family: monospace; font-size: 12px; margin: 1.5rem 0; background: white; padding: 1.5rem; border-radius: 1.5rem; white-space: pre-wrap; text-align: left; color: #475569; border: 1px solid #fee2e2;"></p>
-            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%; box-shadow: 0 10px 15px -3px rgba(67, 56, 202, 0.3);">MUAT ULANG PAKSA</button>
+        <div class="error-box shadow-2xl">
+            <h1 style="color: #be123c; font-weight: 900; font-size: 24px; margin-bottom: 1rem;">SISTEM TERHENTI</h1>
+            <p id="error-text" style="font-family: monospace; font-size: 12px; margin: 1.5rem 0; background: white; padding: 1.5rem; border-radius: 1.5rem; text-align: left; color: #475569; border: 1px solid #e2e8f0; white-space: pre-wrap;"></p>
+            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%; box-shadow: 0 10px 15px -3px rgba(67, 56, 202, 0.3);">MUAT ULANG PAKSA (CTRL+F5)</button>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <!-- Script Utama (Babel akan memproses ini) -->
-    <script type="text/babel" data-presets="react" src="app.js"></script>
+    <!-- Script Utama -->
+    <script type="text/babel" data-presets="react" data-type="module" src="app.js"></script>
 
     <script>
-      // Penanganan transisi loader yang mulus
-      const bootCheck = setInterval(() => {
+      // Sembunyikan loader jika React sudah merender
+      const checkRoot = setInterval(() => {
         const root = document.getElementById('root');
         if (root && root.children.length > 0) {
-          document.getElementById('loader').style.opacity = '0';
-          setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-          }, 500);
-          clearInterval(bootCheck);
+          document.getElementById('loader').style.display = 'none';
+          clearInterval(checkRoot);
         }
       }, 500);
+      setTimeout(() => clearInterval(checkRoot), 10000);
     </script>
 </body>
 </html>
