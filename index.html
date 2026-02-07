@@ -11,13 +11,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Babel Standalone dengan atribut keamanan -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; }
         
-        /* Loading Screen */
         #loader {
             position: fixed; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; background: #f8fafc; z-index: 100;
@@ -29,7 +28,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Error Screen */
         #error-display {
             display: none; position: fixed; inset: 0; background: white;
             z-index: 200; padding: 2rem; text-align: center;
@@ -39,13 +37,18 @@
     <script>
       window.process = { env: { API_KEY: "" } };
       
-      // Sembunyikan loader jika sudah 10 detik tapi tidak muncul apa-apa (fail-safe)
-      setTimeout(() => {
-        const l = document.getElementById('loader');
-        if (l && l.style.display !== 'none') {
-           console.warn("Pemuatan memakan waktu lama...");
+      // Deteksi Error lebih mendalam
+      window.onerror = function(message, source, lineno, colno, error) {
+        const display = document.getElementById('error-display');
+        const text = document.getElementById('error-text');
+        if (display && text) {
+          display.style.display = 'flex';
+          display.style.flexDirection = 'column';
+          display.style.justifyContent = 'center';
+          text.innerText = `[FATAL] ${message}\nLokasi: ${source}:${lineno}\n\nTips: Jika muncul 'Script error', coba tekan Ctrl+F5 untuk membersihkan cache Hostinger.`;
         }
-      }, 10000);
+        return false;
+      };
     </script>
 
     <script type="importmap">
@@ -70,39 +73,34 @@
     </div>
 
     <div id="error-display">
-        <h1 style="color: #ef4444; font-weight: 900;">ERROR SISTEM</h1>
-        <p id="error-text" style="font-family: monospace; font-size: 12px; margin: 1rem 0;"></p>
-        <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Muat Ulang Paksa</button>
+        <h1 style="color: #ef4444; font-weight: 900;">SISTEM TERHENTI</h1>
+        <p id="error-text" style="font-family: monospace; font-size: 12px; margin: 1rem 0; background: #f1f5f9; padding: 1rem; border-radius: 1rem; max-width: 500px; margin-left: auto; margin-right: auto;"></p>
+        <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; cursor: pointer;">Muat Ulang Paksa</button>
     </div>
 
     <div id="root"></div>
 
-    <!-- Script Utama: Babel akan menangani pemuatan file .tsx secara otomatis -->
+    <!-- Script Utama: Menggunakan Babel untuk memproses index.tsx -->
     <script 
       type="text/babel" 
-      data-type="module" 
       data-presets="react,typescript" 
+      data-type="module"
       src="index.tsx"
+      crossorigin
     ></script>
 
     <script>
-      // Global Error Catcher
-      window.onerror = function(message, source, lineno, colno, error) {
-        document.getElementById('error-display').style.display = 'flex';
-        document.getElementById('error-display').style.flexDirection = 'column';
-        document.getElementById('error-display').style.justifyContent = 'center';
-        document.getElementById('error-text').innerText = message + "\nSource: " + source + ":" + lineno;
-        return true;
-      };
-
-      // Pantau saat React berhasil merender
-      const observer = new MutationObserver((mutations) => {
-        if (document.getElementById('root').children.length > 0) {
+      // Sembunyikan loader jika React mulai merender
+      const checkRoot = setInterval(() => {
+        const root = document.getElementById('root');
+        if (root && root.children.length > 0) {
           document.getElementById('loader').style.display = 'none';
-          observer.disconnect();
+          clearInterval(checkRoot);
         }
-      });
-      observer.observe(document.getElementById('root'), { childList: true });
+      }, 500);
+
+      // Fail-safe: Sembunyikan loader setelah 15 detik meskipun error
+      setTimeout(() => clearInterval(checkRoot), 15000);
     </script>
 </body>
 </html>
