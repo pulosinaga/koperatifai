@@ -38,10 +38,11 @@
     </style>
 
     <script>
+      // Inisialisasi env minimal
       window.process = { env: { API_KEY: "" } };
       
       window.onerror = function(message, source, lineno, colno, error) {
-        if (message.includes('ResizeObserver')) return;
+        if (message && message.includes('ResizeObserver')) return;
         console.error("KERNEL_ERROR:", {message, source, lineno});
         
         const loader = document.getElementById('loader');
@@ -53,7 +54,7 @@
           display.style.display = 'flex';
           display.style.flexDirection = 'column';
           display.style.justifyContent = 'center';
-          text.innerText = `FATAL_ERROR: ${message}\nPath: ${source?.split('/').pop()}\nLine: ${lineno}`;
+          text.innerText = `SISTEM TERHAMBAT:\n${message}\n\nFile: ${source?.split('/').pop()}\nBaris: ${lineno}`;
         }
       };
     </script>
@@ -76,22 +77,24 @@
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top: 1.5rem; font-weight: 900; color: #4338ca; letter-spacing: 0.2em; font-style: italic;">KOPERATIFAI</p>
-        <p style="font-size: 11px; color: #94a3b8; margin-top: 0.5rem;">Mengamankan Protokol Kedaulatan...</p>
+        <p style="font-size: 11px; color: #94a3b8; margin-top: 0.5rem;">Mengamankan Jalur Data...</p>
     </div>
 
     <div id="error-display">
         <div class="error-box shadow-2xl">
-            <h1 style="color: #be123c; font-weight: 900; font-size: 24px; margin-bottom: 1rem;">SISTEM TERHENTI</h1>
-            <p id="error-text" style="font-family: monospace; font-size: 12px; margin: 1.5rem 0; background: white; padding: 1.5rem; border-radius: 1.5rem; text-align: left; color: #475569; border: 1px solid #e2e8f0; white-space: pre-wrap;"></p>
-            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%;">MUAT ULANG PAKSA (CTRL+F5)</button>
+            <h1 style="color: #be123c; font-weight: 900; font-size: 24px; margin-bottom: 1rem;">GALAT SISTEM</h1>
+            <p id="error-text" style="font-family: monospace; font-size: 11px; margin: 1.5rem 0; background: white; padding: 1.5rem; border-radius: 1.5rem; text-align: left; color: #475569; border: 1px solid #e2e8f0; white-space: pre-wrap;"></p>
+            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%;">MUAT ULANG PAKSA</button>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
+    <!-- Gunakan jalur relatif yang eksplisit -->
+    <script type="text/babel" data-presets="react,typescript" src="./index.tsx"></script>
 
     <script>
+      // Sembunyikan loader otomatis jika React berhasil merender konten
       const observer = new MutationObserver((mutations) => {
         const root = document.getElementById('root');
         if (root && root.children.length > 0) {
@@ -101,10 +104,12 @@
         }
       });
       observer.observe(document.body, { childList: true, subtree: true });
-      setTimeout(() => { 
+      
+      // Safety timeout untuk loader
+      setTimeout(() => {
         const l = document.getElementById('loader');
-        if(l) l.style.display = 'none'; 
-      }, 10000);
+        if(l && l.style.display !== 'none') l.style.display = 'none';
+      }, 8000);
     </script>
 </body>
 </html>
