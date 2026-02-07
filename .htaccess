@@ -1,28 +1,31 @@
 
-# KoperatifAI - Hostinger Ultimate Stability Fix
+# KoperatifAI - Hostinger Stability Fix
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Jika file fisik ada, jangan lakukan apa-apa
+  # 1. Jangan redirect jika file atau direktori fisik ada
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Aturan khusus: JANGAN PERNAH redirect file statis ke index.html
-  # Ini mencegah error "Unexpected token '<'"
-  RewriteCond %{REQUEST_URI} \.(js|css|json|png|jpg|jpeg|gif|svg|ico|webmanifest)$ [NC]
+  # 2. Safety net untuk file statis agar tidak pernah di-redirect ke index.html
+  # Ini adalah solusi untuk error "Unexpected token '<'"
+  RewriteCond %{REQUEST_URI} \.(js|tsx|ts|jsx|css|json|png|jpg|jpeg|gif|svg|ico|webmanifest)$ [NC]
   RewriteRule ^ - [L]
 
-  # Arahkan sisanya ke index.html (Navigasi Frontend)
+  # 3. Arahkan sisa request ke index.html untuk penanganan SPA
   RewriteRule ^ index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-  # Pastikan browser tidak menyimpan cache file JS yang rusak
-  <FilesMatch "\.(js|css|html)$">
+  # Tambahkan MIME Type agar browser mengenali file .tsx sebagai script
+  AddType application/javascript .js .tsx .ts .jsx
+  
+  # Pastikan file JS tidak di-cache secara agresif selama pengembangan
+  <FilesMatch "\.(js|tsx|ts|css|html)$">
     Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
   </FilesMatch>
-  # Tambahkan MIME Type yang benar
-  AddType application/javascript .js
 </IfModule>
