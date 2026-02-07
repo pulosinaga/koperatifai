@@ -26,6 +26,7 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         #error-display {
             display: none; position: fixed; inset: 0; background: white;
             z-index: 2000; padding: 2rem; text-align: center;
@@ -34,10 +35,12 @@
             max-width: 500px; margin: auto; padding: 2.5rem; background: #fff1f2;
             border: 1px solid #fda4af; border-radius: 2.5rem;
         }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
 
     <script>
-      // Mocking environment
+      // Polyfill process.env
       window.process = { env: { API_KEY: "" } };
       
       window.onerror = function(message, source, lineno, colno, error) {
@@ -75,7 +78,7 @@
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top: 1.5rem; font-weight: 900; color: #4338ca; letter-spacing: 0.2em; font-style: italic;">KOPERATIFAI</p>
-        <p style="font-size: 11px; color: #94a3b8; margin-top: 0.5rem;">Menginisialisasi Protokol Kedaulatan...</p>
+        <p style="font-size: 11px; color: #94a3b8; margin-top: 0.5rem;">Menginisialisasi Kernel Kedaulatan...</p>
     </div>
 
     <div id="error-display">
@@ -88,10 +91,10 @@
 
     <div id="root"></div>
 
-    <!-- Script Utama menggunakan index.tsx -->
     <script type="text/babel" data-presets="react,typescript" data-type="module" src="index.tsx"></script>
 
     <script>
+      // Auto-hide loader if root has children
       const checkRoot = setInterval(() => {
         const root = document.getElementById('root');
         if (root && root.children.length > 0) {
@@ -99,7 +102,7 @@
           clearInterval(checkRoot);
         }
       }, 500);
-      setTimeout(() => clearInterval(checkRoot), 10000);
+      setTimeout(() => clearInterval(checkRoot), 15000); // Fail-safe
     </script>
 </body>
 </html>
