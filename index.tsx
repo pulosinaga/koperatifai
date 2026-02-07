@@ -8,6 +8,8 @@ import App from './App.tsx';
  * Diproses oleh Babel Standalone di browser.
  */
 
+console.log("KoperatifAI: Inisialisasi DOM dimulai...");
+
 const rootEl = document.getElementById('root');
 if (rootEl) {
   try {
@@ -17,7 +19,10 @@ if (rootEl) {
         <App />
       </React.StrictMode>
     );
+    console.log("KoperatifAI: React Root berhasil dirender.");
   } catch (err) {
-    console.error("BOOTSTRAP_ERROR:", err);
+    console.error("KOPERATIFAI_BOOTSTRAP_ERROR:", err);
   }
+} else {
+  console.error("KoperatifAI: Elemen #root tidak ditemukan di DOM.");
 }

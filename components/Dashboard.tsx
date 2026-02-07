@@ -141,6 +141,31 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
           </div>
         </header>
 
+        {/* PRODUCTION CHECKLIST FOR FOUNDER */}
+        <div className="bg-white p-8 rounded-[3rem] border-2 border-indigo-100 shadow-sm">
+           <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-2xl">📋</div>
+              <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Langkah Menuju Online Sempurna</h3>
+           </div>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { t: 'Koneksi Database Riil', d: 'Hubungkan ke Supabase/PostgreSQL untuk menyimpan data anggota secara permanen.', status: 'PENDING' },
+                { t: 'Pre-Compilation (Build)', d: 'Lakukan build aplikasi menggunakan Vite/Webpack untuk loading lebih cepat di Hostinger.', status: 'PENDING' },
+                { t: 'Backend Proxy API', d: 'Pindahkan API Key Gemini ke server backend agar tidak terlihat di browser.', status: 'REQUIRED' },
+                { t: 'Sertifikasi SSL/TLS', d: 'Pastikan domain koperatifai.online memiliki sertifikat HTTPS aktif.', status: 'CHECK' }
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                   <span className="text-indigo-600 mt-0.5">●</span>
+                   <div>
+                      <h5 className="font-bold text-slate-800 text-sm">{item.t}</h5>
+                      <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">{item.d}</p>
+                      <span className="text-[8px] font-black bg-white px-2 py-0.5 rounded border border-slate-200 mt-2 inline-block text-indigo-600 uppercase">{item.status}</span>
+                   </div>
+                </div>
+              ))}
+           </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
               <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Total Network Strength</p>

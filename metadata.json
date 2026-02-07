@@ -1,9 +1,9 @@
 {
-  "name": "KoperatifAI - Digital Credit Union Platform",
-  "description": "A modern platform for online credit cooperatives featuring AI-driven financial advisory, loan simulations, and member management to maximize community growth.",
+  "name": "KoperatifAI - Fullstack Credit Union",
+  "description": "Platform koperasi digital dengan integrasi Supabase Database dan Babel Standalone Processing untuk kedaulatan data anggota.",
   "requestFramePermissions": [
-    "microphone",
     "camera",
+    "microphone",
     "geolocation"
   ]
 }

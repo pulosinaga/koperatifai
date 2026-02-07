@@ -1,8 +1,8 @@
 
-# KoperatifAI - Production Shield v5.8
+# KoperatifAI - Production Shield v9.0
 
 <IfModule mod_mime.c>
-    # Pastikan server mengenali ekstensi modern
+    # Beritahu browser bahwa ini adalah file kode yang aman dijalankan
     AddType application/javascript .js
     AddType application/javascript .ts
     AddType application/javascript .tsx
@@ -13,35 +13,22 @@
     RewriteEngine On
     RewriteBase /
 
-    # 1. Jika file benar-benar ada secara fisik, langsung berikan file tersebut
+    # 1. Jika file fisik (.tsx, .ts, .js, .css, .png) ada, berikan langsung
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # 2. Jika folder benar-benar ada secara fisik, langsung berikan folder tersebut
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # 3. SPA Fallback: Hanya alihkan rute virtual (seperti /dashboard) ke index.html
-    # Kita mengecualikan semua ekstensi file umum agar tidak terjadi loop jika file tidak ditemukan
+    # 2. SPA Fallback: Kecualikan SEMUA ekstensi file statis dari pengalihan ke index.html
+    # Ini krusial agar permintaan ke App.tsx tidak dibalas dengan isi index.html
     RewriteCond %{REQUEST_URI} !\.(js|ts|tsx|jsx|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|otf|ttf)$ [NC]
     RewriteRule . /index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-    # Paksa tipe konten agar Babel Standalone tidak bingung
-    <FilesMatch "\.(ts|tsx)$">
-        Header set Content-Type "application/javascript; charset=UTF-8"
-        Header set X-Content-Type-Options "nosniff"
-        
-        # Nonaktifkan cache untuk sementara agar perubahan langsung terdeteksi
+    # Mencegah caching pada file kode agar perubahan segera tampil
+    <FilesMatch "\.(ts|tsx|js|jsx)$">
         Header set Cache-Control "no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
         Header set Expires 0
+        Header set Content-Type "application/javascript; charset=UTF-8"
     </FilesMatch>
-</IfModule>
-
-# Mencoba mematikan ModSecurity jika diizinkan oleh provider
-<IfModule mod_security.c>
-    SecFilterEngine Off
-    SecFilterScanPOST Off
 </IfModule>
