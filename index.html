@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone: Pemroses Utama .tsx -->
+    <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -27,25 +27,18 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
 
     <script>
-      /**
-       * KONFIGURASI DATABASE:
-       * Silakan ganti GANTI_DENGAN_... dengan data dari Dashboard Supabase (Settings -> API)
-       */
       window.process = { 
         env: { 
           API_KEY: "", 
-          SUPABASE_URL: 'https://xfepyqifbejfhaopgpvj.supabase.co", 
+          SUPABASE_URL: "https://xfepyqifbejfhaopgpvj.supabase.co", 
           SUPABASE_ANON_KEY: "sb_publishable_QzWl-pyGwwYWYLqiSZSLBQ_vyR469P_" 
         } 
-      };
-      var process = window.process;
-
-      window.onerror = function(message, source, lineno, colno, error) {
-        if (message.includes('ResizeObserver') || message.includes('Script error')) return;
-        console.error("BOOT_ERROR:", message);
       };
     </script>
 
@@ -69,11 +62,8 @@
         <div class="spinner"></div>
         <p style="margin-top: 1rem; font-weight: 800; color: #4338ca; letter-spacing: 0.1em; font-size: 11px;">MENSINKRONKAN KEDAULATAN...</p>
     </div>
-
     <div id="root"></div>
-
     <script type="text/babel" data-type="module" data-presets="react,typescript" src="index.tsx"></script>
-
     <script>
       const checkRoot = setInterval(() => {
         const root = document.getElementById('root');

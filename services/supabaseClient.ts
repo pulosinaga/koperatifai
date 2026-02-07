@@ -1,7 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Mengambil dari window.process yang di-shim di index.html
 const getEnv = () => {
   return (window as any).process?.env || {};
 };
@@ -10,9 +9,13 @@ const env = getEnv();
 const supabaseUrl = env.SUPABASE_URL || '';
 const supabaseAnonKey = env.SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Inisialisasi client dengan pengecekan aman
+export const supabase = (supabaseUrl && supabaseAnonKey && !supabaseUrl.includes('GANTI_DENGAN')) 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : (null as any);
 
 export const getProfile = async (userId: string) => {
+  if (!supabase) return null;
   try {
     const { data, error } = await supabase
       .from('profiles')
