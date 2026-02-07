@@ -5,7 +5,6 @@ import { GoogleGenAI } from "@google/genai";
 const DeploymentHub: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'IDLE' | 'CONFIGURING' | 'CONNECTED'>('IDLE');
-  const [activeStep, setActiveStep] = useState(1);
   const [copied, setCopied] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState('');
 
@@ -13,7 +12,6 @@ const DeploymentHub: React.FC = () => {
   const vercelCNAME = "cname.vercel-dns.com";
   const domainName = "koperatifai.online";
   
-  // Prompt khusus untuk dikopi ke AI Hostinger
   const hostingerAIPrompt = `Halo Hostinger AI Assistant. Saya ingin menghubungkan domain ${domainName} saya ke platform VERCEL. 
 Mohon bantu saya melakukan konfigurasi DNS berikut secara otomatis:
 1. Ubah A Record (Host @) untuk mengarah ke IP Vercel: ${vercelIP}
@@ -23,31 +21,38 @@ Mohon bantu saya melakukan konfigurasi DNS berikut secara otomatis:
 Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel. Terima kasih!`;
 
   const handleCopyPrompt = () => {
-    navigator.clipboard.writeText(hostingerAIPrompt);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      navigator.clipboard.writeText(hostingerAIPrompt);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Gagal menyalin teks", err);
+    }
   };
 
   const runVercelHandshake = async () => {
     setIsVerifying(true);
     setSyncStatus('CONFIGURING');
     
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     try {
+      // Create AI instance only when needed
+      const apiKey = process.env.API_KEY || "";
+      if (!apiKey) {
+         setAiAnalysis("Konfigurasi API Key belum terdeteksi di Environment Vercel. Namun, DNS Anda sudah bisa diatur di Hostinger.");
+         setSyncStatus('CONNECTED');
+         return;
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Analisis infrastruktur Vercel untuk domain ${domainName}. 
-        Tugas Anda sebagai CTO:
-        1. Jelaskan kenapa integrasi Hostinger + Vercel adalah pilihan terbaik untuk koperasi dengan anggota di seluruh pelosok Indonesia (Fokus pada Anycast DNS & Edge Network).
-        2. Berikan estimasi waktu propagasi DNS di provider lokal seperti Telkomsel/Indihome.
-        3. Jelaskan kenapa HTTPS (SSL) otomatis dari Vercel meningkatkan skor kepercayaan (Trust Score) aplikasi koperasi secara signifikan.
-        Gunakan gaya bahasa profesional, taktis, dan membanggakan kedaulatan digital.`,
+        contents: `Analisis infrastruktur Vercel untuk domain ${domainName}. Berikan analisis kesiapan produksi.`,
       });
       setAiAnalysis(response.text || "Infrastruktur siap. Menunggu penyebaran DNS global.");
       setSyncStatus('CONNECTED');
-      setActiveStep(3);
     } catch (e) {
-      setAiAnalysis("Sistem sedang memantau propagasi. Harap pastikan A Record sudah mengarah ke 76.76.21.21.");
+      setAiAnalysis("Sistem sedang memantau propagasi secara manual. Harap pastikan A Record sudah mengarah ke 76.76.21.21.");
+      setSyncStatus('IDLE');
     } finally {
       setIsVerifying(false);
     }
@@ -55,7 +60,6 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700 pb-20 max-w-7xl mx-auto">
-      {/* Vercel Bridge Hero */}
       <div className="bg-[#000000] rounded-[4rem] p-16 text-white relative overflow-hidden shadow-2xl border-b-8 border-indigo-600">
         <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent"></div>
         <div className="relative z-10 flex flex-col lg:flex-row items-center gap-16">
@@ -112,7 +116,6 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-         {/* DNS Values Card */}
          <div className="lg:col-span-2 bg-white p-12 rounded-[4rem] border border-slate-100 shadow-sm space-y-10">
             <div className="flex justify-between items-center">
                <h3 className="text-2xl font-black text-slate-800 italic">Nilai DNS Vercel Anda</h3>
@@ -120,7 +123,7 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 space-y-4 hover:border-indigo-200 transition-all group">
+               <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
                   <div className="flex justify-between items-center">
                      <span className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-indigo-600 shadow-sm">A</span>
                      <p className="text-[10px] font-black text-slate-400 uppercase">Points To</p>
@@ -128,7 +131,7 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
                   <p className="text-3xl font-mono font-black text-slate-800">{vercelIP}</p>
                   <p className="text-[9px] text-slate-500 italic">Host: @ (Root)</p>
                </div>
-               <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 space-y-4 hover:border-indigo-200 transition-all group">
+               <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
                   <div className="flex justify-between items-center">
                      <span className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-indigo-600 shadow-sm">CN</span>
                      <p className="text-[10px] font-black text-slate-400 uppercase">Points To</p>
@@ -149,13 +152,12 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
             </div>
          </div>
 
-         {/* Edge Network Visual */}
          <div className="bg-slate-900 rounded-[4rem] p-10 shadow-2xl flex flex-col space-y-8 border border-white/5 relative overflow-hidden h-full">
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px]"></div>
             <h3 className="text-xl font-black text-indigo-400 italic uppercase tracking-widest relative z-10">Edge Network Pulse</h3>
             <div className="space-y-6 relative z-10 flex-1">
                {['Jakarta (JKT)', 'Singapore (SIN)', 'Hong Kong (HKG)', 'Global Edge'].map((loc, i) => (
-                 <div key={i} className="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                 <div key={i} className="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/5">
                     <div className="flex gap-4 items-center">
                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                        <p className="text-xs font-bold text-white uppercase">{loc}</p>
@@ -167,15 +169,11 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
                  </div>
                ))}
             </div>
-            <div className="mt-auto pt-6 border-t border-white/10 text-center relative z-10">
-               <p className="text-[9px] text-slate-500 italic">"Global Anycast Network ensures members in Papua access the app as fast as members in Jakarta."</p>
-            </div>
          </div>
       </div>
 
-      {/* AI Deployment Counsel */}
       <div className="bg-white p-16 rounded-[4rem] border border-slate-100 shadow-sm flex flex-col lg:flex-row gap-20 items-start relative overflow-hidden">
-         <div className="absolute -right-20 -top-20 w-96 h-96 bg-indigo-50 rounded-full blur-[120px] opacity-30"></div>
+         <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-indigo-50 rounded-full blur-[120px] opacity-30"></div>
          <div className="w-full lg:w-1/3 space-y-8 shrink-0 z-10">
             <div className="w-24 h-24 bg-slate-900 rounded-[2.5rem] flex items-center justify-center text-5xl shadow-2xl border-4 border-slate-800 text-white font-black italic">A</div>
             <h3 className="text-4xl font-black text-slate-800 italic font-serif">The AI Strategic <br/>Counsel.</h3>
@@ -198,7 +196,7 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
                <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
                   <p className="text-xs text-indigo-400 font-black uppercase mb-8 tracking-widest border-b border-indigo-100/20 pb-4 flex items-center gap-3">
                      <span className="w-2 h-2 bg-indigo-600 rounded-full animate-ping"></span>
-                     CTO STRATEGIC REPORT: GO-LIVE READY
+                     CTO STRATEGIC REPORT
                   </p>
                   <pre className="whitespace-pre-wrap font-serif text-slate-200">{aiAnalysis}</pre>
                </div>
@@ -208,22 +206,6 @@ Konfirmasi jika sudah selesai agar saya bisa melakukan verifikasi di sisi Vercel
                   <p className="max-w-md mx-auto font-bold text-2xl">Klik "VERIFIKASI KONEKSI" untuk membedah kedaulatan domain Anda.</p>
                </div>
             )}
-         </div>
-      </div>
-
-      {/* Production Infrastructure Message */}
-      <div className="p-16 bg-indigo-950 border border-indigo-900 rounded-[4rem] shadow-sm flex flex-col md:flex-row items-center gap-16 text-white relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.03] bg-[size:30px_30px]"></div>
-         <div className="text-8xl shrink-0 z-10 animate-pulse">🇮🇩</div>
-         <div className="flex-1 space-y-6 z-10">
-            <h4 className="text-4xl font-black italic leading-tight text-indigo-400">"Kedaulatan Rakyat, Diperkuat Awan."</h4>
-            <p className="text-indigo-100 text-xl leading-relaxed max-w-4xl italic">
-               Founder, memiliki domain **koperatifai.online** di infrastruktur Vercel adalah pernyataan kedaulatan. Anda sekarang memiliki bank digital sendiri dengan jangkauan nasional yang tak terbatas. Selamat, petualangan baru dimulai!
-            </p>
-            <div className="flex gap-6 pt-4">
-               <button className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl">Audit Uptime Nusantara</button>
-               <button className="px-10 py-4 bg-white/10 text-white border border-white/10 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-white/20 transition-all">Setting Email Bisnis (@koperatifai.online)</button>
-            </div>
          </div>
       </div>
     </div>
