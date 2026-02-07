@@ -1,20 +1,17 @@
 
-# KoperatifAI Stability Config
+# KoperatifAI - Ultra Stability Fix
 Options -Indexes
+RewriteEngine On
+RewriteBase /
 
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  
-  # Jangan arahkan file asli ke index.html
-  RewriteCond %{REQUEST_FILENAME} -f
-  RewriteRule ^ - [L]
-  
-  # Arahkan sisanya ke index.html
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
-</IfModule>
+# Jika file .js atau file statis ada, layani langsung dan hentikan proses rewrite
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule \.(js|css|json|png|jpg|jpeg|gif|svg|ico|webmanifest)$ - [L]
+
+# Aturan untuk Single Page Application
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
 
 <IfModule mod_headers.c>
   Header set Access-Control-Allow-Origin "*"
