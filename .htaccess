@@ -1,8 +1,8 @@
 
-# KoperatifAI - Deployment Shield v5.7
+# KoperatifAI - Production Shield v5.8
 
 <IfModule mod_mime.c>
-    # Daftarkan ekstensi teknis sebagai javascript agar tidak dianggap ancaman
+    # Pastikan server mengenali ekstensi modern
     AddType application/javascript .js
     AddType application/javascript .ts
     AddType application/javascript .tsx
@@ -13,34 +13,34 @@
     RewriteEngine On
     RewriteBase /
 
-    # 1. Hindari pengalihan untuk file fisik yang benar-benar ada
-    # Ini krusial agar browser bisa mengunduh index.tsx apa adanya
+    # 1. Jika file benar-benar ada secara fisik, langsung berikan file tersebut
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # 2. SPA Fallback
-    # Hanya arahkan ke index.html jika rute tidak memiliki titik (bukan file)
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} !\.(js|ts|tsx|jsx|css|png|jpg|jpeg|gif|svg|ico|json)$ [NC]
+    # 2. Jika folder benar-benar ada secara fisik, langsung berikan folder tersebut
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 3. SPA Fallback: Hanya alihkan rute virtual (seperti /dashboard) ke index.html
+    # Kita mengecualikan semua ekstensi file umum agar tidak terjadi loop jika file tidak ditemukan
+    RewriteCond %{REQUEST_URI} !\.(js|ts|tsx|jsx|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|otf|ttf)$ [NC]
     RewriteRule . /index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-    # Paksa header agar browser tidak salah tebak tipe file
-    <FilesMatch "\.(js|ts|tsx)$">
-        ForceType application/javascript
+    # Paksa tipe konten agar Babel Standalone tidak bingung
+    <FilesMatch "\.(ts|tsx)$">
         Header set Content-Type "application/javascript; charset=UTF-8"
         Header set X-Content-Type-Options "nosniff"
         
-        # Nonaktifkan Cache selama perbaikan agar perubahan langsung terasa
+        # Nonaktifkan cache untuk sementara agar perubahan langsung terdeteksi
         Header set Cache-Control "no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
         Header set Expires 0
     </FilesMatch>
 </IfModule>
 
-# Mencoba menonaktifkan filter keamanan yang sering memblokir file .tsx di Hostinger
+# Mencoba mematikan ModSecurity jika diizinkan oleh provider
 <IfModule mod_security.c>
     SecFilterEngine Off
     SecFilterScanPOST Off

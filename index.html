@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone untuk memproses TSX di browser -->
+    <!-- Babel Standalone untuk memproses TSX secara langsung di browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -38,7 +38,7 @@
     </style>
 
     <script>
-      // Inisialisasi env minimal
+      // Inisialisasi environment minimal
       window.process = { env: { API_KEY: "" } };
       
       window.onerror = function(message, source, lineno, colno, error) {
@@ -84,13 +84,13 @@
         <div class="error-box shadow-2xl">
             <h1 style="color: #be123c; font-weight: 900; font-size: 24px; margin-bottom: 1rem;">GALAT SISTEM</h1>
             <p id="error-text" style="font-family: monospace; font-size: 11px; margin: 1.5rem 0; background: white; padding: 1.5rem; border-radius: 1.5rem; text-align: left; color: #475569; border: 1px solid #e2e8f0; white-space: pre-wrap;"></p>
-            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%;">MUAT ULANG PAKSA</button>
+            <button key="reboot-btn" onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%;">MUAT ULANG PAKSA</button>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <!-- Gunakan jalur relatif yang eksplisit -->
+    <!-- Pemuatan utama aplikasi -->
     <script type="text/babel" data-presets="react,typescript" src="./index.tsx"></script>
 
     <script>
