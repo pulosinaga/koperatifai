@@ -21,7 +21,6 @@ const COLORS = ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff'
 
 const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
   
-  // RENDER MEMBER DASHBOARD
   if (role === UserRole.MEMBER) {
     return (
       <div className="space-y-8 animate-in fade-in duration-500">
@@ -36,16 +35,15 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
           </div>
         </header>
 
-        {/* Launch Promo Banner */}
         <div className="bg-indigo-600 rounded-3xl p-6 text-white flex items-center justify-between shadow-xl shadow-indigo-200">
            <div className="flex gap-4 items-center">
               <div className="text-4xl">🚀</div>
               <div>
-                 <h4 className="font-black italic text-lg">Pesta SHU Grand Launch!</h4>
-                 <p className="text-indigo-100 text-xs">Dapatkan <b>Double Bonus SHU</b> untuk pembayaran PBB & Tiket Travel minggu ini.</p>
+                 <h4 className="font-black italic text-lg">Butuh Modal Usaha Cepat?</h4>
+                 <p className="text-indigo-100 text-xs">Simulasikan pinjaman Anda sekarang dan nikmati bunga hanya 0.9%.</p>
               </div>
            </div>
-           <button onClick={() => setView(AppView.BILL_PAYMENTS)} className="px-6 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase">Cek Promo</button>
+           <button onClick={() => setView(AppView.LOAN_SIMULATOR)} className="px-6 py-2 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase">Simulasi Sekarang</button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -67,21 +65,20 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
           </div>
         </div>
 
-        {/* Updated: Quick Transactions Section */}
         <div className="space-y-4">
            <h4 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Transaksi Cepat</h4>
            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
               {[
-                { label: 'Beli Pulsa', icon: '📱', color: 'bg-emerald-50 text-emerald-600' },
-                { label: 'Token Listrik', icon: '⚡', color: 'bg-amber-50 text-amber-600' },
-                { label: 'Bayar PBB', icon: '🏛️', color: 'bg-slate-100 text-slate-600' },
-                { label: 'Tiket Travel', icon: '🚆', color: 'bg-orange-50 text-orange-600' },
-                { label: 'Bayar Wifi', icon: '🌐', color: 'bg-blue-50 text-blue-600' },
-                { label: 'Kirim Uang', icon: '💸', color: 'bg-indigo-50 text-indigo-600' },
+                { label: 'Beli Pulsa', icon: '📱', color: 'bg-emerald-50 text-emerald-600', view: AppView.BILL_PAYMENTS },
+                { label: 'Token Listrik', icon: '⚡', color: 'bg-amber-50 text-amber-600', view: AppView.BILL_PAYMENTS },
+                { label: 'Pinjaman', icon: '🧮', color: 'bg-indigo-50 text-indigo-600', view: AppView.LOAN_SIMULATOR },
+                { label: 'Tiket Travel', icon: '🚆', color: 'bg-orange-50 text-orange-600', view: AppView.BILL_PAYMENTS },
+                { label: 'Tarik Tunai', icon: '📤', color: 'bg-rose-50 text-rose-600', view: AppView.TRANSACTIONS },
+                { label: 'Kirim Uang', icon: '💸', color: 'bg-indigo-50 text-indigo-600', view: AppView.TRANSACTIONS },
               ].map((action, i) => (
                 <button 
                   key={i}
-                  onClick={() => setView(AppView.BILL_PAYMENTS)}
+                  onClick={() => setView(action.view)}
                   className="bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center text-center gap-3 group"
                 >
                    <div className={`w-12 h-12 ${action.color} rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform`}>
@@ -121,7 +118,6 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
     );
   }
 
-  // RENDER FOUNDER DASHBOARD
   if (role === UserRole.FOUNDER) {
     return (
       <div className="space-y-8 animate-in fade-in duration-500">
@@ -153,7 +149,6 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
            </div>
         </div>
 
-        {/* Chairman Shortcut for Founders */}
         <div className="bg-gradient-to-r from-indigo-900 to-slate-900 p-8 rounded-[3.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
            <div className="flex gap-6 items-center">
               <div className="w-16 h-16 bg-white/10 rounded-3xl flex items-center justify-center text-3xl">👔</div>
@@ -164,7 +159,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
            </div>
            <div className="flex gap-4">
               <button onClick={() => setView(AppView.ACCOUNTING)} className="px-6 py-3 bg-white text-indigo-900 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Buka Brankas Digital</button>
-              <button onClick={() => setView(AppView.AICreditCommittee)} className="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Approve Pinjaman</button>
+              <button onClick={() => setView(AppView.AI_CREDIT_COMMITTEE)} className="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl">Approve Pinjaman</button>
            </div>
         </div>
 
@@ -183,7 +178,6 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, role }) => {
     );
   }
 
-  // DEFAULT DASHBOARD (For Board, Auditor, Staff, Leader)
   return (
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

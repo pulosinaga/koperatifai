@@ -9,49 +9,56 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
+// Fix: Correctly assigned the generic type SidebarProps to React.FC
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout }) => {
   const menuItems = [
     {
-      label: 'Utama',
+      label: 'Portal Utama',
       icon: '🏠',
       items: [
         { id: AppView.DASHBOARD, label: 'Dashboard', icon: '📊', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD, UserRole.STAFF, UserRole.LEADER, UserRole.AUDITOR] },
         { id: AppView.TRANSACTIONS, label: 'Transaksi', icon: '💸', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD, UserRole.STAFF] },
-        { id: AppView.SHU_DISTRIBUTION, label: 'Sistem SHU', icon: '✨', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD] },
+        { id: AppView.SHU_DISTRIBUTION, label: 'Bagi Hasil (SHU)', icon: '✨', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.BOARD] },
       ],
     },
     {
-      label: 'Kedaulatan Nilai',
-      icon: '🌙',
+      label: 'Layanan Kredit',
+      icon: '💳',
       items: [
-        { id: AppView.SHARIA_GOVERNANCE, label: 'Kepatuhan Syariah', icon: '⚖️', roles: [UserRole.FOUNDER, UserRole.BOARD, UserRole.MEMBER] },
-        { id: AppView.SPIRITUAL_JOURNEYS, label: 'Ziarah Rohani', icon: '⛪', roles: [UserRole.FOUNDER, UserRole.MEMBER] },
-        { id: AppView.COMMUNITY_IMPACT, label: 'Dampak Sosial', icon: '🌱', roles: [UserRole.FOUNDER, UserRole.MEMBER] },
+        { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.LOAN_HISTORY, label: 'Riwayat Pinjaman', icon: '📜', roles: [UserRole.MEMBER, UserRole.FOUNDER, UserRole.BOARD] },
+        { id: AppView.LOAN_READINESS, label: 'Kesiapan Kredit', icon: '📈', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
       ],
     },
     {
-      label: 'Solidaritas Nasional',
-      icon: '🤝',
+      label: 'Ekonomi Aktif',
+      icon: '🚀',
       items: [
-        { id: AppView.NATIONAL_SUMMIT, label: 'Silaturahmi Nasional', icon: '🏟️', roles: [UserRole.FOUNDER, UserRole.BOARD, UserRole.LEADER] },
-        { id: AppView.COMMUNITY_FORUM, label: 'Forum Komunitas', icon: '🗣️', roles: [UserRole.FOUNDER, UserRole.MEMBER, UserRole.LEADER] },
+        { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Anggota', icon: '🛒', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.COURIER_DASHBOARD, label: 'Kurir Desa', icon: '🛵', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.SMART_PROCUREMENT, label: 'Grosir Rakyat', icon: '📦', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.MERCHANT_DASHBOARD, label: 'Toko Saya', icon: '🏪', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.ARISAN_DIGITAL, label: 'Arisan Digital', icon: '🌀', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
       ],
     },
     {
-      label: 'Duta Wilayah',
-      icon: '🛵',
+      label: 'Proteksi & Masa Depan',
+      icon: '🛡️',
       items: [
-        { id: AppView.DUTA_CONTRACT, label: 'Akad Kerja Duta', icon: '📜', roles: [UserRole.LEADER, UserRole.FOUNDER] },
-        { id: AppView.DUTA_PERFORMANCE, label: 'Dashboard Duta', icon: '📈', roles: [UserRole.LEADER, UserRole.FOUNDER] },
+        { id: AppView.MEMBER_HEALTH_SHIELD, label: 'Perisai Sehat', icon: '🏥', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.PERSONAL_GOLD, label: 'Tabungan Emas', icon: '📀', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.PENSION_FUND, label: 'Dana Pensiun', icon: '👴', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
+        { id: AppView.DASKOP_CLAIM, label: 'Klaim Santunan', icon: '🕊️', roles: [UserRole.MEMBER, UserRole.FOUNDER] },
       ],
     },
     {
-      label: 'Founder Command',
+      label: 'Founder Control',
       icon: '👑',
       items: [
         { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit Utama', icon: '🛰️', roles: [UserRole.FOUNDER] },
+        { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'Kalkulator Profit', icon: '🧮', roles: [UserRole.FOUNDER] },
+        { id: AppView.ECOSYSTEM_REVENUE, label: 'Wealth Matrix', icon: '💰', roles: [UserRole.FOUNDER] },
         { id: AppView.DEPLOYMENT_HUB, label: 'Sync Domain', icon: '🌐', roles: [UserRole.FOUNDER] },
-        { id: AppView.IP_LICENSE_MONITOR, label: 'IP License', icon: '🔑', roles: [UserRole.FOUNDER] },
       ],
     },
   ];

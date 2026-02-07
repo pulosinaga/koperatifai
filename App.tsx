@@ -4,6 +4,7 @@ import { AppView, UserRole } from './types';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import LoginScreen from './components/LoginScreen';
+import Header from './components/Header';
 import TransactionHistory from './components/TransactionHistory';
 import LoanSimulator from './components/LoanSimulator';
 import LoanHistory from './components/LoanHistory';
@@ -157,196 +158,143 @@ import NationalSummit from './components/NationalSummit';
 import ShariaGovernance from './components/ShariaGovernance';
 import SpiritualJourneys from './components/SpiritualJourneys';
 import DeploymentHub from './components/DeploymentHub';
+import DutaPerformance from './components/DutaPerformance';
+import TerritoryCommand from './components/TerritoryCommand';
+import IPLicenseMonitor from './components/IPLicenseMonitor';
+import EcosystemRevenue from './components/EcosystemRevenue';
+import DutaScalingSimulator from './components/DutaScalingSimulator';
+import StrategicProfitCalculator from './components/StrategicProfitCalculator';
+import ArisanDigital from './components/ArisanDigital';
+import MemberHealthShield from './components/MemberHealthShield';
+import PersonalGoldSavings from './components/PersonalGoldSavings';
+import CourierDashboard from './components/CourierDashboard';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
+  const [viewHistory, setViewHistory] = useState<AppView[]>([]);
 
-  // Fixed: Added handleLogin and handleLogout definitions
   const handleLogin = (role: UserRole) => {
     setCurrentRole(role);
     setIsLoggedIn(true);
     setCurrentView(AppView.DASHBOARD);
+    setViewHistory([]);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setCurrentRole(null);
     setCurrentView(AppView.DASHBOARD);
+    setViewHistory([]);
+  };
+
+  const handleSetView = (newView: AppView) => {
+    if (newView !== currentView) {
+      setViewHistory(prev => [...prev, currentView]);
+      setCurrentView(newView);
+    }
+  };
+
+  const handleBack = () => {
+    if (viewHistory.length > 0) {
+      const prev = viewHistory[viewHistory.length - 1];
+      setViewHistory(prevHistory => prevHistory.slice(0, -1));
+      setCurrentView(prev);
+    } else {
+      setCurrentView(AppView.DASHBOARD);
+    }
   };
 
   const renderContent = () => {
     if (!isLoggedIn) return <LoginScreen onLogin={handleLogin} />;
 
     switch (currentView) {
-      case AppView.DASHBOARD: return <Dashboard setView={setCurrentView} role={currentRole!} />;
-      case AppView.DEPLOYMENT_HUB: return <DeploymentHub />;
-      case AppView.SPIRITUAL_JOURNEYS: return <SpiritualJourneys />;
-      case AppView.SHARIA_GOVERNANCE: return <ShariaGovernance />;
-      case AppView.TRANSACTIONS: return <TransactionHistory />;
-      case AppView.LOAN_SIMULATOR: return <LoanSimulator />;
-      case AppView.LOAN_HISTORY: return <LoanHistory />;
-      case AppView.AI_ADVISOR: return <AIAdvisor />;
-      case AppView.MEMBERSHIP_PROFILE: return <Membership />;
-      case AppView.MEMBERSHIP_CERTIFICATE: return <MembershipCertificate />;
-      case AppView.SYSTEM_HEALTH: return <SystemHealth />;
-      case AppView.ACCOUNTING: return <AccountingReports />;
-      case AppView.MARKET_INSIGHTS: return <MarketInsights />;
-      case AppView.GLOBAL_STANDARDS: return <GlobalStandards />;
-      case AppView.TECH_EVOLUTION: return <TechEvolution />;
-      case AppView.ANTI_OPPORTUNISM: return <AntiOpportunism />;
-      case AppView.GLOBAL_NETWORK: return <GlobalNetwork />;
-      case AppView.TRUST_TRANSPARENCY: return <TrustTransparency />;
-      case AppView.SAVINGS_GROWTH: return <SavingsGrowth />;
-      case AppView.ONLINE_ONBOARDING: return <OnlineOnboarding />;
-      case AppView.DEPOSIT_SYSTEM: return <DepositSystem />;
-      case AppView.ESCROW_GOVERNANCE: return <EscrowGovernance />;
-      case AppView.LOAN_DISBURSEMENT: return <LoanDisbursement />;
-      case AppView.CURRENT_ADOPTION: return <CurrentAdoption />;
-      case AppView.COMPETITIVE_LANDSCAPE: return <CompetitiveLandscape />;
-      case AppView.DASKOP_CLAIM: return <DaskopClaim />;
-      case AppView.MEMBER_BENEFITS: return <MemberBenefits />;
-      case AppView.SERVER_INFRASTRUCTURE: return <ServerInfrastructure />;
-      case AppView.ECOSYSTEM_BRIDGE: return <EcosystemBridge />;
-      case AppView.MEMBER_ATTRACTION: return <MemberAttraction />;
-      case AppView.LEAN_OPERATIONS: return <LeanOperations />;
-      case AppView.REAL_WORLD_FEASIBILITY: return <RealWorldFeasibility />;
-      case AppView.COMMUNITY_MOBILIZATION: return <CommunityMobilization />;
-      case AppView.SAFETY_PROTECTION: return <SafetyProtection />;
-      case AppView.GOVERNMENT_RELATIONS: return <GovernmentRelations />;
-      case AppView.STARTUP_POSITIONING: return <StartupPositioning />;
-      case AppView.GOV_ADOPTION: return <GovernmentPartnership />;
-      case AppView.IP_PROTECTION: return <IntellectualProperty />;
-      case AppView.GOV_SYNERGY: return <GovSynergy />;
-      case AppView.FUNDING_SOVEREIGNTY: return <FundingSovereignty />;
-      case AppView.RAIFFEISEN_PHILOSOPHY: return <RaiffeisenPhilosophy />;
-      case AppView.ANTIDOTE_PINJOL: return <AntidotePinjol />;
-      case AppView.GOV_KDMP_INTEGRATION: return <GovKDMPIntegration />;
-      case AppView.STRATEGIC_FEDERATION: return <StrategicFederation />;
-      case AppView.MILLION_DOLLAR_ROADMAP: return <MillionDollarRoadmap />;
-      case AppView.GLOBAL_INFLUENCE: return <GlobalInfluence />;
-      case AppView.COMMUNITY_IMPACT: return <CommunityImpact />;
-      case AppView.VALUATION_TRACKER: return <ValuationTracker />;
+      case AppView.DASHBOARD: return <Dashboard setView={handleSetView} role={currentRole!} />;
+      
+      // Ekonomi Aktif
+      case AppView.ARISAN_DIGITAL: return <ArisanDigital />;
+      case AppView.COURIER_DASHBOARD: return <CourierDashboard />;
       case AppView.MEMBER_MARKETPLACE: return <MemberMarketplace />;
       case AppView.MERCHANT_DASHBOARD: return <MerchantDashboard />;
       case AppView.MEMBER_QRIS: return <MemberQRIS />;
-      case AppView.GLOBAL_SHU_SIMULATION: return <GlobalSHUSimulation />;
-      case AppView.E_RAT: return <DigitalVoting />;
-      case AppView.SMART_EDUCATION: return <SmartEducation />;
-      case AppView.COMMUNITY_FORUM: return <CommunityForum />;
-      case AppView.FOUNDER_PLAYBOOK: return <FoundersPlaybook />;
-      case AppView.TECH_SETUP: return <TechSetup />;
-      case AppView.LOAN_WORKFLOW: return <LoanWorkflow />;
-      case AppView.AI_CREDIT_SCORING: return <AICreditScoring />;
-      case AppView.FRAUD_DETECTION: return <FraudDetection />;
-      case AppView.AI_TREASURY: return <AITreasury />;
-      case AppView.CRISIS_SIMULATOR: return <CrisisSimulator />;
-      case AppView.PROMOTION_KIT: return <PromotionKit />;
-      case AppView.COMMUNITY_LEADERS: return <CommunityLeaders />;
-      case AppView.LEADER_COMPENSATION: return <LeaderCompensation />;
-      case AppView.NEWS_UPDATES: return <NewsAndUpdates />;
-      case AppView.TECH_PROCESS: return <TechProcess />;
-      case AppView.SECURITY_PROTOCOL: return <SecurityProtocol />;
-      case AppView.LEADER_OPERATIONS: return <LeaderOperations />;
-      case AppView.DUTA_ESTABLISHMENT: return <DutaEstablishment />;
-      case AppView.CAPITAL_SECURITY: return <CapitalSecurity />;
-      case AppView.DAILY_OPERATIONS: return <DailyOperations />;
-      case AppView.INCLUSION_STRATEGY: return <InclusionStrategy />;
-      case AppView.DIGITAL_PIGGYBANK: return <DigitalPiggyBank />;
-      case AppView.FIELD_TRANSACTIONS: return <FieldTransactions />;
-      case AppView.DUTA_SETTLEMENT: return <DutaSettlement />;
-      case AppView.AUDIT_TRAIL: return <AuditTrail />;
-      case AppView.MARKET_PENETRATION: return <MarketPenetration />;
-      case AppView.PIONEER_MANAGEMENT: return <PioneerManagement />;
-      case AppView.TRANSACTION_FLOW: return <TransactionFlow />;
-      case AppView.VOUCHING_SYSTEM: return <VouchingSystem />;
-      case AppView.DIGITAL_PASSBOOK: return <DigitalPassbook />;
-      case AppView.AICreditCommittee: return <AICreditCommittee />;
-      case AppView.AICollector: return <AICollector />;
-      case AppView.INVESTOR_PORTAL: return <InvestorPortal />;
-      case AppView.LOAN_READINESS: return <LoanReadiness />;
-      case AppView.AI_COLLATERAL: return <AICollateral />;
-      case AppView.TRANSPARENCY_PROTOCOL: return <TransparencyProtocol />;
-      case AppView.AI_GUARD_SIMULATION: return <AIGuardSimulation />;
-      case AppView.CYBER_SECURITY_SHIELD: return <CyberSecurityShield />;
-      case AppView.DIGITAL_INSURANCE: return <DigitalInsurance />;
-      case AppView.LAUNCH_ROADMAP: return <LaunchRoadmap />;
-      case AppView.PITCH_DECK: return <PitchDeck />;
-      case AppView.BUSINESS_PLAN: return <BusinessPlan />;
-      case AppView.DIGITAL_CONTRACT: return <DigitalContract />;
-      case AppView.JDIH_REGULATIONS: return <JDIHIntegration />;
-      case AppView.BRANDING_IDENTITY: return <BrandingIdentity />;
       case AppView.SMART_PROCUREMENT: return <SmartProcurement />;
+      /* Added handle for BILL_PAYMENTS view */
       case AppView.BILL_PAYMENTS: return <BillPayments />;
-      case AppView.COOP_VS_BANK: return <CoopVsBank />;
-      case AppView.REMITTANCE: return <RemittanceService />;
-      case AppView.LEADER_LIQUIDITY: return <LeaderLiquidity />;
-      case AppView.DUTA_VETTING: return <DutaVetting />;
-      case AppView.PENSION_FUND: return <PensionFund />;
-      case AppView.PRODUCTIVE_ELDER_Dashboard: return <ProductiveElderDashboard />;
-      case AppView.ELDER_IMPACT_HUB: return <ElderImpactHub />;
-      case AppView.LEGACY_VAULT: return <LegacyVault />;
-      case AppView.COMPETITIVE_EDGE: return <CompetitiveEdge />;
-      case AppView.DEMAND_AGGREGATOR: return <DemandAggregator />;
-      case AppView.FOOD_SOVEREIGNTY: return <FoodSovereigntyMonitor />;
-      case AppView.MICRO_INVESTMENT: return <MicroInvestmentHub />;
-      case AppView.COOP_HEALTH_CHECK: return <CoopHealthCheck />;
-      case AppView.GLOBAL_TRADE: return <GlobalTradeBridge />;
-      case AppView.COOP_PHILANTHROPY: return <CoopPhilanthropyHub />;
-      case AppView.NGO_PARTNERSHIP: return <GlobalGrantsHub />;
-      case AppView.AI_BOARDROOM: return <AIBoardroom />;
-      case AppView.FOUNDER_REPORT: return <FounderReport />;
-      case AppView.FINAL_DRILL: return <FinalDrill />;
-      case AppView.INVESTOR_PITCH: return <InvestorPitch />;
-      case AppView.EXECUTIVE_PITCH_SIMULATOR: return <ExecutivePitchSimulator />;
-      case AppView.DUE_DILIGENCE_VAULT: return <DueDiligenceVault />;
-      case AppView.SOVEREIGN_MIGRATION_MAP: return <SovereignMigrationMap />;
-      case AppView.SOVEREIGN_GOLD_RESERVE: return <SovereignGoldReserve />;
-      case AppView.GLOBAL_BOND_PORTFOLIO: return <GlobalBondPortfolio />;
-      case AppView.EXECUTIVE_GOVERNANCE_CENTER: return <ExecutiveGovernanceDashboard />;
-      case AppView.NATIONAL_BOND_PORTFOLIO: return <NationalBondPortfolio />;
-      case AppView.COOP_CREDIT_RATING: return <CoopCreditRating />;
-      case AppView.COOP_LOGISTICS: return <CoopLogisticsHub />;
-      case AppView.MONETIZATION_STRATEGY: return <CooperativeProfitStrategy />;
-      case AppView.COOP_ENERGY_GRID: return <CooperativeEnergyGrid />;
-      case AppView.COOP_HEALTHCARE: return <CooperativeHealthcare />;
-      case AppView.COOP_HOUSING: return <CooperativeHousing />;
-      case AppView.GOV_TAX_AI: return <GovTaxAI />;
-      case AppView.GLOBAL_COOP_SWAP: return <GlobalCoopSwap />;
+      
+      // Proteksi & Masa Depan
+      case AppView.MEMBER_HEALTH_SHIELD: return <MemberHealthShield />;
+      case AppView.DASKOP_CLAIM: return <DaskopClaim />;
       case AppView.AUTONOMOUS_CHARITY: return <AutonomousCharity />;
       case AppView.SOVEREIGN_SAFETY_NETWORK: return <SovereignSafetyNetwork />;
-      case AppView.MICRO_FRANCHISE_HUB: return <MicroFranchiseHub />;
+      case AppView.PERSONAL_GOLD: return <PersonalGoldSavings />;
+      case AppView.PENSION_FUND: return <PensionFund />;
+      case AppView.MICRO_INVESTMENT: return <MicroInvestmentHub />;
+      case AppView.GLOBAL_COOP_SWAP: return <GlobalCoopSwap />;
+      
+      // Edukasi & Lainnya
+      case AppView.SMART_EDUCATION: return <SmartEducation />;
+      case AppView.COMMUNITY_FORUM: return <CommunityForum />;
+      case AppView.MEMBERSHIP_PROFILE: return <Membership />;
+      case AppView.MEMBERSHIP_CERTIFICATE: return <MembershipCertificate />;
+      case AppView.AI_ADVISOR: return <AIAdvisor />;
       case AppView.SHU_DISTRIBUTION: return <SHUDistribution />;
-      case AppView.DUTA_SOP: return <DutaSOP />;
-      case AppView.DUTA_MANAGEMENT_CENTER: return <DutaManagementCenter />;
-      case AppView.DUTA_FIELD_VERIFICATION: return <DutaFieldVerification />;
-      case AppView.FOUNDER_REVENUE_HUB: return <FounderRevenueHub />;
-      case AppView.STRATEGIC_DIRECTIVE_CENTER: return <StrategicDirectiveCenter />;
-      case AppView.DUAL_ROLE_STRATEGY: return <DualRoleStrategy />;
-      case AppView.NATIONAL_SCALE_STRATEGY: return <NationalScaleStrategy />;
-      case AppView.FOUNDING_DEED_GENERATOR: return <FoundingDeedGenerator />;
-      case AppView.MANAGER_SELECTION_GUIDE: return <ManagerSelectionGuide />;
-      case AppView.E_ELECTION_DASHBOARD: return <ElectionDashboard />;
-      case AppView.DUTA_RIGHTS_OBLIGATIONS: return <DutaRightsObligations />;
-      case AppView.DUTA_TERRITORY_EXPANSION: return <DutaTerritoryExpansion />;
-      case AppView.GLOBAL_COMMAND_CENTER: return <GlobalCommandCenter />;
-      case AppView.DUTA_RECRUITMENT_DASHBOARD: return <DutaRecruitmentDashboard />;
+      case AppView.TRANSACTIONS: return <TransactionHistory />;
+      case AppView.LOAN_SIMULATOR: return <LoanSimulator />;
+      case AppView.LOAN_HISTORY: return <LoanHistory />;
+      // Added handle for LOAN_READINESS view
+      case AppView.LOAN_READINESS: return <LoanReadiness />;
+
+      // Duta & Operasional
       case AppView.DUTA_CONTRACT: return <DutaContract />;
-      case AppView.NATIONAL_SUMMIT: return <NationalSummit />;
-      case AppView.SHARIA_GOVERNANCE: return <ShariaGovernance />;
-      default: return <Dashboard setView={setCurrentView} role={currentRole!} />;
+      case AppView.DUTA_PERFORMANCE: return <DutaPerformance />;
+      case AppView.DUTA_SCALING_SIMULATOR: return <DutaScalingSimulator />;
+      case AppView.DUTA_FIELD_VERIFICATION: return <DutaFieldVerification />;
+      case AppView.DUTA_MANAGEMENT_CENTER: return <DutaManagementCenter />;
+      case AppView.TERRITORY_COMMAND: return <TerritoryCommand />;
+
+      // Founder Command
+      case AppView.GLOBAL_COMMAND_CENTER: return <GlobalCommandCenter />;
+      case AppView.STRATEGIC_PROFIT_CALCULATOR: return <StrategicProfitCalculator />;
+      case AppView.DEPLOYMENT_HUB: return <DeploymentHub />;
+      case AppView.IP_LICENSE_MONITOR: return <IPLicenseMonitor />;
+      case AppView.ECOSYSTEM_REVENUE: return <EcosystemRevenue />;
+      case AppView.SYSTEM_HEALTH: return <SystemHealth />;
+      case AppView.ACCOUNTING: return <AccountingReports />;
+      case AppView.AI_BOARDROOM: return <AIBoardroom />;
+      case AppView.FOUNDER_REPORT: return <FounderReport />;
+      case AppView.INVESTOR_PITCH: return <InvestorPitch />;
+      case AppView.COOP_HEALTH_CHECK: return <CoopHealthCheck />;
+      case AppView.GOV_TAX_AI: return <GovTaxAI />;
+      /* Added handle for AI_CREDIT_COMMITTEE view */
+      case AppView.AI_CREDIT_COMMITTEE: return <AICreditCommittee />;
+      
+      default: return <Dashboard setView={handleSetView} role={currentRole!} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row overflow-hidden font-sans">
       {isLoggedIn && currentRole && (
-        <Sidebar currentView={currentView} setView={setCurrentView} role={currentRole} onLogout={handleLogout} />
+        <Sidebar currentView={currentView} setView={handleSetView} role={currentRole} onLogout={handleLogout} />
       )}
-      <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-        {renderContent()}
-      </main>
+      
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {isLoggedIn && currentRole && (
+          <Header 
+            currentView={currentView} 
+            onBack={handleBack} 
+            role={currentRole} 
+            onLogout={handleLogout} 
+          />
+        )}
+        
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto h-full">
+            {renderContent()}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
