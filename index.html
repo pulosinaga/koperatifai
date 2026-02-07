@@ -12,7 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone: Penting untuk menjalankan TSX langsung di browser -->
+    <!-- Babel Standalone untuk memproses TSX di browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -22,7 +22,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #4338ca; border-radius: 10px; }
         
         #root:empty::before {
-            content: 'Memulai KoperatifAI...';
+            content: 'Memuat Intelegensi Koperasi...';
             display: flex;
             align-items: center;
             justify-content: center;
@@ -57,23 +57,29 @@
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
     
-    <!-- Area Pesan Error jika JS Gagal -->
     <div id="error-display" style="display:none; position: fixed; bottom: 20px; left: 20px; right: 20px; padding: 20px; color: #991b1b; font-family: monospace; font-size: 13px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 16px; z-index: 9999; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
-        <h3 style="margin-top:0; font-weight: bold;">Terjadi Kendala Memuat Aplikasi</h3>
+        <h3 style="margin-top:0; font-weight: bold;">Kendala Sistem Terdeteksi</h3>
         <div id="error-content"></div>
-        <button onclick="location.reload(true)" style="margin-top:15px; padding: 8px 16px; background: #991b1b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Muat Ulang (Force Refresh)</button>
+        <button onclick="location.reload(true)" style="margin-top:15px; padding: 8px 16px; background: #991b1b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Muat Ulang Paksa</button>
     </div>
 
-    <!-- Gunakan Babel untuk memproses index.tsx -->
-    <script type="text/babel" data-type="module" src="./index.tsx"></script>
+    <!-- Script Utama dengan Babel Presets yang tepat -->
+    <script 
+      type="text/babel" 
+      data-type="module" 
+      data-presets="react,typescript" 
+      src="./index.tsx"
+      crossorigin
+    ></script>
 
     <script>
-        // Catch early module errors
         window.addEventListener('error', function(e) {
             const errDiv = document.getElementById('error-display');
             const errContent = document.getElementById('error-content');
-            errDiv.style.display = 'block';
-            errContent.innerHTML = 'Error: ' + e.message + '<br><small>Source: ' + e.filename + ':' + e.lineno + '</small>';
+            if (errDiv && errContent) {
+                errDiv.style.display = 'block';
+                errContent.innerHTML = `<strong>${e.message}</strong><br><small>Lokasi: ${e.filename || 'internal'}:${e.lineno || '0'}</small>`;
+            }
         });
     </script>
 </body>
