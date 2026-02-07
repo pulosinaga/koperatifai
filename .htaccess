@@ -1,28 +1,22 @@
 
-# KoperatifAI Hostinger Stability Config
-<IfModule mod_mime.c>
-  AddType application/javascript .js
-</IfModule>
+# KoperatifAI Stability Config
+Options -Indexes
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   
-  # Arahkan semua request ke index.html untuk mendukung Single Page App
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
+  # Jangan arahkan file asli ke index.html
+  RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
-  RewriteRule ^ index.html [L]
-</IfModule>
-
-# MATIKAN CACHE AGAR PERUBAHAN SEGERA TERLIHAT
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresDefault "access plus 0 seconds"
+  
+  # Arahkan sisanya ke index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
+  Header set Access-Control-Allow-Origin "*"
   Header set Cache-Control "no-cache, no-store, must-revalidate"
-  Header set Pragma "no-cache"
-  Header set Expires 0
 </IfModule>
