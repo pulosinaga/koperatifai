@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone -->
+    <!-- Babel Standalone untuk memproses TSX di browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -38,7 +38,6 @@
     </style>
 
     <script>
-      // Polyfill process.env
       window.process = { env: { API_KEY: "" } };
       
       window.onerror = function(message, source, lineno, colno, error) {
@@ -77,33 +76,35 @@
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top: 1.5rem; font-weight: 900; color: #4338ca; letter-spacing: 0.2em; font-style: italic;">KOPERATIFAI</p>
-        <p style="font-size: 11px; color: #94a3b8; margin-top: 0.5rem;">Memuat Protokol Kedaulatan...</p>
+        <p style="font-size: 11px; color: #94a3b8; margin-top: 0.5rem;">Mengamankan Protokol Kedaulatan...</p>
     </div>
 
     <div id="error-display">
         <div class="error-box shadow-2xl">
             <h1 style="color: #be123c; font-weight: 900; font-size: 24px; margin-bottom: 1rem;">SISTEM TERHENTI</h1>
             <p id="error-text" style="font-family: monospace; font-size: 12px; margin: 1.5rem 0; background: white; padding: 1.5rem; border-radius: 1.5rem; text-align: left; color: #475569; border: 1px solid #e2e8f0; white-space: pre-wrap;"></p>
-            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%;">MUAT ULANG PAKSA</button>
+            <button onclick="location.reload(true)" style="background: #4338ca; color: white; border: none; padding: 16px 32px; border-radius: 1.5rem; font-weight: 900; cursor: pointer; width: 100%;">MUAT ULANG PAKSA (CTRL+F5)</button>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <!-- Gunakan type="text/babel" agar Babel Standalone memproses TSX -->
     <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
 
     <script>
-      // Sembunyikan loader jika React sudah merender konten
       const observer = new MutationObserver((mutations) => {
         const root = document.getElementById('root');
         if (root && root.children.length > 0) {
-          document.getElementById('loader').style.display = 'none';
+          const l = document.getElementById('loader');
+          if(l) l.style.display = 'none';
           observer.disconnect();
         }
       });
       observer.observe(document.body, { childList: true, subtree: true });
-      setTimeout(() => { if(document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; }, 8000);
+      setTimeout(() => { 
+        const l = document.getElementById('loader');
+        if(l) l.style.display = 'none'; 
+      }, 10000);
     </script>
 </body>
 </html>

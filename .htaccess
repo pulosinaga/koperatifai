@@ -4,29 +4,33 @@
     RewriteEngine On
     RewriteBase /
 
-    # Jangan alihkan jika file atau direktori benar-benar ada
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
+    # 1. Jika file fisik (seperti .tsx, .js, .css) benar-benar ada, layani langsung
+    RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # Pastikan file kode tidak di-rewrite ke index.html
-    RewriteCond %{REQUEST_URI} \.(tsx|ts|js|jsx|css|json|png|jpg|svg)$ [NC]
-    RewriteRule ^ - [L]
+    # 2. Paksa MIME Type untuk file TypeScript/React agar bisa diproses Babel di browser
+    # Aturan ini sangat krusial untuk memperbaiki galat "Unexpected token '<'"
+    RewriteCond %{REQUEST_URI} \.(tsx|ts|jsx)$ [NC]
+    RewriteRule ^ - [T=application/javascript,L]
 
-    # Alihkan rute virtual lainnya ke index.html (SPA support)
-    RewriteRule ^ index.html [L]
+    # 3. Fallback untuk navigasi Single Page App (hanya jika bukan file fisik)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
 </IfModule>
 
-# Paksa server menganggap .tsx dan .ts sebagai file JavaScript yang bisa dieksekusi browser/Babel
 <IfModule mod_mime.c>
+    # Tambahkan tipe MIME ke sistem server
     AddType application/javascript .ts
     AddType application/javascript .tsx
     AddType application/javascript .js
 </IfModule>
 
-# Cegah caching selama tahap perbaikan agar perubahan terlihat instan
 <IfModule mod_headers.c>
-    Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
-    Header set Pragma "no-cache"
-    Header set Expires 0
+    # Nonaktifkan cache agresif selama masa perbaikan sistem
+    <FilesMatch "\.(tsx|ts|js|html)$">
+        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
 </IfModule>
