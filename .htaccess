@@ -1,20 +1,21 @@
 
-# KoperatifAI Server Configuration
+# KoperatifAI Hostinger Stability Config
 <IfModule mod_mime.c>
-  AddType application/javascript .ts
-  AddType application/javascript .tsx
+  AddType application/javascript .js
 </IfModule>
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  
+  # Arahkan semua request ke index.html untuk mendukung Single Page App
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
   RewriteRule ^ index.html [L]
 </IfModule>
 
-# MATIKAN CACHE SELAMA MASA PERBAIKAN
+# MATIKAN CACHE AGAR PERUBAHAN SEGERA TERLIHAT
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresDefault "access plus 0 seconds"
