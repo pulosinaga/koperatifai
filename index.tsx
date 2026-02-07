@@ -3,47 +3,39 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 
-// Global Error Catch for debugging blank screen
-window.onerror = function(message, source, lineno, colno, error) {
-  console.error("FATAL APP ERROR:", message, "at", source, ":", lineno);
-  const errDisplay = document.getElementById('error-display');
-  const errContent = document.getElementById('error-content');
-  if (errDisplay && errContent) {
-    errDisplay.style.display = 'block';
-    errContent.innerHTML = `<strong>Runtime Error:</strong> ${message}<br><small>${source}:${lineno}</small>`;
-  }
-  return false;
-};
+/**
+ * Bootstrapper KoperatifAI
+ * Memastikan elemen root tersedia dan merender aplikasi React.
+ */
 
-// Service Worker Registration
+// Bypass Service Worker jika bermasalah
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('SW Registered'))
-      .catch(err => console.log('SW Registration Bypass', err));
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
   });
 }
 
-const rootElement = document.getElementById('root');
+const startApp = () => {
+  const container = document.getElementById('root');
+  if (!container) {
+    throw new Error("Elemen #root tidak ditemukan di DOM.");
+  }
 
-if (!rootElement) {
-  console.error("Critical: #root element not found");
-} else {
   try {
-    const root = ReactDOM.createRoot(rootElement);
+    const root = ReactDOM.createRoot(container);
     root.render(
       <React.StrictMode>
         <App />
       </React.StrictMode>
     );
-    console.log("App rendered successfully");
+    console.log("KoperatifAI: Kernel dimuat.");
   } catch (err) {
-    console.error("Render Error:", err);
-    const errDisplay = document.getElementById('error-display');
-    const errContent = document.getElementById('error-content');
-    if (errDisplay && errContent) {
-      errDisplay.style.display = 'block';
-      errContent.innerText = "Gagal merender aplikasi: " + err.message;
-    }
+    console.error("Gagal merender aplikasi:", err);
+    throw err;
   }
-}
+};
+
+// Jalankan aplikasi
+startApp();

@@ -1,14 +1,19 @@
 
-// Service Worker Minimal untuk Debugging
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+// Service Worker Deactivated for Debugging
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((names) => {
+      for (let name of names) caches.delete(name);
+    })
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  // Strategy: Network Only for debugging blank screen issues
-  event.respondWith(fetch(event.request));
+self.addEventListener('fetch', (e) => {
+  // Selalu ambil dari jaringan (Network Only)
+  return; 
 });
