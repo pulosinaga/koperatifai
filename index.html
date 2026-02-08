@@ -12,8 +12,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone untuk Memproses Kode -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Babel Standalone (Stable Version) -->
+    <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
 
     <style>
         body { 
@@ -37,7 +37,7 @@
     </style>
 
     <script>
-      // Inisialisasi Environment secara global paling awal
+      // Global Environment Polyfill
       window.process = { 
         env: { 
           API_KEY: "", 
@@ -47,7 +47,7 @@
       };
     </script>
 
-    <!-- Import Map Bersih (Hanya Versi 18.2.0 yang Stabil) -->
+    <!-- Import Map Bersih & Stabil (Hanya React 18) -->
     <script type="importmap">
 {
   "imports": {
@@ -57,54 +57,50 @@
     "recharts": "https://esm.sh/recharts@2.12.0",
     "@google/genai": "https://esm.sh/@google/genai@1.2.0",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
 </head>
 <body>
-    <!-- Layar Pemuatan -->
     <div id="loader">
         <div class="spinner"></div>
         <div class="mt-6 text-center">
             <p class="font-extrabold text-slate-800 tracking-tighter text-xl">KoperatifAI</p>
-            <p id="loader-status" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mengamankan Kedaulatan...</p>
+            <p id="loader-status" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mengaktifkan Kedaulatan...</p>
         </div>
     </div>
 
-    <!-- Container Utama Aplikasi -->
     <div id="root"></div>
 
-    <!-- Script Utama -->
-    <script type="text/babel" data-type="module" src="index.tsx"></script>
+    <!-- Logika Entry Point Inlined untuk Stabilitas Maksimal -->
+    <script type="text/babel" data-type="module" data-presets="typescript,react">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import App from './App.tsx';
 
-    <script>
-      // Otomatisasi Penghapusan Loader
-      const hideMainLoader = () => {
-        const loader = document.getElementById('loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => { loader.style.display = 'none'; }, 500);
+      const container = document.getElementById('root');
+      if (container) {
+        try {
+          const root = createRoot(container);
+          root.render(
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          );
+          console.log("KoperatifAI: System Online");
+          
+          // Sembunyikan loader setelah render berhasil
+          const loader = document.getElementById('loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+          }
+        } catch (err) {
+          console.error("Critical Render Error:", err);
+          document.getElementById('loader-status').innerText = "System Reboot Required";
         }
-      };
-
-      // Failsafe 1: Jika root sudah terisi konten, buang loader
-      const observer = new MutationObserver(() => {
-        if (document.getElementById('root')?.children.length > 0) {
-          hideMainLoader();
-          observer.disconnect();
-        }
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-
-      // Failsafe 2: Jika dalam 8 detik belum termuat (mungkin sinyal lemah), paksa buang loader
-      setTimeout(() => {
-        if (document.getElementById('root')?.children.length === 0) {
-          console.warn("Mendeteksi pemuatan lambat, mencoba bypass...");
-          hideMainLoader();
-        }
-      }, 8000);
+      }
     </script>
 </body>
 </html>

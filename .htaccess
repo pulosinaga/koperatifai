@@ -1,34 +1,26 @@
 
-# KoperatifAI - Production Shield v9.0
-
+# KoperatifAI - Hostinger Production Fix
 <IfModule mod_mime.c>
-    # Beritahu browser bahwa ini adalah file kode yang aman dijalankan
-    AddType application/javascript .js
     AddType application/javascript .ts
     AddType application/javascript .tsx
+    AddType application/javascript .js
     AddType application/json .json
 </IfModule>
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-
-    # 1. Jika file fisik (.tsx, .ts, .js, .css, .png) ada, berikan langsung
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
-
-    # 2. SPA Fallback: Kecualikan SEMUA ekstensi file statis dari pengalihan ke index.html
-    # Ini krusial agar permintaan ke App.tsx tidak dibalas dengan isi index.html
     RewriteCond %{REQUEST_URI} !\.(js|ts|tsx|jsx|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|otf|ttf)$ [NC]
     RewriteRule . /index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-    # Mencegah caching pada file kode agar perubahan segera tampil
-    <FilesMatch "\.(ts|tsx|js|jsx)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
+    <FilesMatch "\.(ts|tsx|js|jsx|html)$">
+        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
-        Header set Expires 0
-        Header set Content-Type "application/javascript; charset=UTF-8"
+        Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
     </FilesMatch>
+    Header set Access-Control-Allow-Origin "*"
 </IfModule>
