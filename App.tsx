@@ -57,7 +57,7 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    if (confirm("Keluar dari KoperatifAI? Keamanan data Anda tetap terjaga.")) {
+    if (confirm("Keluar dari KoperatifAI? Sesi Anda akan diakhiri demi keamanan.")) {
       setIsLoggedIn(false);
       setCurrentRole(null);
       setCurrentView(AppView.DASHBOARD);
@@ -114,7 +114,7 @@ const App: React.FC = () => {
     };
 
     return (
-      <div className="page-transition h-full">
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 h-full">
         {contentMap[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
       </div>
     );
