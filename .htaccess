@@ -1,6 +1,7 @@
 
-# KoperatifAI - Hostinger Production Fix
+# KoperatifAI - Production Security & MIME Fix
 <IfModule mod_mime.c>
+    # PENTING: Memaksa server mengenali file TypeScript sebagai JavaScript
     AddType application/javascript .ts
     AddType application/javascript .tsx
     AddType application/javascript .js
@@ -10,17 +11,25 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # Jika file fisik ada, langsung berikan
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
+
+    # SPA Fallback: Arahkan semua request ke index.html
     RewriteCond %{REQUEST_URI} !\.(js|ts|tsx|jsx|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|otf|ttf)$ [NC]
     RewriteRule . /index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
+    # Mencegah caching agar perubahan kode langsung terasa
     <FilesMatch "\.(ts|tsx|js|jsx|html)$">
-        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
-        Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
+        Header set Expires 0
+        Header set Content-Type "application/javascript; charset=UTF-8"
     </FilesMatch>
+    
+    # Izinkan CORS agar library luar bisa masuk
     Header set Access-Control-Allow-Origin "*"
 </IfModule>

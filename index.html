@@ -34,10 +34,15 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Custom scrollbar untuk mobile */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
 
     <script>
-      // Global Environment Polyfill
+      // Inisialisasi Environment Global
       window.process = { 
         env: { 
           API_KEY: "", 
@@ -45,9 +50,15 @@
           SUPABASE_ANON_KEY: "sb_publishable_QzWl-pyGwwYWYLqiSZSLBQ_vyR469P_" 
         } 
       };
+      
+      // Error Listener untuk debug otomatis
+      window.addEventListener('error', function(e) {
+        console.error("System Runtime Error:", e.message);
+        const status = document.getElementById('loader-status');
+        if (status) status.innerText = "Mereset Koneksi...";
+      });
     </script>
 
-    <!-- Import Map Bersih & Stabil (Hanya React 18) -->
     <script type="importmap">
 {
   "imports": {
@@ -57,6 +68,7 @@
     "recharts": "https://esm.sh/recharts@2.12.0",
     "@google/genai": "https://esm.sh/@google/genai@1.2.0",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
@@ -67,40 +79,45 @@
         <div class="spinner"></div>
         <div class="mt-6 text-center">
             <p class="font-extrabold text-slate-800 tracking-tighter text-xl">KoperatifAI</p>
-            <p id="loader-status" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mengaktifkan Kedaulatan...</p>
+            <p id="loader-status" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Menghubungkan Kedaulatan...</p>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <!-- Logika Entry Point Inlined untuk Stabilitas Maksimal -->
-    <script type="text/babel" data-type="module" data-presets="typescript,react">
-      import React from 'react';
-      import { createRoot } from 'react-dom/client';
-      import App from './App.tsx';
+    <!-- Pemuatan modul dengan Babel -->
+    <script type="text/babel" data-type="module">
+      import "./index.tsx";
+    </script>
 
-      const container = document.getElementById('root');
-      if (container) {
-        try {
-          const root = createRoot(container);
-          root.render(
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>
-          );
-          console.log("KoperatifAI: System Online");
-          
-          // Sembunyikan loader setelah render berhasil
-          const loader = document.getElementById('loader');
-          if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => { loader.style.display = 'none'; }, 500);
-          }
-        } catch (err) {
-          console.error("Critical Render Error:", err);
-          document.getElementById('loader-status').innerText = "System Reboot Required";
+    <script>
+      // Otomatisasi Penghapusan Loader
+      const hideMainLoader = () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => { loader.style.display = 'none'; }, 500);
         }
-      }
+      };
+
+      // Pantau apakah konten sudah di-render oleh React
+      const observer = new MutationObserver(() => {
+        const root = document.getElementById('root');
+        if (root && root.children.length > 0) {
+          hideMainLoader();
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // Failsafe: Jika dalam 12 detik tetap gagal, paksa buka aplikasi
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (root && root.children.length === 0) {
+          console.warn("Mendeteksi kelambatan jaringan, memaksa pemuatan...");
+          hideMainLoader();
+        }
+      }, 12000);
     </script>
 </body>
 </html>
