@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppView, UserRole } from './types.ts';
-import { supabase } from './services/supabaseClient.ts';
 
 // Navigasi & Frame
 import Sidebar from './components/Sidebar.tsx';
@@ -9,7 +8,7 @@ import Header from './components/Header.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import LoginScreen from './components/LoginScreen.tsx';
 
-// Finansial & Kredit
+// Finansial
 import TransactionHistory from './components/TransactionHistory.tsx';
 import DigitalPassbook from './components/DigitalPassbook.tsx';
 import SHUDistribution from './components/SHUDistribution.tsx';
@@ -19,7 +18,7 @@ import LoanHistory from './components/LoanHistory.tsx';
 import LoanReadiness from './components/LoanReadiness.tsx';
 import AICreditCommittee from './components/AICreditCommittee.tsx';
 
-// Ekonomi & Niaga
+// Niaga
 import MemberMarketplace from './components/MemberMarketplace.tsx';
 import MerchantDashboard from './components/MerchantDashboard.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
@@ -27,7 +26,7 @@ import SmartProcurement from './components/SmartProcurement.tsx';
 import ArisanDigital from './components/ArisanDigital.tsx';
 import BillPayments from './components/BillPayments.tsx';
 
-// Proteksi & Masa Depan
+// Proteksi & Edukasi
 import MemberHealthShield from './components/MemberHealthShield.tsx';
 import PersonalGoldSavings from './components/PersonalGoldSavings.tsx';
 import PensionFund from './components/PensionFund.tsx';
@@ -57,10 +56,11 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    if (confirm("Keluar dari KoperatifAI? Sesi Anda akan diakhiri demi keamanan.")) {
+    if (confirm("Keluar dari KoperatifAI?")) {
       setIsLoggedIn(false);
       setCurrentRole(null);
       setCurrentView(AppView.DASHBOARD);
+      setViewHistory([]);
     }
   };
 
@@ -82,7 +82,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (!isLoggedIn) return <LoginScreen onLogin={handleLogin} />;
 
-    const contentMap: Record<string, React.ReactNode> = {
+    const views: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard setView={handleSetView} role={currentRole!} />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
       [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
@@ -114,14 +114,14 @@ const App: React.FC = () => {
     };
 
     return (
-      <div className="page-transition h-full">
-        {contentMap[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 h-full">
+        {views[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden select-none">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden">
       {isLoggedIn && currentRole && (
         <Sidebar currentView={currentView} setView={handleSetView} role={currentRole} onLogout={handleLogout} />
       )}

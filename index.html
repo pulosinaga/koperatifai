@@ -3,38 +3,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4338ca">
     <link rel="manifest" href="manifest.json">
-    <title>KoperatifAI - Kedaulatan Digital</title>
+    <title>KoperatifAI - Digital Credit Union</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone untuk memproses TSX di Browser -->
+    <!-- Babel Standalone untuk memproses TSX secara on-the-fly -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; margin: 0; overflow-x: hidden; }
+        body { 
+          font-family: 'Plus Jakarta Sans', sans-serif; 
+          background: #f8fafc; 
+          margin: 0; 
+          overflow-x: hidden;
+          -webkit-tap-highlight-color: transparent;
+        }
         #loader {
             position: fixed; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; background: #ffffff; z-index: 1000;
-            transition: opacity 0.4s ease-in-out;
         }
         .spinner {
-            width: 50px; height: 50px; border: 5px solid #f1f5f9;
+            width: 40px; height: 40px; border: 4px solid #f1f5f9;
             border-bottom-color: #4338ca; border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 
     <script>
-      // Global Process Setup
+      // Polyfill process.env sebelum library lain dimuat
       window.process = { 
         env: { 
           API_KEY: "", 
@@ -62,46 +63,39 @@
 <body>
     <div id="loader">
         <div class="spinner"></div>
-        <div class="mt-6 text-center">
-            <p class="font-extrabold text-slate-800 tracking-tighter text-xl">KoperatifAI</p>
-            <p id="loader-status" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mensinkronkan Kedaulatan...</p>
+        <div class="mt-4 text-center">
+            <p class="font-extrabold text-slate-800 tracking-tighter text-lg">KoperatifAI</p>
+            <p id="status-text" class="text-[8px] font-black text-indigo-500 uppercase tracking-[0.2em] mt-1">Menginisialisasi Sistem...</p>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <script type="text/babel" data-type="module" data-presets="react,typescript" src="index.tsx"></script>
+    <!-- Script Utama dengan penanganan tipe modul yang benar -->
+    <script type="text/babel" data-type="module" src="index.tsx"></script>
 
     <script>
-      const hideLoader = () => {
-        const loader = document.getElementById('loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => { loader.style.display = 'none'; }, 400);
+      // Logika pembersihan loader otomatis
+      const checkRoot = setInterval(() => {
+        const root = document.getElementById('root');
+        if (root && root.children.length > 0) {
+          const loader = document.getElementById('loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+          }
+          clearInterval(checkRoot);
         }
-      };
+      }, 100);
 
-      // Failsafe: Jika render memakan waktu lebih dari 7 detik, hapus loader paksa
-      const failsafe = setTimeout(() => {
+      // Timeout jika gagal muat dalam 10 detik
+      setTimeout(() => {
         const root = document.getElementById('root');
         if (root && root.children.length === 0) {
-          console.warn("Mendeteksi keterlambatan pemuatan, mencoba bypass...");
-          hideLoader();
+          document.getElementById('status-text').innerText = "Koneksi Lambat, Harap Tunggu...";
+          document.getElementById('status-text').classList.add('text-amber-500');
         }
-      }, 7000);
-
-      // Sembunyikan loader saat React berhasil melakukan mount
-      const observer = new MutationObserver(() => {
-        if (document.getElementById('root')?.children.length > 0) {
-          hideLoader();
-          clearTimeout(failsafe);
-          observer.disconnect();
-        }
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-
-      // Sembunyikan jika ada error fatal agar user tidak stuck
-      window.onerror = () => hideLoader();
+      }, 10000);
     </script>
 </body>
 </html>

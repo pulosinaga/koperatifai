@@ -1,28 +1,24 @@
 
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 
 /**
- * KOPERATIFAI PRODUCTION ENTRY POINT
- * Optimized for mobile browser stability.
+ * KOPERATIFAI MOBILE OPTIMIZED ENTRY
+ * Version: 1.2.1
  */
 
-const mountApp = () => {
-  const rootEl = document.getElementById('root');
-  if (rootEl) {
-    try {
-      const root = ReactDOM.createRoot(rootEl);
-      root.render(<App />);
-      console.log("KoperatifAI: System Engine Online.");
-    } catch (err) {
-      console.error("KoperatifAI: Critical Mount Failure", err);
-      // Force hide loader to show error if any
-      const loader = document.getElementById('loader');
-      if (loader) loader.style.display = 'none';
-    }
-  }
-};
+const container = document.getElementById('root');
 
-// Start execution
-mountApp();
+if (container) {
+  try {
+    const root = createRoot(container);
+    root.render(<App />);
+    console.log("KoperatifAI: Render Success");
+  } catch (error) {
+    console.error("Critical Mount Error:", error);
+    // Jika gagal, pastikan loader hilang agar user bisa melihat error konsol jika diperlukan
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
+  }
+}
