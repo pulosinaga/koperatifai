@@ -3,31 +3,33 @@ import React, { useState, useEffect } from 'react';
 import { AppView, UserRole } from './types.ts';
 import { supabase } from './services/supabaseClient.ts';
 
-// Komponen Navigasi & Frame
+// Navigasi & Frame
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
-import LoginScreen from './components/LoginScreen.tsx';
 import Dashboard from './components/Dashboard.tsx';
+import LoginScreen from './components/LoginScreen.tsx';
 
-// Modul Finansial
+// Finansial & Kredit
 import TransactionHistory from './components/TransactionHistory.tsx';
-import LoanSimulator from './components/LoanSimulator.tsx';
-import LoanHistory from './components/LoanHistory.tsx';
 import DigitalPassbook from './components/DigitalPassbook.tsx';
 import SHUDistribution from './components/SHUDistribution.tsx';
+import LoanSimulator from './components/LoanSimulator.tsx';
 import VouchingSystem from './components/VouchingSystem.tsx';
+import LoanHistory from './components/LoanHistory.tsx';
 import LoanReadiness from './components/LoanReadiness.tsx';
 import AICreditCommittee from './components/AICreditCommittee.tsx';
+import AICollateral from './components/AICollateral.tsx';
 
-// Modul Niaga & Ekonomi
+// Ekonomi & Niaga
 import MemberMarketplace from './components/MemberMarketplace.tsx';
 import MerchantDashboard from './components/MerchantDashboard.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
 import SmartProcurement from './components/SmartProcurement.tsx';
 import BillPayments from './components/BillPayments.tsx';
 import ArisanDigital from './components/ArisanDigital.tsx';
+import CourierDashboard from './components/CourierDashboard.tsx';
 
-// Modul Proteksi & Edukasi
+// Proteksi & Masa Depan
 import MemberHealthShield from './components/MemberHealthShield.tsx';
 import PersonalGoldSavings from './components/PersonalGoldSavings.tsx';
 import PensionFund from './components/PensionFund.tsx';
@@ -35,14 +37,17 @@ import DaskopClaim from './components/DaskopClaim.tsx';
 import SmartEducation from './components/SmartEducation.tsx';
 import AIAdvisor from './components/AIAdvisor.tsx';
 import Membership from './components/Membership.tsx';
+import SpiritualJourneys from './components/SpiritualJourneys.tsx';
+import CooperativeHousing from './components/CooperativeHousing.tsx';
 
-// Modul Founder & Admin
+// Founder Control
 import GlobalCommandCenter from './components/GlobalCommandCenter.tsx';
 import StrategicProfitCalculator from './components/StrategicProfitCalculator.tsx';
 import EcosystemRevenue from './components/EcosystemRevenue.tsx';
 import SystemHealth from './components/SystemHealth.tsx';
-import AccountingReports from './components/AccountingReports.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
+import DutaManagementCenter from './components/DutaManagementCenter.tsx';
+import CrisisSimulator from './components/CrisisSimulator.tsx';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -73,6 +78,7 @@ const App: React.FC = () => {
       setIsLoggedIn(false);
       setCurrentRole(null);
       setCurrentView(AppView.DASHBOARD);
+      setViewHistory([]);
     }
   };
 
@@ -94,7 +100,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (!isLoggedIn) return <LoginScreen onLogin={handleLogin} />;
 
-    const views: Record<string, React.ReactNode> = {
+    const viewMap: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard setView={handleSetView} role={currentRole!} />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
       [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
@@ -121,19 +127,19 @@ const App: React.FC = () => {
       [AppView.STRATEGIC_PROFIT_CALCULATOR]: <StrategicProfitCalculator />,
       [AppView.ECOSYSTEM_REVENUE]: <EcosystemRevenue />,
       [AppView.SYSTEM_HEALTH]: <SystemHealth />,
-      [AppView.ACCOUNTING]: <AccountingReports />,
-      [AppView.DEPLOYMENT_HUB]: <DeploymentHub />
+      [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
+      [AppView.REVENUE_CENTER]: <DutaManagementCenter />
     };
 
     return (
       <div className="page-transition h-full">
-        {views[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
+        {viewMap[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden select-none">
       {isLoggedIn && currentRole && (
         <Sidebar currentView={currentView} setView={handleSetView} role={currentRole} onLogout={handleLogout} />
       )}
@@ -148,7 +154,7 @@ const App: React.FC = () => {
                }`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${dbStatus === 'SYNCED' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`}></span>
                   <span className="text-[9px] font-black uppercase tracking-widest">
-                    {dbStatus === 'SYNCED' ? 'Supabase Connected' : 'Local Persistence'}
+                    {dbStatus === 'SYNCED' ? 'Supabase Cloud' : 'Local Persistence'}
                   </span>
                </div>
             </div>

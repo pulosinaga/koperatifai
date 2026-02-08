@@ -12,21 +12,21 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout }) => {
   const menuCategories = [
     {
-      label: 'Utama',
+      label: 'Portal Utama',
       items: [
         { id: AppView.DASHBOARD, label: 'Pusat Komando', icon: '📊' },
         { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
-        { id: AppView.TRANSACTIONS, label: 'Riwayat Transaksi', icon: '💸' },
+        { id: AppView.TRANSACTIONS, label: 'Mutasi Rekening', icon: '💸' },
         { id: AppView.SHU_DISTRIBUTION, label: 'Bagi Hasil (SHU)', icon: '✨' },
       ]
     },
     {
       label: 'Layanan Finansial',
       items: [
-        { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Kredit', icon: '🧮' },
+        { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
         { id: AppView.VOUCHING_SYSTEM, label: 'Jaminan Sosial', icon: '🤝' },
-        { id: AppView.LOAN_HISTORY, label: 'Status Pinjaman', icon: '📜' },
         { id: AppView.LOAN_READINESS, label: 'Kesiapan Modal', icon: '📈' },
+        { id: AppView.LOAN_HISTORY, label: 'Status Kredit', icon: '📜' },
       ]
     },
     {
@@ -35,8 +35,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
         { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🛒' },
         { id: AppView.MERCHANT_DASHBOARD, label: 'Toko Saya', icon: '🏪' },
         { id: AppView.SMART_PROCUREMENT, label: 'Grosir Kolektif', icon: '📦' },
-        { id: AppView.ARISAN_DIGITAL, label: 'Arisan Pintar', icon: '🌀' },
         { id: AppView.BILL_PAYMENTS, label: 'Bayar Tagihan', icon: '⚡' },
+        { id: AppView.ARISAN_DIGITAL, label: 'Arisan Pintar', icon: '🌀' },
       ]
     },
     {
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
         { id: AppView.PERSONAL_GOLD, label: 'Tabungan Emas', icon: '📀' },
         { id: AppView.PENSION_FUND, label: 'Dana Pensiun', icon: '👴' },
         { id: AppView.SMART_EDUCATION, label: 'Academy AI', icon: '🎓' },
-        { id: AppView.AI_ADVISOR, label: 'Tanya AI', icon: '🤖' },
+        { id: AppView.AI_ADVISOR, label: 'Asisten AI', icon: '🤖' },
       ]
     }
   ];
@@ -56,9 +56,10 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
       label: 'Founder Control',
       items: [
         { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
-        { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'Kalkulator Profit', icon: '🧮' },
+        { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'Kalkulator Cuan', icon: '🧮' },
         { id: AppView.SYSTEM_HEALTH, label: 'Audit Sistem', icon: '🩺' },
         { id: AppView.DEPLOYMENT_HUB, label: 'Domain Sync', icon: '🌐' },
+        { id: AppView.REVENUE_CENTER, label: 'Duta Manage', icon: '🛵' },
       ]
     });
   }
@@ -112,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
           onClick={onLogout}
           className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100"
         >
-          Keluar
+          Logout
         </button>
       </div>
     </aside>

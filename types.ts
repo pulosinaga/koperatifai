@@ -28,7 +28,9 @@ export enum AppView {
   ECOSYSTEM_REVENUE = 'ECOSYSTEM_REVENUE',
   DEPLOYMENT_HUB = 'DEPLOYMENT_HUB',
   SYSTEM_HEALTH = 'SYSTEM_HEALTH',
-  ACCOUNTING = 'ACCOUNTING'
+  ACCOUNTING = 'ACCOUNTING',
+  // Added REVENUE_CENTER to resolve property missing error
+  REVENUE_CENTER = 'REVENUE_CENTER'
 }
 
 export enum UserRole {

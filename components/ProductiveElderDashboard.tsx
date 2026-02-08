@@ -31,7 +31,7 @@ const ProductiveElderDashboard: React.FC = () => {
         Gunakan bahasa Indonesia yang sangat sopan, kebapakan/keibuan, dan hindari istilah teknis yang rumit. 
         Hubungkan tipsnya dengan pentingnya menjaga kesehatan fisik selama mengelola kolam.`,
       });
-      // Fixed: Change setAiReport to setAiTip to match the defined state
+      // Fixed: Change setAiReport to setAiTip to match the defined state variable 'aiTip'
       setAiTip(response.text || "Tips tidak tersedia.");
     } catch (e) {
       setAiTip("Selalu jaga kebersihan kolam ya, Pak/Bu. Kesehatan ikan dimulai dari air yang bersih.");
@@ -50,7 +50,7 @@ const ProductiveElderDashboard: React.FC = () => {
             <span className="px-4 py-1.5 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
               Silver Economy Empowerment
             </span>
-            <h2 className="text-4xl font-black leading-tight italic">Masa Tua Berdaya: <br/>Menabung Karya, Menuai Bahagia.</h2>
+            <h2 className="text-4xl font-black leading-tight italic font-serif text-white">Masa Tua Berdaya: <br/>Menabung Karya, Menuai Bahagia.</h2>
             <p className="text-emerald-100 text-lg leading-relaxed max-w-2xl font-medium">
               Selamat malam, Pak Budi Utama. Kolam lele Anda terlihat sehat hari ini. Teruslah berkarya untuk keluarga dan komunitas.
             </p>

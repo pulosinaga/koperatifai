@@ -28,16 +28,15 @@ const CooperativeHousing: React.FC = () => {
         3. Berikan roadmap pembangunan 6 bulan: dari pondasi sampai atap dengan pendanaan bertahap (Milestone Funding).
         Gunakan gaya bahasa yang inspiratif, teknis namun mudah dimengerti, dan menekankan kedaulatan tempat tinggal.`,
       });
-      setAiAnalysis(response.text || "AI sedang menyusun rencana pembangunan.");
+      // Added fix: Using setAiReport directly instead of redundant helper
+      setAiReport(response.text || "AI sedang menyusun rencana pembangunan.");
     } catch (e) {
-      setAiAnalysis("Gagal terhubung ke Arsitek AI. Silakan periksa koneksi internet Anda.");
+      // Added fix: Using setAiReport directly
+      setAiReport("Gagal terhubung ke Arsitek AI. Silakan periksa koneksi internet Anda.");
     } finally {
       setIsSimulating(false);
     }
   };
-
-  // Fixed setAiAnalysis reference
-  const setAiAnalysis = (val: string) => setAiReport(val);
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700 pb-20 max-w-7xl mx-auto">
@@ -158,17 +157,17 @@ const CooperativeHousing: React.FC = () => {
          <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-xl transition-all group">
             <div className="text-5xl group-hover:scale-110 transition-transform">🧱</div>
             <h4 className="font-black text-xl text-slate-800 italic">Tabungan Barang</h4>
-            <p className="text-xs text-slate-500 leading-relaxed italic">"Inflasi bahan bangunan tinggi? Kunci harga sekarang dengan mencicil unit barang secara digital."</p>
+            <p className="text-sm text-slate-500 leading-relaxed italic">"Inflasi bahan bangunan tinggi? Kunci harga sekarang dengan mencicil unit barang secara digital."</p>
          </div>
          <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-xl transition-all group">
             <div className="text-5xl group-hover:scale-110 transition-transform">👷‍♂️</div>
             <h4 className="font-black text-xl text-slate-800 italic">Trusted Labor</h4>
-            <p className="text-xs text-slate-500 leading-relaxed italic">"Akses database tukang bersertifikat dari sesama anggota dengan sistem pembayaran aman."</p>
+            <p className="text-sm text-slate-500 leading-relaxed italic">"Akses database tukang bersertifikat dari sesama anggota dengan sistem pembayaran aman."</p>
          </div>
          <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm text-center space-y-4 hover:shadow-xl transition-all group">
             <div className="text-5xl group-hover:scale-110 transition-transform">📉</div>
             <h4 className="font-black text-xl text-slate-800 italic">Zero Waste AI</h4>
-            <p className="text-xs text-slate-500 leading-relaxed italic">"AI menghitung material hingga ke butir terakhir. Hemat biaya pembangunan hingga 20%."</p>
+            <p className="text-sm text-slate-500 leading-relaxed italic">"AI menghitung material hingga ke butir terakhir. Hemat biaya pembangunan hingga 20%."</p>
          </div>
       </div>
 
