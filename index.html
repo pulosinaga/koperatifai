@@ -19,7 +19,7 @@
         #loader {
             position: fixed; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; background: #ffffff; z-index: 1000;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease-in-out;
         }
         .spinner {
             width: 50px; height: 50px; border: 5px solid #f1f5f9;
@@ -64,7 +64,7 @@
         <div class="spinner"></div>
         <div class="mt-6 text-center">
             <p class="font-extrabold text-slate-800 tracking-tighter text-xl">KoperatifAI</p>
-            <p id="loader-text" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mensinkronkan Kedaulatan...</p>
+            <p id="loader-status" class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mensinkronkan Kedaulatan...</p>
         </div>
     </div>
 
@@ -77,32 +77,31 @@
         const loader = document.getElementById('loader');
         if (loader) {
           loader.style.opacity = '0';
-          setTimeout(() => { loader.style.display = 'none'; }, 500);
+          setTimeout(() => { loader.style.display = 'none'; }, 400);
         }
       };
 
-      // Failsafe: Hide loader jika render memakan waktu terlalu lama (sinyal lambat)
-      setTimeout(() => {
+      // Failsafe: Jika render memakan waktu lebih dari 7 detik, hapus loader paksa
+      const failsafe = setTimeout(() => {
         const root = document.getElementById('root');
         if (root && root.children.length === 0) {
-          console.warn("Loading lambat terdeteksi, mencoba refresh paksa...");
-          document.getElementById('loader-text').innerText = "MENYIAPKAN TAMPILAN...";
+          console.warn("Mendeteksi keterlambatan pemuatan, mencoba bypass...");
+          hideLoader();
         }
-      }, 5000);
+      }, 7000);
 
-      // Auto-hide saat root terisi
+      // Sembunyikan loader saat React berhasil melakukan mount
       const observer = new MutationObserver(() => {
         if (document.getElementById('root')?.children.length > 0) {
           hideLoader();
+          clearTimeout(failsafe);
           observer.disconnect();
         }
       });
       observer.observe(document.body, { childList: true, subtree: true });
 
-      // Emergency hide jika ada error JS
-      window.onerror = function() {
-        hideLoader();
-      };
+      // Sembunyikan jika ada error fatal agar user tidak stuck
+      window.onerror = () => hideLoader();
     </script>
 </body>
 </html>

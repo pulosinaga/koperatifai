@@ -114,7 +114,7 @@ const App: React.FC = () => {
     };
 
     return (
-      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 h-full">
+      <div className="page-transition h-full">
         {contentMap[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
       </div>
     );
