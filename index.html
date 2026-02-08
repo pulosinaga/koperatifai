@@ -37,6 +37,7 @@
     </style>
 
     <script>
+      // Global Process Setup
       window.process = { 
         env: { 
           API_KEY: "", 
@@ -69,9 +70,14 @@
             <p class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mt-1">Mensinkronkan Kedaulatan...</p>
         </div>
     </div>
+
     <div id="root"></div>
+
+    <!-- Script Utama -->
     <script type="text/babel" data-type="module" data-presets="react,typescript" src="index.tsx"></script>
+
     <script>
+      // Manajemen Loader yang lebih aman (Resilient)
       const hideLoader = () => {
         const loader = document.getElementById('loader');
         if (loader) {
@@ -79,6 +85,8 @@
           setTimeout(() => { loader.style.display = 'none'; }, 600);
         }
       };
+
+      // Auto-hide loader jika render berhasil
       const observer = new MutationObserver(() => {
         if (document.getElementById('root')?.children.length > 0) {
           hideLoader();
@@ -86,7 +94,15 @@
         }
       });
       observer.observe(document.body, { childList: true, subtree: true });
-      window.onerror = () => { hideLoader(); };
+
+      // Emergency hide loader jika terjadi error agar tidak berputar selamanya
+      window.onerror = () => {
+        console.error("Sistem mendeteksi anomali pada pemuatan script.");
+        hideLoader();
+      };
+      
+      // Timeout pengaman (10 detik)
+      setTimeout(hideLoader, 10000);
     </script>
 </body>
 </html>

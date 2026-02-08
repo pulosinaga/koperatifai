@@ -5,12 +5,13 @@ import App from './App.tsx';
 
 /**
  * KOPERATIFAI ENTRY POINT
- * Diproses oleh Babel Standalone di browser.
+ * Dioptimasi untuk stabilitas eksekusi di browser mobile.
  */
 
-console.log("KoperatifAI: Inisialisasi DOM dimulai...");
+console.log("KoperatifAI: Menginisialisasi sistem kedaulatan...");
 
 const rootEl = document.getElementById('root');
+
 if (rootEl) {
   try {
     const root = ReactDOM.createRoot(rootEl);
@@ -19,10 +20,13 @@ if (rootEl) {
         <App />
       </React.StrictMode>
     );
-    console.log("KoperatifAI: React Root berhasil dirender.");
+    console.log("KoperatifAI: Render utama berhasil.");
   } catch (err) {
-    console.error("KOPERATIFAI_BOOTSTRAP_ERROR:", err);
+    console.error("CRITICAL_BOOT_ERROR:", err);
+    // Jika gagal render, hapus loader secara manual agar user tidak bingung
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
   }
 } else {
-  console.error("KoperatifAI: Elemen #root tidak ditemukan di DOM.");
+  console.error("KoperatifAI: Container #root tidak ditemukan.");
 }

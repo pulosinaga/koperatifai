@@ -18,16 +18,14 @@ import VouchingSystem from './components/VouchingSystem.tsx';
 import LoanHistory from './components/LoanHistory.tsx';
 import LoanReadiness from './components/LoanReadiness.tsx';
 import AICreditCommittee from './components/AICreditCommittee.tsx';
-import AICollateral from './components/AICollateral.tsx';
 
 // Ekonomi & Niaga
 import MemberMarketplace from './components/MemberMarketplace.tsx';
 import MerchantDashboard from './components/MerchantDashboard.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
 import SmartProcurement from './components/SmartProcurement.tsx';
-import BillPayments from './components/BillPayments.tsx';
 import ArisanDigital from './components/ArisanDigital.tsx';
-import CourierDashboard from './components/CourierDashboard.tsx';
+import BillPayments from './components/BillPayments.tsx';
 
 // Proteksi & Masa Depan
 import MemberHealthShield from './components/MemberHealthShield.tsx';
@@ -37,8 +35,6 @@ import DaskopClaim from './components/DaskopClaim.tsx';
 import SmartEducation from './components/SmartEducation.tsx';
 import AIAdvisor from './components/AIAdvisor.tsx';
 import Membership from './components/Membership.tsx';
-import SpiritualJourneys from './components/SpiritualJourneys.tsx';
-import CooperativeHousing from './components/CooperativeHousing.tsx';
 
 // Founder Control
 import GlobalCommandCenter from './components/GlobalCommandCenter.tsx';
@@ -47,25 +43,12 @@ import EcosystemRevenue from './components/EcosystemRevenue.tsx';
 import SystemHealth from './components/SystemHealth.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
 import DutaManagementCenter from './components/DutaManagementCenter.tsx';
-import CrisisSimulator from './components/CrisisSimulator.tsx';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
-  const [dbStatus, setDbStatus] = useState<'CONNECTING' | 'SYNCED' | 'OFFLINE'>('CONNECTING');
   const [viewHistory, setViewHistory] = useState<AppView[]>([]);
-
-  useEffect(() => {
-    const checkConn = async () => {
-      if (!supabase) { setDbStatus('OFFLINE'); return; }
-      try {
-        const { error } = await supabase.from('profiles').select('id', { count: 'exact', head: true });
-        setDbStatus(error ? 'OFFLINE' : 'SYNCED');
-      } catch (e) { setDbStatus('OFFLINE'); }
-    };
-    checkConn();
-  }, []);
 
   const handleLogin = (role: UserRole) => {
     setCurrentRole(role);
@@ -74,11 +57,10 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    if (confirm("Keluar dari KoperatifAI?")) {
+    if (confirm("Keluar dari KoperatifAI? Keamanan data Anda tetap terjaga.")) {
       setIsLoggedIn(false);
       setCurrentRole(null);
       setCurrentView(AppView.DASHBOARD);
-      setViewHistory([]);
     }
   };
 
@@ -100,7 +82,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (!isLoggedIn) return <LoginScreen onLogin={handleLogin} />;
 
-    const viewMap: Record<string, React.ReactNode> = {
+    const contentMap: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard setView={handleSetView} role={currentRole!} />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
       [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
@@ -133,7 +115,7 @@ const App: React.FC = () => {
 
     return (
       <div className="page-transition h-full">
-        {viewMap[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
+        {contentMap[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
       </div>
     );
   };
@@ -146,19 +128,7 @@ const App: React.FC = () => {
       
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {isLoggedIn && currentRole && (
-          <>
-            <Header currentView={currentView} onBack={handleBack} role={currentRole} onLogout={handleLogout} />
-            <div className="absolute top-20 right-8 z-30 pointer-events-none">
-               <div className={`flex items-center gap-2 px-3 py-1 rounded-full border bg-white/80 backdrop-blur-md shadow-sm transition-all duration-700 ${
-                 dbStatus === 'SYNCED' ? 'border-emerald-100 text-emerald-600' : 'border-amber-100 text-amber-600'
-               }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${dbStatus === 'SYNCED' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`}></span>
-                  <span className="text-[9px] font-black uppercase tracking-widest">
-                    {dbStatus === 'SYNCED' ? 'Supabase Cloud' : 'Local Persistence'}
-                  </span>
-               </div>
-            </div>
-          </>
+          <Header currentView={currentView} onBack={handleBack} role={currentRole} onLogout={handleLogout} />
         )}
         
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
