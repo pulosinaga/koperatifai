@@ -1,38 +1,48 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppView, UserRole } from './types.ts';
+import { supabase } from './services/supabaseClient.ts';
+
+// Komponen Navigasi & Frame
 import Sidebar from './components/Sidebar.tsx';
-import Dashboard from './components/Dashboard.tsx';
-import LoginScreen from './components/LoginScreen.tsx';
 import Header from './components/Header.tsx';
+import LoginScreen from './components/LoginScreen.tsx';
+import Dashboard from './components/Dashboard.tsx';
+
+// Modul Finansial
 import TransactionHistory from './components/TransactionHistory.tsx';
 import LoanSimulator from './components/LoanSimulator.tsx';
 import LoanHistory from './components/LoanHistory.tsx';
-import AIAdvisor from './components/AIAdvisor.tsx';
-import Membership from './components/Membership.tsx';
-import SHUDistribution from './components/SHUDistribution.tsx';
 import DigitalPassbook from './components/DigitalPassbook.tsx';
+import SHUDistribution from './components/SHUDistribution.tsx';
 import VouchingSystem from './components/VouchingSystem.tsx';
 import LoanReadiness from './components/LoanReadiness.tsx';
 import AICreditCommittee from './components/AICreditCommittee.tsx';
+
+// Modul Niaga & Ekonomi
 import MemberMarketplace from './components/MemberMarketplace.tsx';
 import MerchantDashboard from './components/MerchantDashboard.tsx';
-import ArisanDigital from './components/ArisanDigital.tsx';
+import MemberQRIS from './components/MemberQRIS.tsx';
 import SmartProcurement from './components/SmartProcurement.tsx';
 import BillPayments from './components/BillPayments.tsx';
-import MemberQRIS from './components/MemberQRIS.tsx';
+import ArisanDigital from './components/ArisanDigital.tsx';
+
+// Modul Proteksi & Edukasi
 import MemberHealthShield from './components/MemberHealthShield.tsx';
 import PersonalGoldSavings from './components/PersonalGoldSavings.tsx';
 import PensionFund from './components/PensionFund.tsx';
 import DaskopClaim from './components/DaskopClaim.tsx';
 import SmartEducation from './components/SmartEducation.tsx';
+import AIAdvisor from './components/AIAdvisor.tsx';
+import Membership from './components/Membership.tsx';
+
+// Modul Founder & Admin
 import GlobalCommandCenter from './components/GlobalCommandCenter.tsx';
 import StrategicProfitCalculator from './components/StrategicProfitCalculator.tsx';
 import EcosystemRevenue from './components/EcosystemRevenue.tsx';
-import DeploymentHub from './components/DeploymentHub.tsx';
 import SystemHealth from './components/SystemHealth.tsx';
 import AccountingReports from './components/AccountingReports.tsx';
-import { supabase } from './services/supabaseClient.ts';
+import DeploymentHub from './components/DeploymentHub.tsx';
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,7 +69,7 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    if (confirm("Keluar dari sistem aman KoperatifAI?")) {
+    if (confirm("Keluar dari KoperatifAI?")) {
       setIsLoggedIn(false);
       setCurrentRole(null);
       setCurrentView(AppView.DASHBOARD);
@@ -84,63 +94,69 @@ const App: React.FC = () => {
   const renderContent = () => {
     if (!isLoggedIn) return <LoginScreen onLogin={handleLogin} />;
 
-    switch (currentView) {
-      case AppView.DASHBOARD: return <Dashboard setView={handleSetView} role={currentRole!} />;
-      case AppView.TRANSACTIONS: return <TransactionHistory />;
-      case AppView.SHU_DISTRIBUTION: return <SHUDistribution />;
-      case AppView.DIGITAL_PASSBOOK: return <DigitalPassbook />;
-      case AppView.LOAN_SIMULATOR: return <LoanSimulator />;
-      case AppView.VOUCHING_SYSTEM: return <VouchingSystem />;
-      case AppView.LOAN_HISTORY: return <LoanHistory />;
-      case AppView.LOAN_READINESS: return <LoanReadiness />;
-      case AppView.AI_CREDIT_COMMITTEE: return <AICreditCommittee />;
-      case AppView.MEMBER_MARKETPLACE: return <MemberMarketplace />;
-      case AppView.MERCHANT_DASHBOARD: return <MerchantDashboard />;
-      case AppView.ARISAN_DIGITAL: return <ArisanDigital />;
-      case AppView.SMART_PROCUREMENT: return <SmartProcurement />;
-      case AppView.BILL_PAYMENTS: return <BillPayments />;
-      case AppView.MEMBER_QRIS: return <MemberQRIS />;
-      case AppView.MEMBER_HEALTH_SHIELD: return <MemberHealthShield />;
-      case AppView.PERSONAL_GOLD: return <PersonalGoldSavings />;
-      case AppView.PENSION_FUND: return <PensionFund />;
-      case AppView.DASKOP_CLAIM: return <DaskopClaim />;
-      case AppView.SMART_EDUCATION: return <SmartEducation />;
-      case AppView.AI_ADVISOR: return <AIAdvisor />;
-      case AppView.MEMBERSHIP_PROFILE: return <Membership />;
-      case AppView.GLOBAL_COMMAND_CENTER: return <GlobalCommandCenter />;
-      case AppView.STRATEGIC_PROFIT_CALCULATOR: return <StrategicProfitCalculator />;
-      case AppView.ECOSYSTEM_REVENUE: return <EcosystemRevenue />;
-      case AppView.DEPLOYMENT_HUB: return <DeploymentHub />;
-      case AppView.SYSTEM_HEALTH: return <SystemHealth />;
-      case AppView.ACCOUNTING: return <AccountingReports />;
-      default: return <Dashboard setView={handleSetView} role={currentRole!} />;
-    }
+    const views: Record<string, React.ReactNode> = {
+      [AppView.DASHBOARD]: <Dashboard setView={handleSetView} role={currentRole!} />,
+      [AppView.TRANSACTIONS]: <TransactionHistory />,
+      [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
+      [AppView.DIGITAL_PASSBOOK]: <DigitalPassbook />,
+      [AppView.LOAN_SIMULATOR]: <LoanSimulator />,
+      [AppView.VOUCHING_SYSTEM]: <VouchingSystem />,
+      [AppView.LOAN_HISTORY]: <LoanHistory />,
+      [AppView.LOAN_READINESS]: <LoanReadiness />,
+      [AppView.AI_CREDIT_COMMITTEE]: <AICreditCommittee />,
+      [AppView.MEMBER_MARKETPLACE]: <MemberMarketplace />,
+      [AppView.MERCHANT_DASHBOARD]: <MerchantDashboard />,
+      [AppView.BILL_PAYMENTS]: <BillPayments />,
+      [AppView.MEMBER_QRIS]: <MemberQRIS />,
+      [AppView.SMART_PROCUREMENT]: <SmartProcurement />,
+      [AppView.ARISAN_DIGITAL]: <ArisanDigital />,
+      [AppView.MEMBER_HEALTH_SHIELD]: <MemberHealthShield />,
+      [AppView.PERSONAL_GOLD]: <PersonalGoldSavings />,
+      [AppView.PENSION_FUND]: <PensionFund />,
+      [AppView.DASKOP_CLAIM]: <DaskopClaim />,
+      [AppView.SMART_EDUCATION]: <SmartEducation />,
+      [AppView.AI_ADVISOR]: <AIAdvisor />,
+      [AppView.MEMBERSHIP_PROFILE]: <Membership />,
+      [AppView.GLOBAL_COMMAND_CENTER]: <GlobalCommandCenter />,
+      [AppView.STRATEGIC_PROFIT_CALCULATOR]: <StrategicProfitCalculator />,
+      [AppView.ECOSYSTEM_REVENUE]: <EcosystemRevenue />,
+      [AppView.SYSTEM_HEALTH]: <SystemHealth />,
+      [AppView.ACCOUNTING]: <AccountingReports />,
+      [AppView.DEPLOYMENT_HUB]: <DeploymentHub />
+    };
+
+    return (
+      <div className="page-transition h-full">
+        {views[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden">
       {isLoggedIn && currentRole && (
         <Sidebar currentView={currentView} setView={handleSetView} role={currentRole} onLogout={handleLogout} />
       )}
       
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden relative">
         {isLoggedIn && currentRole && (
-          <div className="relative">
+          <>
             <Header currentView={currentView} onBack={handleBack} role={currentRole} onLogout={handleLogout} />
-            <div className="absolute top-full right-8 mt-2 z-50">
-               <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border flex items-center gap-1.5 shadow-sm transition-all ${
-                 dbStatus === 'SYNCED' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 
-                 dbStatus === 'CONNECTING' ? 'bg-indigo-50 border-indigo-100 text-indigo-600' : 'bg-amber-50 border-amber-100 text-amber-600'
+            <div className="absolute top-20 right-8 z-30 pointer-events-none">
+               <div className={`flex items-center gap-2 px-3 py-1 rounded-full border bg-white/80 backdrop-blur-md shadow-sm transition-all duration-700 ${
+                 dbStatus === 'SYNCED' ? 'border-emerald-100 text-emerald-600' : 'border-amber-100 text-amber-600'
                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${dbStatus === 'SYNCED' ? 'bg-emerald-500' : dbStatus === 'CONNECTING' ? 'bg-indigo-500 animate-spin' : 'bg-amber-500 animate-pulse'}`}></span>
-                  {dbStatus === 'SYNCED' ? 'Supabase Synced' : dbStatus === 'CONNECTING' ? 'Connecting DB...' : 'Offline Mode (Local)'}
+                  <span className={`w-1.5 h-1.5 rounded-full ${dbStatus === 'SYNCED' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`}></span>
+                  <span className="text-[9px] font-black uppercase tracking-widest">
+                    {dbStatus === 'SYNCED' ? 'Supabase Connected' : 'Local Persistence'}
+                  </span>
                </div>
             </div>
-          </div>
+          </>
         )}
         
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto h-full">
+          <div className="max-w-7xl mx-auto h-full pb-10">
             {renderContent()}
           </div>
         </main>
