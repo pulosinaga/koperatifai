@@ -3,33 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#4338ca">
+    <meta name="theme-color" content="#020617">
     
-    <!-- ANTI CACHE HEADERS EXTREME -->
+    <!-- ANTI CACHE HEADERS -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
     <link rel="manifest" href="manifest.json">
-    <title>KoperatifAI (V5) - Kedaulatan Digital</title>
+    <title>KoperatifAI - Sentinel Guard</title>
     
-    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Penggaya Visual) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
     
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: white; margin: 0; overflow-x: hidden; }
         #loader {
             position: fixed; inset: 0; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; background: #ffffff; z-index: 1000;
+            align-items: center; justify-content: center; background: #020617; z-index: 1000;
         }
         .spinner {
-            width: 40px; height: 40px; border: 4px solid #f1f5f9;
-            border-bottom-color: #4338ca; border-radius: 50%;
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
+            border-bottom-color: #6366f1; border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         #error-display {
-            display: none; position: fixed; inset: 0; background: #fff1f2;
+            display: none; position: fixed; inset: 0; background: #0f172a;
             z-index: 2000; padding: 2rem; flex-direction: column; align-items: center; justify-content: center;
         }
     </style>
@@ -50,14 +67,12 @@
         const errDetails = document.getElementById('error-details');
         if (errDisplay && errDetails && errDisplay.style.display !== 'flex') {
             errDisplay.style.display = 'flex';
-            let msg = e.message || "Kesalahan Jaringan: Gagal mengunduh modul.";
-            if (e.filename) msg += "\nFile: " + e.filename + "\nBaris: " + e.lineno;
-            errDetails.innerText = msg;
+            errDetails.innerText = e.message || "Gagal memuat modul antarmuka.";
         }
       });
     </script>
 
-    <!-- HANYA REACT 18 (Dibersihkan dari bentrok React 19) -->
+    <!-- BERSIH: HANYA REACT 18 -->
     <script type="importmap">
 {
   "imports": {
@@ -77,24 +92,21 @@
 <body>
     <div id="loader">
         <div class="spinner"></div>
-        <p class="mt-4 font-black text-slate-800 tracking-tighter">KoperatifAI</p>
-        <p id="loader-status" class="text-[9px] font-bold text-indigo-600 uppercase tracking-widest mt-1">MEMUAT SISTEM (V5)...</p>
+        <p class="mt-6 font-black text-white text-xl tracking-widest">SENTINEL GUARD</p>
+        <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.3em] mt-2">Menyinkronkan Kriptografi...</p>
     </div>
 
     <div id="error-display">
         <div class="text-6xl mb-4">⚠️</div>
-        <h3 class="text-xl font-black text-rose-800 uppercase">Sistem Terhenti</h3>
-        <p id="error-details" class="mt-4 text-xs font-mono text-rose-600 bg-white p-4 rounded-xl border border-rose-200 text-left max-w-md w-full overflow-auto shadow-inner whitespace-pre-wrap"></p>
-        <button onclick="hardResetSystem()" class="mt-6 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase hover:bg-indigo-700 transition-colors shadow-lg">Sapu Bersih Cache & Muat Ulang</button>
+        <h3 class="text-2xl font-black text-rose-500 uppercase tracking-widest">Koneksi Terputus</h3>
+        <p id="error-details" class="mt-4 text-xs font-mono text-rose-200 bg-rose-950 p-4 rounded-xl border border-rose-900 text-left max-w-md w-full overflow-auto whitespace-pre-wrap"></p>
+        <button onclick="hardResetSystem()" class="mt-8 px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-900">Muat Ulang Sistem</button>
     </div>
 
     <div id="root"></div>
 
     <script>
-      const statusEl = document.getElementById('loader-status');
-      
       async function hardResetSystem() {
-          document.querySelector('#error-display button').innerText = "MENYAPU MEMORI...";
           try {
               if ('serviceWorker' in navigator) {
                   const regs = await navigator.serviceWorker.getRegistrations();
@@ -102,40 +114,25 @@
               }
               const keys = await caches.keys();
               for (let k of keys) await caches.delete(k);
-              
-              localStorage.clear();
-              sessionStorage.clear();
-          } catch(e) { console.warn("Reset failed", e); }
-          
+              localStorage.clear(); sessionStorage.clear();
+          } catch(e) {}
           window.location.href = window.location.pathname + '?v=' + Date.now();
       }
 
       async function bootSystem() {
-          if (!('serviceWorker' in navigator)) throw new Error("Browser Anda tidak mendukung teknologi KoperatifAI.");
-          
+          if (!('serviceWorker' in navigator)) throw new Error("Browser lawas. Gunakan Chrome/Safari terbaru.");
           try {
-              statusEl.innerText = "MENGHUBUNGKAN JARINGAN...";
-              const reg = await navigator.serviceWorker.register('./sw.js?v=' + Date.now(), { updateViaCache: 'none' });
-              
+              await navigator.serviceWorker.register('./sw.js?v=' + Date.now(), { updateViaCache: 'none' });
               const loadApp = () => {
                   if (document.getElementById('app-script')) return; 
-                  statusEl.innerText = "MEMUAT ANTARMUKA...";
                   const script = document.createElement('script');
-                  script.id = 'app-script';
-                  script.type = 'module';
+                  script.id = 'app-script'; script.type = 'module';
                   script.src = './index.tsx?v=' + Date.now(); 
-                  script.onerror = () => { throw new Error("Gagal mengunduh file antarmuka (index.tsx). Pastikan koneksi internet stabil."); };
                   document.body.appendChild(script);
               };
-
-              if (navigator.serviceWorker.controller) {
-                  loadApp();
-              } else {
-                  navigator.serviceWorker.addEventListener('controllerchange', loadApp, { once: true });
-              }
-          } catch (err) {
-              throw new Error("Gagal inisialisasi keamanan lokal: " + err.message);
-          }
+              if (navigator.serviceWorker.controller) loadApp();
+              else navigator.serviceWorker.addEventListener('controllerchange', loadApp, { once: true });
+          } catch (err) { throw err; }
       }
 
       bootSystem().catch(err => {
