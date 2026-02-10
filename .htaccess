@@ -1,35 +1,23 @@
 
-# KoperatifAI - Production Security & MIME Fix
+# KoperatifAI - Production Infrastructure Rules
 <IfModule mod_mime.c>
-    # PENTING: Memaksa server mengenali file TypeScript sebagai JavaScript
     AddType application/javascript .ts
     AddType application/javascript .tsx
     AddType application/javascript .js
     AddType application/json .json
 </IfModule>
 
+<IfModule mod_headers.c>
+    <FilesMatch "\.(ts|tsx|js|jsx)$">
+        Header set Content-Type "application/javascript; charset=UTF-8"
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-
-    # Jika file fisik ada, langsung berikan
-    RewriteCond %{REQUEST_FILENAME} -f
-    RewriteRule ^ - [L]
-
-    # SPA Fallback: Arahkan semua request ke index.html
-    RewriteCond %{REQUEST_URI} !\.(js|ts|tsx|jsx|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|otf|ttf)$ [NC]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule . /index.html [L]
-</IfModule>
-
-<IfModule mod_headers.c>
-    # Mencegah caching agar perubahan kode langsung terasa
-    <FilesMatch "\.(ts|tsx|js|jsx|html)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires 0
-        Header set Content-Type "application/javascript; charset=UTF-8"
-    </FilesMatch>
-    
-    # Izinkan CORS agar library luar bisa masuk
-    Header set Access-Control-Allow-Origin "*"
 </IfModule>
