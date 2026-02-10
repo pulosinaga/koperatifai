@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4338ca">
+    
+    <!-- ANTI CACHE HEADERS (Memaksa browser tidak menyimpan file lama) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <link rel="manifest" href="manifest.json">
     <title>KoperatifAI - Kedaulatan Ekonomi Digital</title>
     
@@ -29,7 +35,6 @@
     </style>
 
     <script>
-      // Konfigurasi Environment Global
       window.process = { 
         env: { 
           NODE_ENV: "production",
@@ -39,21 +44,20 @@
         } 
       };
 
-      // Failsafe Global Error Catcher
       window.addEventListener('error', function(e) {
         console.error("System Runtime Error:", e);
         const errDisplay = document.getElementById('error-display');
         const errDetails = document.getElementById('error-details');
         if (errDisplay && errDetails && errDisplay.style.display !== 'flex') {
             errDisplay.style.display = 'flex';
-            let msg = e.message || "Kesalahan Modul Tidak Dikenal.";
+            let msg = e.message || "Kesalahan Jaringan: Gagal mengunduh modul.";
             if (e.filename) msg += "\nFile: " + e.filename + "\nBaris: " + e.lineno;
             errDetails.innerText = msg;
         }
       });
     </script>
 
-    <!-- Importmap Bersih (Tanpa konflik React 19) -->
+    <!-- IMPORTMAP BERSIH: Seluruh referensi React 19 telah dibersihkan! -->
     <script type="importmap">
 {
   "imports": {
@@ -64,8 +68,8 @@
     "recharts": "https://esm.sh/recharts@2.12.0?deps=react@18.2.0,react-dom@18.2.0",
     "@google/genai": "https://esm.sh/@google/genai?bundle",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2?bundle",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
@@ -81,7 +85,7 @@
         <div class="text-6xl mb-4">⚠️</div>
         <h3 class="text-xl font-black text-rose-800 uppercase">Sistem Terhenti</h3>
         <p id="error-details" class="mt-4 text-xs font-mono text-rose-600 bg-white p-4 rounded-xl border border-rose-200 text-left max-w-md w-full overflow-auto shadow-inner whitespace-pre-wrap"></p>
-        <button onclick="clearCacheAndReload()" class="mt-6 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase hover:bg-indigo-700 transition-colors shadow-lg">Bersihkan Cache & Muat Ulang</button>
+        <button onclick="hardResetSystem()" class="mt-6 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase hover:bg-indigo-700 transition-colors shadow-lg">Sapu Bersih Cache & Muat Ulang</button>
     </div>
 
     <div id="root"></div>
@@ -89,9 +93,8 @@
     <script>
       const statusEl = document.getElementById('loader-status');
       
-      // Fungsi Sapu Bersih Cache
-      async function clearCacheAndReload() {
-          document.querySelector('#error-display button').innerText = "Membersihkan...";
+      async function hardResetSystem() {
+          document.querySelector('#error-display button').innerText = "MENYAPU MEMORI...";
           try {
               if ('serviceWorker' in navigator) {
                   const regs = await navigator.serviceWorker.getRegistrations();
@@ -99,41 +102,40 @@
               }
               const keys = await caches.keys();
               for (let k of keys) await caches.delete(k);
-          } catch(e) { console.warn(e); }
-          window.location.href = window.location.pathname + '?reset=' + Date.now();
+              
+              localStorage.clear();
+              sessionStorage.clear();
+          } catch(e) { console.warn("Reset failed", e); }
+          
+          window.location.href = window.location.pathname + '?hardreset=' + Date.now();
       }
 
       async function bootSystem() {
-          if (!('serviceWorker' in navigator)) throw new Error("Browser tidak mendukung arsitektur KoperatifAI.");
+          if (!('serviceWorker' in navigator)) throw new Error("Browser Anda tidak mendukung teknologi KoperatifAI.");
           
           try {
-              // Registrasi SW dengan parameter waktu agar selalu fresh
+              statusEl.innerText = "Menghubungkan Jaringan Compiler...";
               const reg = await navigator.serviceWorker.register('./sw.js?v=' + Date.now(), { updateViaCache: 'none' });
               
+              const loadApp = () => {
+                  if (document.getElementById('app-script')) return; 
+                  statusEl.innerText = "Memuat Antarmuka Koperasi...";
+                  const script = document.createElement('script');
+                  script.id = 'app-script';
+                  script.type = 'module';
+                  script.src = './index.tsx?v=' + Date.now(); 
+                  script.onerror = () => { throw new Error("Gagal mengunduh file antarmuka (index.tsx). Pastikan koneksi internet stabil."); };
+                  document.body.appendChild(script);
+              };
+
               if (navigator.serviceWorker.controller) {
-                  statusEl.innerText = "Memuat Modul Aplikasi...";
                   loadApp();
               } else {
-                  statusEl.innerText = "Menghubungkan Jaringan Compiler...";
-                  navigator.serviceWorker.addEventListener('controllerchange', () => {
-                      statusEl.innerText = "Memuat Modul Aplikasi...";
-                      loadApp();
-                  });
+                  navigator.serviceWorker.addEventListener('controllerchange', loadApp, { once: true });
               }
           } catch (err) {
-              throw new Error("Gagal inisialisasi keamanan: " + err.message);
+              throw new Error("Gagal inisialisasi keamanan lokal: " + err.message);
           }
-      }
-
-      function loadApp() {
-          if (document.getElementById('app-script')) return; 
-          const script = document.createElement('script');
-          script.id = 'app-script';
-          script.type = 'module';
-          // Trik '?v=...' ini MENCEGAH browser melakukan bypass SW saat Ctrl+F5
-          script.src = './index.tsx?v=' + Date.now(); 
-          script.onerror = () => { throw new Error("Gagal mengunduh index.tsx. Server Hostinger mungkin sedang sibuk."); };
-          document.body.appendChild(script);
       }
 
       bootSystem().catch(err => {
@@ -141,7 +143,6 @@
           document.getElementById('error-details').innerText = err.message;
       });
 
-      // Hilangkan loader saat React berhasil me-render UI
       const observer = new MutationObserver(() => {
           if (document.getElementById('root').children.length > 0) {
               document.getElementById('loader').style.display = 'none';

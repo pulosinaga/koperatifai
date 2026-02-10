@@ -1,11 +1,13 @@
-// KoperatifAI - In-Browser JIT Compiler Service Worker
+// KoperatifAI - In-Browser JIT Compiler Service Worker (V3 - Hard Reload)
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.10/babel.min.js');
 
 self.addEventListener('install', (e) => {
+    // Paksa SW baru langsung mengambil alih tanpa menunggu tab ditutup
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
+    // Klaim kontrol atas semua tab yang terbuka segera
     e.waitUntil(self.clients.claim());
 });
 
@@ -15,20 +17,18 @@ self.addEventListener('fetch', (e) => {
     // Mencegat (Intercept) hanya untuk file TypeScript dan React lokal
     if (url.origin === location.origin && (url.pathname.endsWith('.ts') || url.pathname.endsWith('.tsx'))) {
         e.respondWith(
-            fetch(e.request.url, { cache: 'no-store' }) // Paksa ambil terbaru dari server
+            fetch(e.request.url, { cache: 'no-store' }) // Paksa ambil terbaru dari server Hostinger
                 .then(response => {
                     if (!response.ok) throw new Error("404 File Tidak Ditemukan: " + url.pathname);
                     return response.text();
                 })
                 .then(text => {
                     try {
-                        // Terjemahkan TypeScript & JSX ke JavaScript murni menggunakan Babel
                         const compiled = Babel.transform(text, {
                             presets: ['react', 'typescript'],
                             filename: url.pathname
                         }).code;
 
-                        // Kembalikan sebagai JavaScript dengan MIME Type yang benar
                         return new Response(compiled, {
                             status: 200,
                             headers: {
@@ -39,7 +39,6 @@ self.addEventListener('fetch', (e) => {
                         });
                     } catch (err) {
                         console.error("Babel Compile Error di " + url.pathname, err);
-                        // Inject script yang akan menampilkan error spesifik ke layar merah HTML
                         const errStr = err.message.replace(/`/g, '\\`').replace(/\n/g, '\\n');
                         const errorScript = `
                             const display = document.getElementById('error-display');
