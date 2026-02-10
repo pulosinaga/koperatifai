@@ -1,23 +1,29 @@
-// KoperatifAI - In-Browser JIT Compiler Service Worker (V3 - Hard Reload)
+// KoperatifAI - In-Browser JIT Compiler Service Worker (V4 - Auto Wipe)
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.10/babel.min.js');
 
 self.addEventListener('install', (e) => {
-    // Paksa SW baru langsung mengambil alih tanpa menunggu tab ditutup
+    // Paksa SW baru langsung mengambil alih
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-    // Klaim kontrol atas semua tab yang terbuka segera
-    e.waitUntil(self.clients.claim());
+    // Saat SW baru aktif, HAPUS SEMUA CACHE LAMA secara otomatis
+    e.waitUntil(
+        caches.keys().then(keys => {
+            return Promise.all(keys.map(k => caches.delete(k)));
+        }).then(() => {
+            return self.clients.claim();
+        })
+    );
 });
 
 self.addEventListener('fetch', (e) => {
     const url = new URL(e.request.url);
 
-    // Mencegat (Intercept) hanya untuk file TypeScript dan React lokal
+    // Mencegat (Intercept) hanya untuk file TypeScript lokal
     if (url.origin === location.origin && (url.pathname.endsWith('.ts') || url.pathname.endsWith('.tsx'))) {
         e.respondWith(
-            fetch(e.request.url, { cache: 'no-store' }) // Paksa ambil terbaru dari server Hostinger
+            fetch(e.request.url, { cache: 'no-store' }) // Selalu paksa ambil dari server
                 .then(response => {
                     if (!response.ok) throw new Error("404 File Tidak Ditemukan: " + url.pathname);
                     return response.text();

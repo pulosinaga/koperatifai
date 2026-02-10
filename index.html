@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4338ca">
     
-    <!-- ANTI CACHE HEADERS (Memaksa browser tidak menyimpan file lama) -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <!-- ANTI CACHE HEADERS EXTREME -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0, post-check=0, pre-check=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     
     <link rel="manifest" href="manifest.json">
-    <title>KoperatifAI - Kedaulatan Ekonomi Digital</title>
+    <title>KoperatifAI (V5) - Kedaulatan Digital</title>
     
     <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
       });
     </script>
 
-    <!-- IMPORTMAP BERSIH: Seluruh referensi React 19 telah dibersihkan! -->
+    <!-- HANYA REACT 18 -->
     <script type="importmap">
 {
   "imports": {
@@ -78,7 +78,7 @@
     <div id="loader">
         <div class="spinner"></div>
         <p class="mt-4 font-black text-slate-800 tracking-tighter">KoperatifAI</p>
-        <p id="loader-status" class="text-[9px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Mengaktifkan Engine Compiler...</p>
+        <p id="loader-status" class="text-[9px] font-bold text-indigo-600 uppercase tracking-widest mt-1">MEMUAT SISTEM (V5)...</p>
     </div>
 
     <div id="error-display">
@@ -107,19 +107,19 @@
               sessionStorage.clear();
           } catch(e) { console.warn("Reset failed", e); }
           
-          window.location.href = window.location.pathname + '?hardreset=' + Date.now();
+          window.location.href = window.location.pathname + '?v=' + Date.now();
       }
 
       async function bootSystem() {
           if (!('serviceWorker' in navigator)) throw new Error("Browser Anda tidak mendukung teknologi KoperatifAI.");
           
           try {
-              statusEl.innerText = "Menghubungkan Jaringan Compiler...";
+              statusEl.innerText = "MENGHUBUNGKAN JARINGAN...";
               const reg = await navigator.serviceWorker.register('./sw.js?v=' + Date.now(), { updateViaCache: 'none' });
               
               const loadApp = () => {
                   if (document.getElementById('app-script')) return; 
-                  statusEl.innerText = "Memuat Antarmuka Koperasi...";
+                  statusEl.innerText = "MEMUAT ANTARMUKA...";
                   const script = document.createElement('script');
                   script.id = 'app-script';
                   script.type = 'module';
