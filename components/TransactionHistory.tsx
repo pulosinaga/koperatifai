@@ -1,6 +1,5 @@
-
 import React, { useState, useMemo } from 'react';
-import { Transaction } from '../types';
+import { Transaction } from '../types.ts';
 
 const TransactionHistory: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'deposit' | 'withdrawal' | 'loan_installment'>('all');

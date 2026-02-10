@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { UserRole } from '../types';
+import { UserRole } from '../types.ts';
 
 interface LoginScreenProps {
   onLogin: (role: UserRole) => void;
@@ -105,185 +104,148 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10 items-center">
          {/* Kiri: Security Status Dashboard */}
          <div className="hidden lg:flex flex-col space-y-8">
-            <div className="space-y-2">
-               <h1 className="text-5xl font-black text-white italic tracking-tight">KoperatifAI</h1>
-               <p className="text-indigo-400 uppercase tracking-widest font-black text-xs">Sovereign Shield Active</p>
-            </div>
-            
             <div className="space-y-4">
-               <div className="p-6 bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-md">
-                  <div className="flex justify-between items-center mb-4">
-                     <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest">Sentinel Network Status</p>
-                     <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                  </div>
-                  <div className="space-y-3">
-                     <div className="flex justify-between text-[10px] font-bold">
-                        <span className="text-slate-500">Brute-Force Protection</span>
-                        <span className="text-emerald-400">ARMED</span>
-                     </div>
-                     <div className="flex justify-between text-[10px] font-bold">
-                        <span className="text-slate-500">2FA SMS/WA Gateway</span>
-                        <span className="text-emerald-400">ONLINE</span>
-                     </div>
-                     <div className="flex justify-between text-[10px] font-bold">
-                        <span className="text-slate-500">Biometric Liveness</span>
-                        <span className="text-emerald-400">READY</span>
-                     </div>
-                  </div>
-               </div>
-
-               <div className="p-6 bg-rose-500/5 border border-rose-500/10 rounded-[2.5rem]">
-                  <p className="text-[10px] font-black text-rose-400 uppercase mb-2">Security Note for Founder:</p>
-                  <p className="text-[10px] text-slate-400 leading-relaxed italic">
-                    "PIN hanyalah kunci pintu depan. 2FA dan Wajah adalah penjaga brankas sesungguhnya. Meskipun PIN bocor, peretas tidak bisa melewati enkripsi biometrik."
-                  </p>
-               </div>
+               <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center text-3xl shadow-2xl border border-white/10">🛡️</div>
+               <h1 className="text-4xl font-black text-white italic leading-tight">Sentinel Guard <br/><span className="text-indigo-400">Authentication</span></h1>
+               <p className="text-slate-400 text-sm leading-relaxed">
+                 Sistem keamanan kelas militer KoperatifAI. Silakan pilih otoritas akses Anda dan verifikasi identitas melalui modul AI.
+               </p>
             </div>
             
-            <div className="pt-4 border-t border-white/5">
-               <p className="text-[9px] text-slate-600 uppercase font-black tracking-widest mb-2">Demo Access (For User Testing Only):</p>
-               <div className="grid grid-cols-3 gap-2">
-                  {roles.map(r => (
-                    <div key={r.id} className="bg-white/5 p-2 rounded-lg border border-white/5 text-[8px] font-bold flex flex-col items-center">
-                       <span className="text-slate-500">{r.label}</span>
-                       <span className="text-indigo-400 font-mono mt-1">{r.masterPin}</span>
-                    </div>
-                  ))}
+            <div className="p-8 bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 space-y-6">
+               <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Protocol Status</span>
+                  <div className="flex items-center gap-2">
+                     <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                     <span className="text-[10px] font-bold text-emerald-400 uppercase">Secure</span>
+                  </div>
+               </div>
+               <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                     <span className="text-xs font-bold text-slate-300">Biometric Sentry</span>
+                     <span className="text-xs font-mono text-indigo-400">STANDBY</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                     <span className="text-xs font-bold text-slate-300">Intrusion Detection</span>
+                     <span className="text-xs font-mono text-emerald-400">ACTIVE</span>
+                  </div>
                </div>
             </div>
          </div>
 
-         {/* Kanan: Interactive Login Box */}
-         <div className="bg-white rounded-[4rem] p-10 lg:p-14 shadow-2xl space-y-10 relative overflow-hidden min-h-[620px] flex flex-col justify-center">
-            
-            {/* Lockout Overlay */}
-            {lockoutTimer > 0 && (
-              <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-50 flex flex-col items-center justify-center text-center p-8 animate-in fade-in">
-                <div className="text-8xl mb-6">🛡️</div>
-                <h3 className="text-3xl font-black text-rose-600 uppercase italic">Sistem Terkunci</h3>
-                <p className="text-slate-500 mt-2">Terlalu banyak percobaan paksa. Perangkat Anda ditangguhkan:</p>
-                <p className="text-7xl font-black text-slate-800 mt-8 font-mono">{lockoutTimer}s</p>
-                <p className="text-[10px] text-slate-400 mt-12 uppercase font-black tracking-[0.3em]">Hacking Attempt Blocked</p>
-              </div>
-            )}
-
-            {/* Step: FACE ID */}
-            {loginStep === 'FACE' && (
-              <div className="absolute inset-0 bg-[#020617] z-40 flex flex-col items-center justify-center p-8 animate-in zoom-in duration-500">
-                 <div className="relative w-72 h-72 rounded-full border-4 border-indigo-500 overflow-hidden shadow-[0_0_60px_rgba(99,102,241,0.4)]">
-                    <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover grayscale brightness-110" />
-                    <div className="absolute inset-0 bg-indigo-500/10"></div>
-                    {isScanning && (
-                       <div className="absolute top-0 left-0 w-full h-1.5 bg-indigo-400 animate-scan-fast shadow-[0_0_20px_#818cf8]"></div>
-                    )}
-                    {!isScanning && (
-                       <div className="absolute inset-0 flex items-center justify-center bg-emerald-500/30 backdrop-blur-sm">
-                          <span className="text-7xl">✅</span>
-                       </div>
-                    )}
-                 </div>
-                 <div className="mt-10 text-center space-y-3">
-                    <h4 className="text-2xl font-black text-white italic tracking-tight">
-                       {isScanning ? 'Menganalisis Biometrik...' : 'Identitas Terverifikasi!'}
-                    </h4>
-                    <p className="text-indigo-300 text-[10px] uppercase tracking-[0.3em] font-black">
-                       {isScanning ? 'Harap Berkedip' : 'Menyiapkan Dashboard Perintah...'}
-                    </p>
-                 </div>
-                 <style>{`
-                    @keyframes scan-fast { 0% { top: 0; } 100% { top: 100%; } }
-                    .animate-scan-fast { animation: scan-fast 1.5s linear infinite alternate; }
-                 `}</style>
-              </div>
-            )}
-
-            {/* Step: 2FA */}
-            {loginStep === '2FA' && (
-              <div className="space-y-10 animate-in slide-in-from-right">
-                 <div className="text-center space-y-2">
-                    <div className="text-5xl mb-4">🔐</div>
-                    <h3 className="text-3xl font-black text-slate-800">Verifikasi 2-Lapis</h3>
-                    <p className="text-slate-500 text-sm">Masukkan kode yang dikirim ke WhatsApp Founder.</p>
-                 </div>
-                 <form onSubmit={handleOtpSubmit} className="space-y-8">
-                    <input 
-                      type="text"
-                      maxLength={4}
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      placeholder="0 0 0 0"
-                      className="w-full p-6 bg-slate-50 border-none rounded-3xl text-center text-5xl tracking-[0.5em] font-black text-indigo-600 focus:ring-4 focus:ring-indigo-500 outline-none"
-                    />
-                    <div className="text-center">
-                       <p className="text-[10px] text-slate-400 font-bold uppercase">Tips Demo: Masukkan '1234'</p>
-                    </div>
-                    <button className="w-full py-6 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-widest text-xs shadow-xl">Verifikasi & Lanjut</button>
-                    <button type="button" onClick={() => setLoginStep('PIN')} className="w-full text-xs font-bold text-slate-400 hover:text-slate-600">Batal</button>
-                 </form>
-              </div>
-            )}
-
-            {/* Step: PIN */}
+         {/* Kanan: Login Form */}
+         <div className="bg-white p-8 md:p-12 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
             {loginStep === 'PIN' && (
-              <>
-                <div className="text-center space-y-2">
-                   <h2 className="text-3xl font-black text-slate-800">Selamat Malam!</h2>
-                   <p className="text-slate-500 text-sm">Pilih akses & masukkan PIN aman Anda.</p>
-                </div>
+               <div className="space-y-8 animate-in slide-in-from-right duration-500">
+                  <div className="text-center space-y-2">
+                     <h2 className="text-2xl font-black text-slate-800 italic">Identifikasi Peran</h2>
+                     <p className="text-xs text-slate-500">Pilih otoritas akses yang sesuai dengan Anda.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3">
+                     {roles.map(r => (
+                        <button 
+                           key={r.id}
+                           onClick={() => setSelectedRole(r.id)}
+                           className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${
+                              selectedRole === r.id ? 'border-indigo-600 bg-indigo-50 shadow-md scale-105' : 'border-slate-100 hover:border-indigo-200'
+                           }`}
+                        >
+                           <span className="text-2xl">{r.icon}</span>
+                           <span className="text-[9px] font-black text-slate-700 uppercase tracking-tighter">{r.label}</span>
+                        </button>
+                     ))}
+                  </div>
 
-                <form onSubmit={handlePinSubmit} className="space-y-8">
-                   <div className="space-y-4">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Pilih Peran Anda</label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                         {roles.map((r) => (
-                            <button 
-                               key={r.id}
-                               type="button"
-                               onClick={() => { setSelectedRole(r.id); setPin(''); }}
-                               className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
-                                  selectedRole === r.id ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-md' : 'border-slate-50 text-slate-400 hover:border-slate-200'
-                               }`}
-                            >
-                               <span className="text-2xl">{r.icon}</span>
-                               <span className="text-[9px] font-black uppercase tracking-tighter text-center">{r.label}</span>
-                            </button>
-                         ))}
-                      </div>
-                   </div>
+                  <form onSubmit={handlePinSubmit} className="space-y-6 pt-4 border-t border-slate-100">
+                     <div className="space-y-3 text-center">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                           {lockoutTimer > 0 ? `Terkunci: Coba lagi dalam ${lockoutTimer}s` : 'Masukkan Security PIN'}
+                        </label>
+                        <input
+                           type="password"
+                           value={pin}
+                           onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                           disabled={lockoutTimer > 0}
+                           placeholder="••••••"
+                           className={`w-full text-center text-3xl tracking-[1em] font-black p-6 bg-slate-50 border-2 rounded-[2rem] outline-none transition-all ${
+                              isError ? 'border-rose-500 text-rose-600 bg-rose-50 animate-shake' : 'border-slate-100 focus:border-indigo-600 focus:bg-white'
+                           } ${lockoutTimer > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        />
+                     </div>
+                     <button 
+                        type="submit" 
+                        disabled={pin.length < 6 || lockoutTimer > 0}
+                        className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-700 transition-all disabled:opacity-50 active:scale-95"
+                     >
+                        Otorisasi Akses
+                     </button>
+                  </form>
+               </div>
+            )}
 
-                   <div className="space-y-4">
-                      <div className="flex justify-between items-center px-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">PIN Rahasia</label>
-                        {attempts > 0 && <span className="text-[9px] text-rose-500 font-black">PERCOBAAN: {attempts}/3</span>}
-                      </div>
-                      <input 
-                         type="password"
-                         maxLength={6}
-                         value={pin}
-                         onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                         placeholder="••••••"
-                         autoComplete="off"
-                         className={`w-full p-6 bg-slate-50 border-none rounded-3xl text-center text-4xl tracking-[1em] focus:ring-4 focus:ring-indigo-500 outline-none transition-all ${
-                            isError ? 'bg-rose-50 ring-4 ring-rose-500 animate-shake' : ''
-                         }`}
-                      />
-                      {isError && <p className="text-center text-rose-600 text-[10px] font-black uppercase animate-pulse">PIN TIDAK VALID!</p>}
-                   </div>
+            {loginStep === '2FA' && (
+               <div className="space-y-8 text-center animate-in slide-in-from-right duration-500">
+                  <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center text-4xl mx-auto border-4 border-indigo-100">📱</div>
+                  <div className="space-y-2">
+                     <h3 className="text-2xl font-black text-slate-800 italic">Verifikasi 2 Langkah</h3>
+                     <p className="text-xs text-slate-500 px-4">Masukkan 4 digit OTP yang dikirim ke Authenticator / WhatsApp Anda.</p>
+                  </div>
+                  <form onSubmit={handleOtpSubmit} className="space-y-6">
+                     <input
+                        type="text"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                        placeholder="1234"
+                        className="w-full text-center text-4xl tracking-[0.5em] font-black p-6 bg-slate-50 border-2 border-slate-100 rounded-[2rem] outline-none focus:border-indigo-600 focus:bg-white transition-all"
+                     />
+                     <button 
+                        type="submit" 
+                        disabled={otp.length < 4}
+                        className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-700 transition-all disabled:opacity-50"
+                     >
+                        Verifikasi OTP
+                     </button>
+                  </form>
+               </div>
+            )}
 
-                   <button 
-                      type="submit"
-                      disabled={pin.length < 6}
-                      className="w-full py-6 bg-indigo-600 text-white rounded-[2.5rem] font-black uppercase tracking-widest text-xs shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all transform active:scale-95 disabled:opacity-30 group"
-                   >
-                      BUKA GERBANG DIGITAL 
-                      <span className="ml-2 group-hover:translate-x-2 transition-transform inline-block">→</span>
-                   </button>
-                </form>
-              </>
+            {loginStep === 'FACE' && (
+               <div className="space-y-8 text-center animate-in zoom-in duration-500">
+                  <h3 className="text-2xl font-black text-slate-800 italic">Face ID Sentry</h3>
+                  <p className="text-xs text-slate-500">Posisikan wajah Anda di dalam area pindai.</p>
+                  
+                  <div className="relative w-48 h-48 mx-auto rounded-full border-8 border-indigo-100 overflow-hidden shadow-inner">
+                     <video 
+                        ref={videoRef} 
+                        autoPlay 
+                        playsInline 
+                        muted 
+                        className="w-full h-full object-cover transform scale-x-[-1]"
+                     />
+                     {isScanning && (
+                        <div className="absolute inset-0 border-4 border-indigo-500 rounded-full animate-ping"></div>
+                     )}
+                     <div className={`absolute top-0 left-0 w-full h-2 bg-emerald-500 shadow-[0_0_15px_#10b981] transition-all duration-300 ${isScanning ? 'animate-scan-y' : 'hidden'}`}></div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                     <p className="text-xs font-black uppercase tracking-widest text-indigo-600">
+                        {isScanning ? 'Menganalisis Biometrik...' : 'Verifikasi Berhasil!'}
+                     </p>
+                     {isScanning && (
+                        <div className="flex justify-center gap-1">
+                           <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
+                           <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                           <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                        </div>
+                     )}
+                  </div>
+               </div>
             )}
          </div>
       </div>
-
+      
       <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
@@ -292,6 +254,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         }
         .animate-shake {
           animation: shake 0.2s ease-in-out 0s 2;
+        }
+        @keyframes scan-y {
+          0% { top: 0; }
+          100% { top: 100%; }
+        }
+        .animate-scan-y {
+          animation: scan-y 2s linear infinite alternate;
         }
       `}</style>
     </div>

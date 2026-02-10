@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { AppView, UserRole } from '../types';
+import { AppView, UserRole } from '../types.ts';
 
 interface HeaderProps {
   currentView: AppView;

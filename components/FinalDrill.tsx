@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { UserRole } from '../types';
+import { UserRole } from '../types.ts';
 
 interface DrillStep {
   role: UserRole;
