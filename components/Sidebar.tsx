@@ -19,6 +19,7 @@ const Sidebar: React.FC = () => {
     {
       label: 'Layanan Finansial',
       items: [
+        { id: AppView.CASH_WITHDRAWAL, label: 'Tarik Tunai', icon: '🏧' },
         { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
         { id: AppView.VOUCHING_SYSTEM, label: 'Jaminan Sosial', icon: '🤝' },
         { id: AppView.LOAN_READINESS, label: 'Kesiapan Modal', icon: '📈' },
@@ -26,13 +27,13 @@ const Sidebar: React.FC = () => {
       ]
     },
     {
-      label: 'Niaga & Ekonomi',
+      label: 'Niaga & Mobilitas',
       items: [
         { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🛒' },
+        { id: AppView.SMART_MOBILITY, label: 'Mobilitas Pintar', icon: '🚗' },
         { id: AppView.MERCHANT_DASHBOARD, label: 'Toko Saya', icon: '🏪' },
         { id: AppView.SMART_PROCUREMENT, label: 'Grosir Kolektif', icon: '📦' },
         { id: AppView.BILL_PAYMENTS, label: 'Bayar Tagihan', icon: '⚡' },
-        { id: AppView.ARISAN_DIGITAL, label: 'Arisan Pintar', icon: '🌀' },
       ]
     },
     {

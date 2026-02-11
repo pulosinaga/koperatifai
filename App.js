@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AppView, UserRole } from './types.js';
 import Sidebar from './components/Sidebar.js';
@@ -12,6 +11,7 @@ import AIAdvisor from './components/AIAdvisor.js';
 import Membership from './components/Membership.js';
 import SHUDistribution from './components/SHUDistribution.js';
 import MemberMarketplace from './components/MemberMarketplace.js';
+import SmartMobility from './components/SmartMobility.js';
 import MerchantDashboard from './components/MerchantDashboard.js';
 import BillPayments from './components/BillPayments.js';
 import DigitalPassbook from './components/DigitalPassbook.js';
@@ -63,6 +63,7 @@ const App = () => {
       case AppView.LOAN_SIMULATOR: return <LoanSimulator />;
       case AppView.LOAN_HISTORY: return <LoanHistory />;
       case AppView.MEMBER_MARKETPLACE: return <MemberMarketplace />;
+      case AppView.SMART_MOBILITY: return <SmartMobility />;
       case AppView.MERCHANT_DASHBOARD: return <MerchantDashboard />;
       case AppView.BILL_PAYMENTS: return <BillPayments />;
       case AppView.SMART_EDUCATION: return <SmartEducation />;

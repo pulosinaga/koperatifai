@@ -1,5 +1,3 @@
-
-// Fix: Expanded AppView and UserRole objects to match types.ts for consistent behavior across JS and TS files.
 export const AppView = {
   DASHBOARD: 'DASHBOARD',
   REVENUE_CENTER: 'REVENUE_CENTER',
@@ -33,7 +31,9 @@ export const AppView = {
   AI_ADVISOR: 'AI_ADVISOR',
   MEMBERSHIP_PROFILE: 'MEMBERSHIP_PROFILE',
   MEMBERSHIP_CERTIFICATE: 'MEMBERSHIP_CERTIFICATE',
-  SYSTEM_HEALTH: 'SYSTEM_HEALTH'
+  SYSTEM_HEALTH: 'SYSTEM_HEALTH',
+  CASH_WITHDRAWAL: 'CASH_WITHDRAWAL',
+  SMART_MOBILITY: 'SMART_MOBILITY'
 };
 
 export const UserRole = {

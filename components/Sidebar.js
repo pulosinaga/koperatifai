@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AppView, UserRole } from '../types.js';
 
@@ -7,6 +6,7 @@ const Sidebar = ({ currentView, setView, role, onLogout }) => {
     { id: AppView.DASHBOARD, label: 'Dashboard', icon: '📊' },
     { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Digital', icon: '📖' },
     { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Anggota', icon: '🛒' },
+    { id: AppView.SMART_MOBILITY, label: 'Mobilitas Pintar', icon: '🚗' },
     { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Kredit', icon: '🧮' },
     { id: AppView.AI_ADVISOR, label: 'Tanya AI', icon: '🤖' },
     { id: AppView.DEPLOYMENT_HUB, label: 'Domain Sync', icon: '🌐' },

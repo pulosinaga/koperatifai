@@ -17,14 +17,16 @@ import VouchingSystem from './components/VouchingSystem.tsx';
 import LoanHistory from './components/LoanHistory.tsx';
 import LoanReadiness from './components/LoanReadiness.tsx';
 import AICreditCommittee from './components/AICreditCommittee.tsx';
+import CashWithdrawal from './components/CashWithdrawal.tsx';
 
-// Niaga
+// Niaga & Mobilitas
 import MemberMarketplace from './components/MemberMarketplace.tsx';
 import MerchantDashboard from './components/MerchantDashboard.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
 import SmartProcurement from './components/SmartProcurement.tsx';
 import ArisanDigital from './components/ArisanDigital.tsx';
 import BillPayments from './components/BillPayments.tsx';
+import SmartMobility from './components/SmartMobility.tsx';
 
 // Proteksi & Edukasi
 import MemberHealthShield from './components/MemberHealthShield.tsx';
@@ -43,17 +45,16 @@ import SystemHealth from './components/SystemHealth.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
 import DutaManagementCenter from './components/DutaManagementCenter.tsx';
 
-// AppContent bertindak sebagai pengelola view utama setelah dibungkus Context
 const AppContent: React.FC = () => {
   const { isLoggedIn, currentView } = useAppContext();
 
   const renderContent = () => {
     if (!isLoggedIn) return <LoginScreen />;
 
-    // Pemetaan view menjadi jauh lebih bersih tanpa operan prop
     const views: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
+      [AppView.CASH_WITHDRAWAL]: <CashWithdrawal />,
       [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
       [AppView.DIGITAL_PASSBOOK]: <DigitalPassbook />,
       [AppView.LOAN_SIMULATOR]: <LoanSimulator />,
@@ -62,6 +63,7 @@ const AppContent: React.FC = () => {
       [AppView.LOAN_READINESS]: <LoanReadiness />,
       [AppView.AI_CREDIT_COMMITTEE]: <AICreditCommittee />,
       [AppView.MEMBER_MARKETPLACE]: <MemberMarketplace />,
+      [AppView.SMART_MOBILITY]: <SmartMobility />,
       [AppView.MERCHANT_DASHBOARD]: <MerchantDashboard />,
       [AppView.BILL_PAYMENTS]: <BillPayments />,
       [AppView.MEMBER_QRIS]: <MemberQRIS />,
@@ -106,7 +108,6 @@ const AppContent: React.FC = () => {
   );
 };
 
-// Komponen Root yang menyuntikkan Provider
 const App: React.FC = () => {
   return (
     <AppProvider>
