@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { UserRole } from '../types.ts';
+import { useAppContext } from '../contexts/AppContext.tsx';
 
-interface LoginScreenProps {
-  onLogin: (role: UserRole) => void;
-}
-
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+const LoginScreen: React.FC = () => {
+  const { login } = useAppContext(); // Menggunakan Global State
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
   const [isError, setIsError] = useState(false);
@@ -48,7 +46,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       } else if (roleData.security === 'BIOMETRIC') {
         startFaceID();
       } else {
-        onLogin(selectedRole);
+        login(selectedRole); // Eksekusi Login Global
       }
     } else {
       handleFailedAttempt();
@@ -86,13 +84,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         setIsScanning(false);
         setTimeout(() => {
           stream.getTracks().forEach(track => track.stop());
-          onLogin(selectedRole);
+          login(selectedRole); // Eksekusi Login Global
         }, 1000);
       }, 3000);
     } catch (err) {
       alert("Akses kamera ditolak. Verifikasi wajah dilewati untuk simulasi.");
       setLoginStep('PIN');
-      onLogin(selectedRole);
+      login(selectedRole); // Eksekusi Login Global
     }
   };
 
@@ -200,7 +198,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                </div>
             )}
 
-            {/* 2FA & Face ID steps remain same structure but styled for dark glassmorphism */}
             {loginStep === '2FA' && (
                <div className="space-y-10 text-center animate-in slide-in-from-right duration-500">
                   <div className="w-24 h-24 bg-indigo-500/20 rounded-full flex items-center justify-center text-5xl mx-auto border-4 border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.2)]">📱</div>

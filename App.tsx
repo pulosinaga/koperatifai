@@ -1,6 +1,6 @@
-
-import React, { useState, useEffect } from 'react';
-import { AppView, UserRole } from './types.ts';
+import React from 'react';
+import { AppProvider, useAppContext } from './contexts/AppContext.tsx';
+import { AppView } from './types.ts';
 
 // Navigasi & Frame
 import Sidebar from './components/Sidebar.tsx';
@@ -43,47 +43,16 @@ import SystemHealth from './components/SystemHealth.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
 import DutaManagementCenter from './components/DutaManagementCenter.tsx';
 
-const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
-  const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
-  const [viewHistory, setViewHistory] = useState<AppView[]>([]);
-
-  const handleLogin = (role: UserRole) => {
-    setCurrentRole(role);
-    setIsLoggedIn(true);
-    setCurrentView(AppView.DASHBOARD);
-  };
-
-  const handleLogout = () => {
-    if (confirm("Keluar dari KoperatifAI?")) {
-      setIsLoggedIn(false);
-      setCurrentRole(null);
-      setCurrentView(AppView.DASHBOARD);
-      setViewHistory([]);
-    }
-  };
-
-  const handleSetView = (newView: AppView) => {
-    if (newView !== currentView) {
-      setViewHistory(prev => [...prev, currentView]);
-      setCurrentView(newView);
-    }
-  };
-
-  const handleBack = () => {
-    if (viewHistory.length > 0) {
-      const prevView = viewHistory[viewHistory.length - 1];
-      setViewHistory(prev => prev.slice(0, -1));
-      setCurrentView(prevView);
-    }
-  };
+// AppContent bertindak sebagai pengelola view utama setelah dibungkus Context
+const AppContent: React.FC = () => {
+  const { isLoggedIn, currentView } = useAppContext();
 
   const renderContent = () => {
-    if (!isLoggedIn) return <LoginScreen onLogin={handleLogin} />;
+    if (!isLoggedIn) return <LoginScreen />;
 
+    // Pemetaan view menjadi jauh lebih bersih tanpa operan prop
     const views: Record<string, React.ReactNode> = {
-      [AppView.DASHBOARD]: <Dashboard setView={handleSetView} role={currentRole!} />,
+      [AppView.DASHBOARD]: <Dashboard />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
       [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
       [AppView.DIGITAL_PASSBOOK]: <DigitalPassbook />,
@@ -115,21 +84,17 @@ const App: React.FC = () => {
 
     return (
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 h-full">
-        {views[currentView] || <Dashboard setView={handleSetView} role={currentRole!} />}
+        {views[currentView] || <Dashboard />}
       </div>
     );
   };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden">
-      {isLoggedIn && currentRole && (
-        <Sidebar currentView={currentView} setView={handleSetView} role={currentRole} onLogout={handleLogout} />
-      )}
+      {isLoggedIn && <Sidebar />}
       
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        {isLoggedIn && currentRole && (
-          <Header currentView={currentView} onBack={handleBack} role={currentRole} onLogout={handleLogout} />
-        )}
+        {isLoggedIn && <Header />}
         
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           <div className="max-w-7xl mx-auto h-full pb-10">
@@ -138,6 +103,15 @@ const App: React.FC = () => {
         </main>
       </div>
     </div>
+  );
+};
+
+// Komponen Root yang menyuntikkan Provider
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 };
 

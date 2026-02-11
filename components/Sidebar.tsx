@@ -1,15 +1,11 @@
-
 import React from 'react';
 import { AppView, UserRole } from '../types.ts';
+import { useAppContext } from '../contexts/AppContext.tsx';
 
-interface SidebarProps {
-  currentView: AppView;
-  setView: (view: AppView) => void;
-  role: UserRole;
-  onLogout: () => void;
-}
+const Sidebar: React.FC = () => {
+  const { currentView, navigate, user, logout } = useAppContext();
+  const role = user?.role || UserRole.MEMBER;
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout }) => {
   const menuCategories = [
     {
       label: 'Portal Utama',
@@ -79,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
               {cat.items.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setView(item.id)}
+                  onClick={() => navigate(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                     currentView === item.id
                       ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
@@ -97,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
 
       <div className="p-4 border-t border-slate-100 space-y-4">
         <div 
-          onClick={() => setView(AppView.MEMBERSHIP_PROFILE)}
+          onClick={() => navigate(AppView.MEMBERSHIP_PROFILE)}
           className="bg-slate-50 p-4 rounded-[2rem] flex items-center gap-3 cursor-pointer hover:bg-indigo-50 transition-all border border-transparent hover:border-indigo-100"
         >
           <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
@@ -105,12 +101,12 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, role, onLogout 
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="text-[10px] font-black text-slate-800 uppercase truncate">{role}</p>
-            <p className="text-[10px] text-slate-400 font-medium">Budi Utama</p>
+            <p className="text-[10px] text-slate-400 font-medium truncate">{user?.name || 'User'}</p>
           </div>
         </div>
         
         <button
-          onClick={onLogout}
+          onClick={logout}
           className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100"
         >
           Logout

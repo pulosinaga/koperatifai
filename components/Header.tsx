@@ -1,17 +1,11 @@
 import React from 'react';
-import { AppView, UserRole } from '../types.ts';
+import { AppView } from '../types.ts';
+import { useAppContext } from '../contexts/AppContext.tsx';
 
-interface HeaderProps {
-  currentView: AppView;
-  onBack: () => void;
-  role: UserRole;
-  onLogout: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ currentView, onBack, role, onLogout }) => {
+const Header: React.FC = () => {
+  const { currentView, goBack, user, logout } = useAppContext();
   const isDashboard = currentView === AppView.DASHBOARD;
 
-  // Mendapatkan label judul berdasarkan view saat ini
   const getHeaderTitle = () => {
     switch (currentView) {
       case AppView.DASHBOARD: return 'Pusat Komando';
@@ -31,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, onBack, role, onLogout }) 
       <div className="flex items-center gap-4">
         {!isDashboard && (
           <button 
-            onClick={onBack}
+            onClick={goBack}
             className="group flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all hover:bg-indigo-600 hover:text-white active:scale-95 shadow-sm"
           >
             <span className="text-lg transition-transform group-hover:-translate-x-1">←</span> 
@@ -47,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, onBack, role, onLogout }) 
 
       <div className="flex items-center gap-4">
         <div className="hidden md:flex flex-col items-end mr-2">
-           <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">{role}</span>
+           <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">{user?.role}</span>
            <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
               <span className="text-[9px] text-slate-400 font-bold uppercase">Enkripsi Aktif</span>
@@ -55,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, onBack, role, onLogout }) 
         </div>
         
         <button 
-          onClick={onLogout}
+          onClick={logout}
           className="p-2.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all active:scale-95 flex items-center gap-2 group"
           title="Keluar dari Aplikasi"
         >

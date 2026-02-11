@@ -1,4 +1,3 @@
-
 export enum AppView {
   DASHBOARD = 'DASHBOARD',
   TRANSACTIONS = 'TRANSACTIONS',
@@ -29,7 +28,6 @@ export enum AppView {
   DEPLOYMENT_HUB = 'DEPLOYMENT_HUB',
   SYSTEM_HEALTH = 'SYSTEM_HEALTH',
   ACCOUNTING = 'ACCOUNTING',
-  // Added REVENUE_CENTER to resolve property missing error
   REVENUE_CENTER = 'REVENUE_CENTER'
 }
 
@@ -40,6 +38,19 @@ export enum UserRole {
   MEMBER = 'MEMBER',
   LEADER = 'LEADER',
   AUDITOR = 'AUDITOR'
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  role: UserRole;
+  memberId: string;
+  balances: {
+    principal: number;
+    mandatory: number;
+    voluntary: number;
+  };
+  reputationScore: number;
 }
 
 export interface ChatMessage {
