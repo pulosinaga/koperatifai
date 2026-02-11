@@ -13,7 +13,7 @@ const data = [
 ];
 
 const Dashboard: React.FC = () => {
-  const { navigate, user } = useAppContext();
+  const { navigate, user, isLiveDatabase } = useAppContext();
   
   const isFounder = user?.role === UserRole.FOUNDER;
   const userName = user?.name.split(' ')[0] || 'Member';
@@ -34,6 +34,27 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Banner Reminder Setup Database khusus Founder */}
+      {isFounder && !isLiveDatabase && (
+        <div 
+          onClick={() => navigate(AppView.DEPLOYMENT_HUB)} 
+          className="bg-amber-500/10 border-2 border-amber-500/20 p-6 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6 cursor-pointer hover:bg-amber-500/20 transition-all group animate-in slide-in-from-top-4"
+        >
+          <div className="flex items-center gap-5">
+             <div className="text-4xl group-hover:scale-110 transition-transform">⚠️</div>
+             <div>
+                <h3 className="text-lg font-black text-amber-700">Sistem Berjalan di Local Mock Mode!</h3>
+                <p className="text-sm text-amber-700/80 mt-1 leading-relaxed">
+                   Kredensial database Supabase Anda belum tersimpan di domain ini (<span className="font-mono bg-white/50 px-1 rounded">koperatifai.online</span>). Data saat ini hanya simulasi sementara.
+                </p>
+             </div>
+          </div>
+          <button className="w-full md:w-auto px-6 py-4 bg-amber-500 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl shadow-lg shrink-0 group-hover:bg-amber-600 transition-all">
+             Lakukan Setup Database →
+          </button>
+        </div>
+      )}
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
