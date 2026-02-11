@@ -88,10 +88,9 @@ VALUES ('${founderUid || 'PASTE_UID_DI_SINI'}', 1000000, 50000000, 19600000000);
     setSyncStatus('CONFIGURING');
     
     try {
-      // Perbaikan pembacaan Env agar aplikasi tidak crash
-      const apiKey = (window as any).process?.env?.API_KEY || "";
+      const apiKey = process.env.API_KEY || "";
       if (!apiKey) {
-         setAiAnalysis("Konfigurasi API Key belum terdeteksi di Environment. Namun, DNS Anda sudah bisa diatur secara independen.");
+         setAiAnalysis("Konfigurasi API Key belum terdeteksi. Silakan atur DNS secara manual.");
          setSyncStatus('CONNECTED');
          return;
       }
