@@ -11,6 +11,7 @@ interface AppContextType {
   logout: () => void;
   navigate: (view: AppView) => void;
   goBack: () => void;
+  refreshProfile: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -76,6 +77,12 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
         throw e;
      }
      return false;
+  };
+
+  const refreshProfile = async () => {
+     if (user?.id && isLiveDatabase) {
+        try { await loadUserProfile(user.id); } catch(e) { console.warn(e); }
+     }
   };
 
   const login = async (role: UserRole, pin: string) => {
@@ -179,7 +186,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   };
 
   return (
-    <AppContext.Provider value={{ isLoggedIn, user, currentView, isLiveDatabase, login, logout, navigate, goBack }}>
+    <AppContext.Provider value={{ isLoggedIn, user, currentView, isLiveDatabase, login, logout, navigate, goBack, refreshProfile }}>
       {children}
     </AppContext.Provider>
   );

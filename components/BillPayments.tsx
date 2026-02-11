@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../contexts/AppContext.tsx';
 import { UserRole } from '../types.ts';
+import { supabase } from '../services/supabaseClient.ts';
 
 const BillPayments: React.FC = () => {
-  const { user } = useAppContext();
+  const { user, isLiveDatabase, refreshProfile } = useAppContext();
   const isFounder = user?.role === UserRole.FOUNDER;
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -24,18 +25,57 @@ const BillPayments: React.FC = () => {
 
   const currentCategory = billTypes.find(x => x.id === selectedCategory);
 
-  const handlePay = () => {
+  const handlePay = async () => {
+    if (!currentCategory || inputValue.length < 4) return;
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
+    
+    try {
+      // Simulasi harga dasar tagihan adalah Rp 50.000
+      const basePrice = 50000;
+      const totalCost = basePrice + currentCategory.ourFeeNum;
+
+      if (isLiveDatabase && user && supabase) {
+         // 1. Cek apakah saldo cukup
+         if (user.balances.voluntary < totalCost) {
+            throw new Error(`Saldo Tabungan Sukarela tidak mencukupi!\nTagihan: Rp ${totalCost.toLocaleString('id-ID')}\nSaldo Anda: Rp ${user.balances.voluntary.toLocaleString('id-ID')}`);
+         }
+
+         // 2. Potong saldo di database
+         const newBalance = user.balances.voluntary - totalCost;
+         const { error: balError } = await supabase
+            .from('balances')
+            .update({ voluntary: newBalance })
+            .eq('user_id', user.id);
+         
+         if (balError) throw new Error("Gagal mengupdate saldo di server.");
+
+         // 3. Catat transaksi
+         const { error: txError } = await supabase
+            .from('transactions')
+            .insert({
+               user_id: user.id,
+               type: 'withdrawal',
+               description: `PPOB: ${currentCategory.label} (${inputValue})`,
+               amount: totalCost,
+               status: 'completed'
+            });
+            
+         if (txError) throw new Error("Gagal mencatat mutasi rekening.");
+
+         // 4. Sinkronkan tampilan saldo di aplikasi
+         await refreshProfile();
+      }
+
       setShowSuccess(true);
-      
-      // Tambahkan keuntungan admin ke kas koperasi
       if (currentCategory) {
          setCoopDailyRevenue(prev => prev + currentCategory.ourFeeNum);
          setTransactionCount(prev => prev + 1);
       }
-    }, 2000);
+    } catch (err: any) {
+      alert(`⚠️ Transaksi Gagal: ${err.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -51,11 +91,11 @@ const BillPayments: React.FC = () => {
             </span>
             <h2 className="text-4xl font-black leading-tight italic">Pusat Layanan PPOB. <br/><span className="text-emerald-400">Bayar Murah, Koperasi Untung.</span></h2>
             <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
-              Setiap kali Anda membeli pulsa atau token listrik di sini, biaya admin yang biasanya mengalir ke bank besar kini masuk ke kas koperasi untuk dibagikan kembali sebagai SHU.
+              Setiap kali Anda membeli pulsa atau token listrik di sini, sistem akan **memotong langsung saldo Anda** dan biaya adminnya masuk ke kas koperasi untuk dibagikan kembali sebagai SHU.
             </p>
           </div>
           
-          {/* Dashboard Cuan (Hanya tampil mencolok untuk tujuan demonstrasi bisnis) */}
+          {/* Dashboard Cuan */}
           <div className="w-full lg:w-80 bg-white/10 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white/20 text-center shadow-inner relative overflow-hidden">
              <div className="absolute -top-10 -right-10 text-8xl opacity-10">💰</div>
              <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Laba Admin Koperasi Hari Ini</p>
@@ -149,7 +189,7 @@ const BillPayments: React.FC = () => {
                      </div>
                      <div className="h-px bg-white/10 my-2"></div>
                      <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase">Total Bayar</span>
+                        <span className="text-xs font-bold uppercase">Potong Saldo</span>
                         <span className="text-xl font-black text-white italic">Rp {(50000 + (currentCategory?.ourFeeNum || 0)).toLocaleString('id-ID')}</span>
                      </div>
                      <div className="mt-4 p-3 bg-indigo-500/20 rounded-xl border border-indigo-500/30 flex items-center justify-between">
@@ -163,7 +203,7 @@ const BillPayments: React.FC = () => {
                     disabled={isProcessing || inputValue.length < 4}
                     className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(79,70,229,0.3)] hover:bg-indigo-700 hover:-translate-y-1 transition-all active:scale-95 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none disabled:transform-none"
                   >
-                     {isProcessing ? 'SISTEM MEMPROSES...' : 'BAYAR & HASILKAN CUAN'}
+                     {isProcessing ? 'SISTEM MEMPROSES...' : 'BAYAR (POTONG SALDO)'}
                   </button>
                </div>
             ) : (
@@ -180,27 +220,16 @@ const BillPayments: React.FC = () => {
                   <div>
                      <h4 className="text-3xl font-black text-slate-800 italic">Transaksi Sukses!</h4>
                      <p className="text-slate-500 text-sm mt-2 leading-relaxed">
-                       Pulsa telah masuk. Koperasi baru saja menghasilkan laba <b>{currentCategory?.ourFee}</b>.
+                       Tagihan terbayar. Saldo Sukarela Anda berhasil dipotong secara otomatis.
                      </p>
                   </div>
                   <div className="w-full p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
                      <p className="text-[10px] text-indigo-600 font-black uppercase">SHU Anda Bertambah</p>
                      <p className="text-2xl font-black text-indigo-900">+Rp {currentCategory?.bonus}</p>
                   </div>
-                  <button onClick={() => { setShowSuccess(false); setInputValue(''); }} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-black transition-all">Transaksi Lagi</button>
+                  <button onClick={() => { setShowSuccess(false); setInputValue(''); }} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-black transition-all">Tutup</button>
                </div>
             )}
-         </div>
-      </div>
-
-      {/* Edukasi Keuntungan untuk Anggota */}
-      <div className="bg-emerald-50 p-10 rounded-[4rem] border border-emerald-100 flex flex-col md:flex-row items-center gap-10">
-         <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-5xl shrink-0 shadow-sm border-4 border-emerald-100">🔄</div>
-         <div className="flex-1 space-y-3">
-            <h4 className="text-2xl font-black text-emerald-900 italic leading-tight">Berhenti Memperkaya Konglomerat.</h4>
-            <p className="text-emerald-700/80 text-sm leading-relaxed font-medium">
-               Setiap tahun, rakyat Indonesia menghabiskan Triliunan Rupiah hanya untuk **biaya admin** beli pulsa dan token listrik. Mulai hari ini, bayar semua tagihan Anda melalui KoperatifAI. Kita kumpulkan biaya admin itu menjadi gunung laba (SHU) yang akan dikembalikan ke kantong Anda sendiri di akhir tahun.
-            </p>
          </div>
       </div>
     </div>

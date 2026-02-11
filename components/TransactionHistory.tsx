@@ -1,23 +1,53 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Transaction } from '../types.ts';
+import { useAppContext } from '../contexts/AppContext.tsx';
+import { supabase } from '../services/supabaseClient.ts';
 
 const TransactionHistory: React.FC = () => {
+  const { user, isLiveDatabase } = useAppContext();
   const [filter, setFilter] = useState<'all' | 'deposit' | 'withdrawal' | 'loan_installment'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Mocking a larger dataset to simulate scalability
-  const allTransactions: Transaction[] = useMemo(() => [
+  const [dbTransactions, setDbTransactions] = useState<Transaction[]>([]);
+
+  // Mocking fallback data jika database offline
+  const mockTransactions: Transaction[] = useMemo(() => [
     { id: 'TX001', type: 'deposit', description: 'Simpanan Sukarela - Pebruari', date: '05 Peb 2026', amount: 500000, status: 'completed' },
     { id: 'TX002', type: 'loan_installment', description: 'Angsuran Pinjaman #04', date: '04 Peb 2026', amount: 1250000, status: 'completed' },
     { id: 'TX003', type: 'deposit', description: 'Simpanan Wajib - Pebruari', date: '02 Peb 2026', amount: 100000, status: 'completed' },
     { id: 'TX004', type: 'withdrawal', description: 'Penarikan Sukarela', date: '28 Jan 2026', amount: 2000000, status: 'completed' },
-    { id: 'TX005', type: 'dividend', description: 'Bonus Referral Anggota', date: '15 Jan 2026', amount: 50000, status: 'completed' },
-    { id: 'TX006', type: 'deposit', description: 'Simpanan Sukarela - Januari', date: '12 Jan 2026', amount: 500000, status: 'completed' },
-    { id: 'TX007', type: 'loan_installment', description: 'Angsuran Pinjaman #03', date: '10 Jan 2026', amount: 1250000, status: 'completed' },
-    { id: 'TX008', type: 'deposit', description: 'Simpanan Wajib - Januari', date: '02 Jan 2026', amount: 100000, status: 'completed' },
   ], []);
+
+  // Fetch Transaksi NYATA dari Supabase
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (isLiveDatabase && user && supabase) {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+          
+        if (data && !error) {
+          const formatted: Transaction[] = data.map(t => ({
+             id: t.id.substring(0,8).toUpperCase(),
+             type: t.type as any,
+             description: t.description,
+             date: new Date(t.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+             amount: Number(t.amount),
+             status: t.status as any
+          }));
+          setDbTransactions(formatted);
+        }
+      }
+    };
+    fetchTransactions();
+  }, [isLiveDatabase, user]);
+
+  // Gunakan data dari Database jika Live, jika tidak gunakan Mock
+  const allTransactions = isLiveDatabase ? dbTransactions : mockTransactions;
 
   const filteredData = useMemo(() => {
     return allTransactions.filter(tx => {
@@ -46,8 +76,10 @@ const TransactionHistory: React.FC = () => {
       <div className="p-8 border-b border-slate-50 space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">Riwayat Transaksi</h2>
-            <p className="text-slate-500 text-sm">Optimalisasi performa aktif: Menangani {allTransactions.length} records per 05 Peb 2026.</p>
+            <h2 className="text-2xl font-bold text-slate-800">Mutasi Rekening</h2>
+            <p className="text-slate-500 text-sm">
+               {isLiveDatabase ? `Menampilkan ${allTransactions.length} transaksi langsung dari Database.` : `Menampilkan data simulasi lokal.`}
+            </p>
           </div>
           <div className="relative group w-full md:w-64">
             <input 
@@ -104,7 +136,7 @@ const TransactionHistory: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-8 py-5">
-                  <span className="text-xs font-mono text-slate-500">{tx.id}</span>
+                  <span className="text-xs font-mono text-slate-500">TX-{tx.id}</span>
                 </td>
                 <td className="px-8 py-5">
                   <span className="text-xs text-slate-600">{tx.date}</span>
@@ -139,7 +171,7 @@ const TransactionHistory: React.FC = () => {
         </p>
         <div className="flex gap-2">
           <button 
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || totalPages === 0}
             onClick={() => setCurrentPage(p => p - 1)}
             className="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold disabled:opacity-30 hover:bg-slate-50 transition-colors"
           >
@@ -159,7 +191,7 @@ const TransactionHistory: React.FC = () => {
             ))}
           </div>
           <button 
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || totalPages === 0}
             onClick={() => setCurrentPage(p => p + 1)}
             className="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold disabled:opacity-30 hover:bg-slate-50 transition-colors"
           >
