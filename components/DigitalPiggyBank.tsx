@@ -1,12 +1,54 @@
-
 import React, { useState } from 'react';
+import { useAppContext } from '../contexts/AppContext.tsx';
+import { supabase } from '../services/supabaseClient.ts';
 
 const DigitalPiggyBank: React.FC = () => {
+  const { user, isLiveDatabase, refreshProfile } = useAppContext();
   const [dailyGoal, setDailyGoal] = useState(2000);
-  const [savingsAmount, setSavingsAmount] = useState(15400000);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const simulateAdd = () => {
-    setSavingsAmount(prev => prev + dailyGoal);
+  // Ambil saldo asli dari database, jika tidak ada fallback ke data mock
+  const savingsAmount = user?.balances?.voluntary || 15400000;
+
+  const handleAddSavings = async () => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    try {
+       if (isLiveDatabase && user && supabase) {
+          // 1. Tambah saldo sukarela
+          const newVoluntary = user.balances.voluntary + dailyGoal;
+          const { error: balError } = await supabase
+             .from('balances')
+             .update({ voluntary: newVoluntary })
+             .eq('user_id', user.id);
+          
+          if (balError) throw new Error("Gagal mengupdate saldo.");
+
+          // 2. Catat ke Ledger Transaksi
+          const { error: txError } = await supabase
+             .from('transactions')
+             .insert({
+                user_id: user.id,
+                type: 'deposit',
+                description: 'Setoran Celengan Digital',
+                amount: dailyGoal,
+                status: 'completed'
+             });
+             
+          if (txError) throw new Error("Gagal mencatat histori.");
+
+          // 3. Refresh layar aplikasi
+          await refreshProfile();
+          alert(`Yeay! Berhasil menabung Rp ${dailyGoal.toLocaleString('id-ID')} ke Celengan Digital Anda.`);
+       } else {
+          alert("Anda sedang dalam Mode Lokal. Tabungan berhasil disimulasikan.");
+       }
+    } catch (e: any) {
+       alert(`Gagal menabung: ${e.message}`);
+    } finally {
+       setIsProcessing(false);
+    }
   };
 
   const withdrawalScenarios = [
@@ -34,7 +76,13 @@ const DigitalPiggyBank: React.FC = () => {
              <div className="text-7xl mb-4 animate-bounce">🪙</div>
              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Saldo Sukarela Anda</p>
              <p className="text-3xl font-black text-slate-800 mt-1 italic">Rp {savingsAmount.toLocaleString('id-ID')}</p>
-             <button onClick={simulateAdd} className="mt-6 w-full py-4 bg-amber-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:bg-amber-600 transition-all">Masukkan Receh Harian</button>
+             <button 
+                onClick={handleAddSavings} 
+                disabled={isProcessing}
+                className="mt-6 w-full py-4 bg-amber-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:bg-amber-600 transition-all disabled:opacity-50"
+             >
+                {isProcessing ? 'MENYIMPAN...' : 'MASUKKAN RECEH HARIAN'}
+             </button>
           </div>
         </div>
       </div>
@@ -52,7 +100,7 @@ const DigitalPiggyBank: React.FC = () => {
                   <input 
                      type="range" min="1000" max="50000" step="1000" 
                      value={dailyGoal} 
-                     onChange={(e) => setDailyGoal(parseInt(e.target.value))}
+                     onChange={(e) => setDailyGoal(Number(e.target.value))}
                      className="w-full h-2 bg-slate-100 rounded-full appearance-none cursor-pointer accent-amber-500"
                   />
                </div>
@@ -85,32 +133,10 @@ const DigitalPiggyBank: React.FC = () => {
                        <p className="text-sm font-bold">{s.t}</p>
                        <p className="text-[9px] text-slate-500 uppercase tracking-tighter">Biaya: {s.fee} • Waktu: {s.time}</p>
                     </div>
-                    <button className="px-3 py-1 bg-white/10 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-white/20 transition-all">Pilih</button>
                  </div>
                ))}
             </div>
          </div>
-      </div>
-
-      {/* Integration Message for Marginalized People */}
-      <div className="p-10 bg-white border border-slate-100 rounded-[3rem] shadow-sm flex flex-col md:flex-row items-center gap-10">
-         <div className="text-7xl">🪴</div>
-         <div className="flex-1 space-y-2">
-            <h4 className="text-2xl font-black text-slate-800 italic">"Pupuk Masa Depan dari Sisa Belanja."</h4>
-            <p className="text-slate-500 text-sm leading-relaxed">
-               Bagi rakyat kecil, menabung Rp 500.000 sekaligus itu berat. Tapi menabung Rp 1.000 sehabis jualan di pasar itu <b>Mudah</b>. Fitur Celengan Digital ini dirancang agar anggota tidak merasa sedang menabung, melainkan sedang memupuk kekayaan secara perlahan tapi pasti.
-            </p>
-         </div>
-      </div>
-
-      {/* Final Action for Founder */}
-      <div className="p-12 bg-amber-600 border border-amber-700 rounded-[4rem] shadow-sm flex flex-col items-center text-center space-y-8 text-white">
-         <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-5xl shadow-xl">💰</div>
-         <h4 className="text-3xl font-black max-w-xl italic">"Likuiditas Adalah Rahasia Kesuksesan Koperasi."</h4>
-         <p className="text-amber-100 max-w-2xl text-lg leading-relaxed">
-            Semakin banyak anggota menabung di Simpanan Sukarela, semakin besar dana segar (Cash) yang dimiliki koperasi untuk diputar kembali ke sektor produktif. Ini adalah strategi **Double-Win**: Anggota punya dana darurat, Koperasi punya modal kerja.
-         </p>
-         <button className="px-10 py-4 bg-white text-amber-600 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl">Aktifkan Campaign "Gerakan Seribu Sehari"</button>
       </div>
     </div>
   );
