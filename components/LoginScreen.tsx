@@ -3,12 +3,13 @@ import { UserRole } from '../types.ts';
 import { useAppContext } from '../contexts/AppContext.tsx';
 
 const LoginScreen: React.FC = () => {
-  const { login } = useAppContext(); // Menggunakan Global State
+  const { login } = useAppContext();
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
   const [isError, setIsError] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [lockoutTimer, setLockoutTimer] = useState(0);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   
   const [loginStep, setLoginStep] = useState<'PIN' | '2FA' | 'FACE'>('PIN');
   const [otp, setOtp] = useState('');
@@ -34,9 +35,20 @@ const LoginScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, [lockoutTimer, attempts]);
 
-  const handlePinSubmit = (e: React.FormEvent) => {
+  const executeLogin = async (role: UserRole, currentPin: string) => {
+     setIsAuthenticating(true);
+     try {
+        await login(role, currentPin);
+     } catch (e) {
+        handleFailedAttempt();
+     } finally {
+        setIsAuthenticating(false);
+     }
+  };
+
+  const handlePinSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (lockoutTimer > 0) return;
+    if (lockoutTimer > 0 || isAuthenticating) return;
 
     const roleData = roles.find(r => r.id === selectedRole);
     if (pin === roleData?.masterPin) {
@@ -46,14 +58,14 @@ const LoginScreen: React.FC = () => {
       } else if (roleData.security === 'BIOMETRIC') {
         startFaceID();
       } else {
-        login(selectedRole); // Eksekusi Login Global
+        await executeLogin(selectedRole, pin);
       }
     } else {
       handleFailedAttempt();
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp === '1234') { 
       startFaceID();
@@ -82,15 +94,15 @@ const LoginScreen: React.FC = () => {
       }
       setTimeout(() => {
         setIsScanning(false);
-        setTimeout(() => {
+        setTimeout(async () => {
           stream.getTracks().forEach(track => track.stop());
-          login(selectedRole); // Eksekusi Login Global
+          await executeLogin(selectedRole, roles.find(r => r.id === selectedRole)?.masterPin || pin);
         }, 1000);
       }, 3000);
     } catch (err) {
       alert("Akses kamera ditolak. Verifikasi wajah dilewati untuk simulasi.");
       setLoginStep('PIN');
-      login(selectedRole); // Eksekusi Login Global
+      await executeLogin(selectedRole, roles.find(r => r.id === selectedRole)?.masterPin || pin);
     }
   };
 
@@ -120,10 +132,10 @@ const LoginScreen: React.FC = () => {
             
             <div className="p-6 bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 space-y-5 max-w-sm mx-auto lg:mx-0 shadow-2xl">
                <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Network Status</span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Database Node</span>
                   <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
                      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></span>
-                     <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Secure</span>
+                     <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Supabase Ready</span>
                   </div>
                </div>
                <div className="space-y-3">
@@ -178,7 +190,7 @@ const LoginScreen: React.FC = () => {
                            type="password"
                            value={pin}
                            onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                           disabled={lockoutTimer > 0}
+                           disabled={lockoutTimer > 0 || isAuthenticating}
                            placeholder="••••••"
                            className={`w-full text-center text-4xl tracking-[0.5em] font-black p-6 rounded-[2rem] outline-none transition-all placeholder:text-white/20 ${
                               isError 
@@ -189,10 +201,10 @@ const LoginScreen: React.FC = () => {
                      </div>
                      <button 
                         type="submit" 
-                        disabled={pin.length < 6 || lockoutTimer > 0}
+                        disabled={pin.length < 6 || lockoutTimer > 0 || isAuthenticating}
                         className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(79,70,229,0.3)] hover:bg-indigo-500 transition-all disabled:opacity-30 disabled:shadow-none active:scale-95"
                      >
-                        Otorisasi Akses
+                        {isAuthenticating ? 'MENYINKRONKAN KUNCI...' : 'OTORISASI AKSES'}
                      </button>
                   </form>
                </div>
@@ -215,10 +227,10 @@ const LoginScreen: React.FC = () => {
                      />
                      <button 
                         type="submit" 
-                        disabled={otp.length < 4}
+                        disabled={otp.length < 4 || isAuthenticating}
                         className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-500 transition-all disabled:opacity-30 active:scale-95"
                      >
-                        Verifikasi OTP
+                        {isAuthenticating ? 'VERIFIKASI SERVER...' : 'VERIFIKASI OTP'}
                      </button>
                   </form>
                </div>

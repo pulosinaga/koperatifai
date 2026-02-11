@@ -3,7 +3,7 @@ import { AppView } from '../types.ts';
 import { useAppContext } from '../contexts/AppContext.tsx';
 
 const Header: React.FC = () => {
-  const { currentView, goBack, user, logout } = useAppContext();
+  const { currentView, goBack, user, logout, isLiveDatabase } = useAppContext();
   const isDashboard = currentView === AppView.DASHBOARD;
 
   const getHeaderTitle = () => {
@@ -42,9 +42,13 @@ const Header: React.FC = () => {
       <div className="flex items-center gap-4">
         <div className="hidden md:flex flex-col items-end mr-2">
            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">{user?.role}</span>
-           <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-[9px] text-slate-400 font-bold uppercase">Enkripsi Aktif</span>
+           
+           {/* Smart Database Indicator */}
+           <span className="flex items-center gap-1.5" title={isLiveDatabase ? "Connected to Supabase" : "Running on Mock Data Failsafe"}>
+              <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${isLiveDatabase ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+              <span className={`text-[9px] font-bold uppercase ${isLiveDatabase ? 'text-emerald-600' : 'text-amber-600'}`}>
+                {isLiveDatabase ? 'Live DB Active' : 'Local Mock Mode'}
+              </span>
            </span>
         </div>
         
