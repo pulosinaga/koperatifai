@@ -23,7 +23,6 @@ const Sidebar: React.FC = () => {
         { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
         { id: AppView.VOUCHING_SYSTEM, label: 'Jaminan Sosial', icon: '🤝' },
         { id: AppView.LOAN_READINESS, label: 'Kesiapan Modal', icon: '📈' },
-        { id: AppView.LOAN_HISTORY, label: 'Status Kredit', icon: '📜' },
       ]
     },
     {
@@ -31,18 +30,17 @@ const Sidebar: React.FC = () => {
       items: [
         { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🛒' },
         { id: AppView.SMART_MOBILITY, label: 'Mobilitas Pintar', icon: '🚗' },
-        { id: AppView.MERCHANT_DASHBOARD, label: 'Toko Saya', icon: '🏪' },
+        { id: AppView.BILL_PAYMENTS, label: 'Bayar BPJS & Tagihan', icon: '🛡️' },
         { id: AppView.SMART_PROCUREMENT, label: 'Grosir Kolektif', icon: '📦' },
-        { id: AppView.BILL_PAYMENTS, label: 'Bayar Tagihan', icon: '⚡' },
+        { id: AppView.MERCHANT_DASHBOARD, label: 'Toko Saya', icon: '🏪' },
       ]
     },
     {
       label: 'Proteksi & Edukasi',
       items: [
+        { id: AppView.SMART_EDUCATION, label: 'Bayar UKT & Akademi', icon: '🎓' },
         { id: AppView.MEMBER_HEALTH_SHIELD, label: 'Perisai Sehat', icon: '🏥' },
         { id: AppView.PERSONAL_GOLD, label: 'Tabungan Emas', icon: '📀' },
-        { id: AppView.PENSION_FUND, label: 'Dana Pensiun', icon: '👴' },
-        { id: AppView.SMART_EDUCATION, label: 'Academy AI', icon: '🎓' },
         { id: AppView.AI_ADVISOR, label: 'Asisten AI', icon: '🤖' },
       ]
     }
@@ -54,9 +52,8 @@ const Sidebar: React.FC = () => {
       items: [
         { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
         { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'Kalkulator Cuan', icon: '🧮' },
-        { id: AppView.SYSTEM_HEALTH, label: 'Audit Sistem', icon: '🩺' },
         { id: AppView.DEPLOYMENT_HUB, label: 'Setup Database', icon: '🗄️' },
-        { id: AppView.REVENUE_CENTER, label: 'Duta Manage', icon: '🛵' },
+        { id: AppView.SYSTEM_HEALTH, label: 'Audit Sistem', icon: '🩺' },
       ]
     });
   }

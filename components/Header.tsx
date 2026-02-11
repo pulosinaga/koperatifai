@@ -3,7 +3,7 @@ import { AppView } from '../types.ts';
 import { useAppContext } from '../contexts/AppContext.tsx';
 
 const Header: React.FC = () => {
-  const { currentView, goBack, user, logout, isLiveDatabase } = useAppContext();
+  const { currentView, goBack, user, isLiveDatabase } = useAppContext();
   const isDashboard = currentView === AppView.DASHBOARD;
 
   const getHeaderTitle = () => {
@@ -17,6 +17,10 @@ const Header: React.FC = () => {
       case AppView.MEMBERSHIP_PROFILE: return 'Profil Pemilik';
       case AppView.SHU_DISTRIBUTION: return 'Bagi Hasil (SHU)';
       case AppView.DEPLOYMENT_HUB: return 'Setup Database (Supabase)';
+      case AppView.SMART_MOBILITY: return 'Mobilitas Pintar';
+      case AppView.BILL_PAYMENTS: return 'Pembayaran & Proteksi';
+      case AppView.SMART_EDUCATION: return 'Edukasi & Edu-Pay';
+      case AppView.CASH_WITHDRAWAL: return 'Penarikan Likuiditas';
       default: return 'KoperatifAI';
     }
   };
@@ -40,27 +44,26 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="hidden md:flex flex-col items-end mr-2">
+      <div className="flex items-center gap-6">
+        {/* AI Sentry Indicator */}
+        <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-900 rounded-2xl border border-white/10 shadow-lg">
+           <div className="relative">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+              <div className="absolute inset-0 w-2 h-2 bg-emerald-500 rounded-full"></div>
+           </div>
+           <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">AI Sentinel Active</span>
+        </div>
+
+        <div className="hidden md:flex flex-col items-end">
            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">{user?.role}</span>
-           
-           {/* Smart Database Indicator */}
-           <span className="flex items-center gap-1.5" title={isLiveDatabase ? "Connected to Supabase" : "Running on Mock Data Failsafe"}>
-              <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${isLiveDatabase ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-              <span className={`text-[9px] font-bold uppercase ${isLiveDatabase ? 'text-emerald-600' : 'text-amber-600'}`}>
-                {isLiveDatabase ? 'Live DB Active' : 'Local Mock Mode'}
-              </span>
+           <span className={`text-[9px] font-bold uppercase ${isLiveDatabase ? 'text-emerald-600' : 'text-amber-600'}`}>
+             {isLiveDatabase ? 'Live DB Active' : 'Local Mock Mode'}
            </span>
         </div>
         
-        <button 
-          onClick={logout}
-          className="p-2.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all active:scale-95 flex items-center gap-2 group"
-          title="Keluar dari Aplikasi"
-        >
-          <span className="text-lg group-hover:rotate-12 transition-transform">🚪</span>
-          <span className="hidden sm:inline">Logout</span>
-        </button>
+        <div className="w-10 h-10 rounded-2xl bg-indigo-100 flex items-center justify-center text-xl shadow-inner border border-indigo-200">
+           👤
+        </div>
       </div>
     </header>
   );
