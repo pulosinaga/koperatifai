@@ -57,6 +57,8 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
            setIsLoggedIn(true);
            setIsLiveDatabase(true);
            return true;
+        } else {
+           console.error("Data profile/balance tidak lengkap di tabel Supabase.");
         }
      } catch (e) {
         console.warn("Gagal memuat profil Supabase. Fallback ke lokal.");
@@ -74,18 +76,26 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
          
          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
+         if (error) {
+            console.error("Supabase Auth Error:", error.message);
+            throw error;
+         }
+
          if (data?.user) {
             const success = await loadUserProfile(data.user.id);
             if (success) {
                setCurrentView(AppView.DASHBOARD);
                setViewHistory([]);
                return true;
+            } else {
+               throw new Error("User auth sukses, tapi data profil di tabel hilang.");
             }
          }
       }
-      throw new Error("Supabase auth failed or user not found");
-    } catch (error) {
-      console.warn("⚠️ Mode Offline/Mock Data Aktif");
+      throw new Error("Supabase client belum dikonfigurasi dengan benar.");
+    } catch (error: any) {
+      console.warn("⚠️ Login Live DB Gagal:", error.message);
+      console.warn("⚠️ Mengalihkan ke Mode Offline/Mock Data");
       
       // 2. Fallback ke Data Simulasi jika database belum disetup
       const mockUser: UserProfile = {

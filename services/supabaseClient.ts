@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 const getEnv = () => {
@@ -6,11 +5,15 @@ const getEnv = () => {
 };
 
 const env = getEnv();
-const supabaseUrl = env.SUPABASE_URL || '';
-const supabaseAnonKey = env.SUPABASE_ANON_KEY || '';
+// Coba baca dari penyimpanan lokal browser terlebih dahulu (diset melalui DeploymentHub)
+const localUrl = localStorage.getItem('SUPABASE_URL');
+const localKey = localStorage.getItem('SUPABASE_ANON_KEY');
+
+const supabaseUrl = localUrl || env.SUPABASE_URL || '';
+const supabaseAnonKey = localKey || env.SUPABASE_ANON_KEY || '';
 
 // Inisialisasi client dengan pengecekan aman
-export const supabase = (supabaseUrl && supabaseAnonKey && !supabaseUrl.includes('GANTI_DENGAN')) 
+export const supabase = (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : (null as any);
 

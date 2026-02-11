@@ -16,6 +16,7 @@ const Header: React.FC = () => {
       case AppView.AI_ADVISOR: return 'Asisten AI';
       case AppView.MEMBERSHIP_PROFILE: return 'Profil Pemilik';
       case AppView.SHU_DISTRIBUTION: return 'Bagi Hasil (SHU)';
+      case AppView.DEPLOYMENT_HUB: return 'Setup Database (Supabase)';
       default: return 'KoperatifAI';
     }
   };

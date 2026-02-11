@@ -54,7 +54,7 @@ const Sidebar: React.FC = () => {
         { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
         { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'Kalkulator Cuan', icon: '🧮' },
         { id: AppView.SYSTEM_HEALTH, label: 'Audit Sistem', icon: '🩺' },
-        { id: AppView.DEPLOYMENT_HUB, label: 'Domain Sync', icon: '🌐' },
+        { id: AppView.DEPLOYMENT_HUB, label: 'Setup Database', icon: '🗄️' },
         { id: AppView.REVENUE_CENTER, label: 'Duta Manage', icon: '🛵' },
       ]
     });
