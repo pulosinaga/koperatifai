@@ -28,7 +28,11 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
       if (supabase) {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-           await loadUserProfile(session.user.id);
+           try {
+             await loadUserProfile(session.user.id);
+           } catch (e) {
+             console.warn("Session restore failed", e);
+           }
         }
       }
     };
@@ -39,9 +43,12 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
      try {
         // Ambil data profil dari Supabase (Database Asli)
         const { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', userId).single();
-        const { data: balance, error: balanceError } = await supabase.from('balances').select('*').eq('user_id', userId).single();
+        if (profileError) throw new Error(`Gagal membaca tabel profiles: ${profileError.message}. (Apakah Anda sudah menjalankan SQL Script?)`);
         
-        if (!profileError && !balanceError && profile && balance) {
+        const { data: balance, error: balanceError } = await supabase.from('balances').select('*').eq('user_id', userId).single();
+        if (balanceError) throw new Error(`Gagal membaca tabel balances: ${balanceError.message}. (Apakah data saldo sudah di-inject?)`);
+        
+        if (profile && balance) {
            setUser({
               id: profile.id,
               name: profile.name,
@@ -57,11 +64,10 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
            setIsLoggedIn(true);
            setIsLiveDatabase(true);
            return true;
-        } else {
-           console.error("Data profile/balance tidak lengkap di tabel Supabase.");
         }
-     } catch (e) {
-        console.warn("Gagal memuat profil Supabase. Fallback ke lokal.");
+     } catch (e: any) {
+        console.warn("Gagal memuat profil Supabase:", e.message);
+        throw e; // Lemparkan ke atas agar ditangkap fungsi login
      }
      return false;
   };
@@ -70,15 +76,13 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
     try {
       // 1. Coba Login via Supabase Auth (Production)
       if (supabase) {
-         // Asumsi penamaan email internal: founder@koperatif.ai
          const email = `${role.toLowerCase()}@koperatif.ai`;
          const password = `${pin}-CoopAI-2026`; // Secret Salt
          
          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
          if (error) {
-            console.error("Supabase Auth Error:", error.message);
-            throw error;
+            throw new Error(`Supabase Auth Ditolak: ${error.message}. (Cek kembali Email/Password di menu Authentication Supabase)`);
          }
 
          if (data?.user) {
@@ -87,15 +91,20 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
                setCurrentView(AppView.DASHBOARD);
                setViewHistory([]);
                return true;
-            } else {
-               throw new Error("User auth sukses, tapi data profil di tabel hilang.");
             }
          }
+      } else {
+         throw new Error("Kredensial URL & Key Supabase kosong atau tidak valid.");
       }
-      throw new Error("Supabase client belum dikonfigurasi dengan benar.");
+      throw new Error("Terjadi kesalahan sistem yang tidak diketahui.");
+      
     } catch (error: any) {
       console.warn("⚠️ Login Live DB Gagal:", error.message);
-      console.warn("⚠️ Mengalihkan ke Mode Offline/Mock Data");
+      
+      // MUNCULKAN POPUP ERROR KHUSUS UNTUK FOUNDER AGAR TAHU MASALAHNYA
+      if (role === UserRole.FOUNDER) {
+         alert(`KONEKSI DATABASE LIVE GAGAL!\n\nAlasan dari Server:\n"${error.message}"\n\nAplikasi dialihkan ke Mode Simulasi Lokal. Silakan klik menu 'Setup Database' untuk memperbaiki konfigurasi Supabase Anda.`);
+      }
       
       // 2. Fallback ke Data Simulasi jika database belum disetup
       const mockUser: UserProfile = {
