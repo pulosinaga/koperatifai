@@ -18,7 +18,6 @@ const Dashboard: React.FC = () => {
   const role = user?.role || UserRole.MEMBER;
   const firstName = user?.name.split(' ')[0] || 'Anggota';
 
-  // Stats Logic based on Role
   const stats = role === UserRole.MEMBER ? [
     { label: 'Saldo Sukarela', val: `Rp ${user?.balances.voluntary.toLocaleString('id-ID')}`, icon: '💰', color: 'text-indigo-600', view: AppView.DIGITAL_PASSBOOK },
     { label: 'Sisa Pinjaman', val: 'Rp 4.250.000', icon: '💸', color: 'text-rose-500', view: AppView.LOAN_HISTORY },
@@ -40,41 +39,73 @@ const Dashboard: React.FC = () => {
           </h2>
           <p className="text-slate-500 font-medium">Halo, {firstName}. Siap membangun kedaulatan hari ini?</p>
         </div>
-        <div className="px-4 py-2 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-white/10 shrink-0">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
-          <span className="text-[10px] font-black uppercase tracking-widest">AI Sentinel: Monitoring Active</span>
+        <div className="flex gap-2">
+           <button onClick={() => navigate(AppView.NOTIFICATION_CENTER)} className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-xl relative">
+              🔔
+              <div className="absolute top-2 right-2 w-3 h-3 bg-rose-500 rounded-full border-2 border-white animate-pulse"></div>
+           </button>
+           <div className="px-4 py-2 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-white/10 shrink-0">
+             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+             <span className="text-[10px] font-black uppercase tracking-widest">AI Sentinel: Active</span>
+           </div>
         </div>
       </header>
 
-      {/* Special Onboarding Banners for Members */}
+      {/* AMANAH METER: Status Kewajiban Anggota */}
       {role === UserRole.MEMBER && (
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div 
-              onClick={() => navigate(AppView.MEMBER_EARNING_HUB)}
-              className="bg-emerald-600 p-8 rounded-[3rem] text-white flex items-center justify-between gap-6 shadow-xl cursor-pointer hover:bg-emerald-700 transition-all border-b-8 border-emerald-800"
-            >
-               <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl">💰</div>
-                  <div>
-                     <h3 className="text-xl font-black italic leading-tight">Cari Rezeki Tambahan?</h3>
-                     <p className="text-emerald-100 text-[10px] font-bold">Ajak Teman atau Jadi Kurir Desa.</p>
-                  </div>
-               </div>
-               <span className="text-xl">→</span>
+         <div className="bg-white p-8 rounded-[3.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-8">
+            <div className="w-32 h-32 relative shrink-0">
+               <svg className="w-full h-full rotate-[-90deg]" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="16" fill="none" className="stroke-slate-100" strokeWidth="4" />
+                  <circle cx="18" cy="18" r="16" fill="none" className="stroke-emerald-500" strokeWidth="4" strokeDasharray="75 100" strokeLinecap="round" />
+               </svg>
+               <div className="absolute inset-0 flex items-center justify-center font-black text-2xl text-slate-800">75%</div>
             </div>
-
-            <div 
-              onClick={() => navigate(AppView.MEMBER_TRUST_VAULT)}
-              className="bg-indigo-600 p-8 rounded-[3rem] text-white flex items-center justify-between gap-6 shadow-xl cursor-pointer hover:bg-indigo-700 transition-all border-b-8 border-indigo-800"
-            >
-               <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl">🛡️</div>
-                  <div>
-                     <h3 className="text-xl font-black italic leading-tight">Uang Saya Aman?</h3>
-                     <p className="text-indigo-100 text-[10px] font-bold">Pantau Brankas Emas & Bank Koperasi.</p>
-                  </div>
+            <div className="flex-1 space-y-4 text-center md:text-left">
+               <div>
+                  <h4 className="text-xl font-black text-slate-800 uppercase italic">Skor Amanah Anda</h4>
+                  <p className="text-sm text-slate-500">Satu langkah lagi menuju status <b>Anggota Platinum</b>.</p>
                </div>
-               <span className="text-xl">→</span>
+               <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black">✓ Simpanan Pokok</span>
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black">✓ Angsuran Bulan Ini</span>
+                  <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black animate-pulse">⏳ Simpanan Wajib</span>
+               </div>
+            </div>
+            <button 
+               onClick={() => navigate(AppView.NOTIFICATION_CENTER)}
+               className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all"
+            >
+               BERESKAN AMANAH →
+            </button>
+         </div>
+      )}
+
+      {/* MEMBER SERVICE HUB */}
+      {role === UserRole.MEMBER && (
+         <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm space-y-10">
+            <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-widest text-center md:text-left">Layanan Rakyat</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+               {[
+                 { l: 'Nabung', i: '📥', v: AppView.DIGITAL_PASSBOOK, c: 'bg-emerald-50 text-emerald-600', d: 'Setor Mandiri/Duta' },
+                 { l: 'Bayar Cicilan', i: '💸', v: AppView.MEMBER_INSTALLMENT_PAYMENT, c: 'bg-rose-50 text-rose-600', d: 'Angsuran Produktif' },
+                 { l: 'Beli Barang', i: '🛒', v: AppView.MEMBER_MARKETPLACE, c: 'bg-indigo-50 text-indigo-600', d: 'Pasar Anggota' },
+                 { l: 'Iuran Proteksi', i: '🏥', v: AppView.BILL_PAYMENTS, c: 'bg-amber-50 text-amber-600', d: 'BPJS & Perisai Sehat' },
+               ].map((serv, i) => (
+                 <button 
+                  key={i} 
+                  onClick={() => navigate(serv.v)}
+                  className="flex flex-col items-center text-center space-y-4 group"
+                 >
+                    <div className={`w-20 h-20 rounded-[2.5rem] ${serv.c} flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform duration-500`}>
+                       {serv.i}
+                    </div>
+                    <div>
+                       <p className="font-black text-slate-800 text-xs uppercase tracking-tighter">{serv.l}</p>
+                       <p className="text-[8px] text-slate-400 font-bold uppercase mt-0.5">{serv.d}</p>
+                    </div>
+                 </button>
+               ))}
             </div>
          </div>
       )}
@@ -98,14 +129,12 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Chart Section */}
         <div className="lg:col-span-2 bg-white p-8 rounded-[3.5rem] shadow-sm border border-slate-100 space-y-8 overflow-hidden">
            <div className="flex justify-between items-center px-2">
               <div>
                 <h4 className="font-black text-slate-800 text-sm uppercase tracking-widest italic">Pertumbuhan Kesejahteraan</h4>
                 <p className="text-[10px] text-slate-400 font-bold">Periode: 7 Hari Terakhir</p>
               </div>
-              <button onClick={() => navigate(AppView.TRANSACTIONS)} className="text-[10px] font-black text-indigo-600 underline uppercase tracking-widest">Detail Laporan</button>
            </div>
            <div className="h-72 w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -127,16 +156,15 @@ const Dashboard: React.FC = () => {
            </div>
         </div>
 
-        {/* Quick Actions Adaptive */}
         <div className="space-y-6">
            <div className="bg-slate-900 p-8 rounded-[3.5rem] text-white space-y-6 relative overflow-hidden shadow-2xl border-b-8 border-indigo-600">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-              <h4 className="text-xl font-black italic text-indigo-400 tracking-tighter">Aksi Cepat</h4>
+              <h4 className="text-xl font-black italic text-indigo-400 tracking-tighter">Otoritas Digital</h4>
               <div className="space-y-2.5 relative z-10">
                  {[
                    { l: 'Tarik Tunai', i: '🏧', v: AppView.CASH_WITHDRAWAL },
-                   { l: 'Bayar Tagihan', i: '🛡️', v: AppView.BILL_PAYMENTS },
-                   { l: 'Pasar Rakyat', i: '🛒', v: AppView.MEMBER_MARKETPLACE },
+                   { l: 'Kamera Sakti (QR)', i: '🤳', v: AppView.MEMBER_QRIS },
+                   { l: 'Status Keanggotaan', i: '🛡️', v: AppView.MEMBERSHIP_CERTIFICATE },
                    { l: 'Chat Mentor AI', i: '🤖', v: AppView.AI_ADVISOR }
                  ].map((act, i) => (
                    <button 
@@ -149,13 +177,6 @@ const Dashboard: React.FC = () => {
                    </button>
                  ))}
               </div>
-           </div>
-
-           <div className="p-8 bg-indigo-50 border border-indigo-100 rounded-[3.5rem] flex flex-col items-center text-center space-y-4 shadow-inner">
-              <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-2xl border border-indigo-100 animate-bounce">🎓</div>
-              <p className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Literasi Finansial</p>
-              <h5 className="text-sm font-bold text-slate-800 leading-tight">Ubah Utang Menjadi Aset Produktif</h5>
-              <button onClick={() => navigate(AppView.SMART_EDUCATION)} className="text-[10px] font-black text-indigo-600 underline uppercase tracking-widest">Pelajari Caranya</button>
            </div>
         </div>
       </div>

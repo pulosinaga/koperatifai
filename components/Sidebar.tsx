@@ -9,8 +9,9 @@ const Sidebar: React.FC = () => {
   const getMenuCategories = () => {
     const common = [
       { id: AppView.DASHBOARD, label: 'Portal Utama', icon: '📊' },
-      { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
-      { id: AppView.AI_ADVISOR, label: 'Asisten AI', icon: '🤖' },
+      { id: AppView.APP_DISTRIBUTION, label: 'Sebarkan Aplikasi', icon: '📲' },
+      { id: AppView.SECURITY_PROTOCOL, label: 'Protokol Keamanan', icon: '🛡️' },
+      { id: AppView.ECONOMIC_RESILIENCY, label: 'Daya Tahan Ekonomi', icon: '📉' },
     ];
 
     const finance = [
@@ -26,9 +27,10 @@ const Sidebar: React.FC = () => {
     ];
 
     if (role === UserRole.MEMBER) {
+      menu[0].items.push({ id: AppView.DUTA_ECHOES, label: 'Gema Rakyat', icon: '📣' });
       menu[0].items.push({ id: AppView.MEMBER_SOVEREIGNTY_GUIDE, label: 'Panduan Rakyat', icon: '📜' });
-      menu[1].items.push({ id: AppView.MEMBER_EARNING_HUB, label: 'Pusat Rezeki', icon: '⛲' });
-      menu[1].items.push({ id: AppView.MEMBER_TRUST_VAULT, label: 'Brankas Aman', icon: '🛡️' });
+      menu[1].items.push({ id: AppView.MEMBER_EARNING_HUB, label: 'Pusat Rezeki', icon: '💰' });
+      menu[1].items.push({ id: AppView.MEMBER_TRUST_VAULT, label: 'Brankas Aman', icon: '🔒' });
     }
 
     if (role === UserRole.GOVERNMENT) {
@@ -45,11 +47,10 @@ const Sidebar: React.FC = () => {
       menu.push({
         label: 'Area Duta',
         items: [
+          { id: AppView.DUTA_AWARDING, label: 'Malam Ksatria', icon: '🎬' },
+          { id: AppView.DUTA_LEADERBOARD, label: 'Hall of Fame', icon: '🏆' },
+          { id: AppView.DUTA_BADGES, label: 'Lencana Ksatria', icon: '🎖️' },
           { id: AppView.DUTA_EDUCATION_KIT, label: 'Edukasi Warga', icon: '📢' },
-          { id: AppView.SERVICE_JOURNEY_GUIDE, label: 'Peta Layanan', icon: '🗺️' },
-          { id: AppView.MEMBER_BENEFIT_SIMULATOR, label: 'Simulasi Manfaat', icon: '⚖️' },
-          { id: AppView.VILLAGE_SOCIAL_BUDGET, label: 'Anggaran Desa', icon: '🏦' },
-          { id: AppView.REVENUE_CENTER, label: 'Kinerja Wilayah', icon: '🛵' },
         ]
       });
     }
@@ -58,8 +59,7 @@ const Sidebar: React.FC = () => {
       menu.push({
         label: 'Founder Controls',
         items: [
-          { id: AppView.GOV_PROPOSAL_GENERATOR, label: 'Penawaran Negara', icon: '✉️' },
-          { id: AppView.GOV_TENANT_MANAGEMENT, label: 'Sewa Pemerintah', icon: '🏢' },
+          { id: AppView.REVENUE_CENTER, label: 'Royalty Vault', icon: '💎' },
           { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
           { id: AppView.DEPLOYMENT_HUB, label: 'System Setup', icon: '⚙️' },
         ]
@@ -89,7 +89,7 @@ const Sidebar: React.FC = () => {
               {cat.items.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => navigate(item.id)}
+                  onClick={() => navigate(item.id as AppView)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                     currentView === item.id
                       ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 scale-[1.02]'

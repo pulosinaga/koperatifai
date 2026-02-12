@@ -1,7 +1,9 @@
-
 import React from 'react';
+import { useAppContext } from '../contexts/AppContext.tsx';
+import { AppView } from '../types.ts';
 
 const Membership: React.FC = () => {
+  const { user, navigate } = useAppContext();
   const badges = [
     { name: 'Platinum Active', icon: '💎', color: 'bg-indigo-100 text-indigo-700', desc: 'Status tertinggi: Memiliki saldo simpanan > Rp 10jt dan aktif di seluruh fitur.' },
     { name: 'Anggota Aktif', icon: '✅', color: 'bg-emerald-100 text-emerald-700', desc: 'Telah menjadi anggota selama > 3 bulan dengan setoran wajib tanpa putus.' },
@@ -36,7 +38,7 @@ const Membership: React.FC = () => {
                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-indigo-700 flex items-center justify-center text-[10px] shadow-lg">✓</div>
               </div>
               <div>
-                <p className="text-white font-black text-lg">Budi Utama</p>
+                <p className="text-white font-black text-lg">{user?.name || 'Loading...'}</p>
                 <p className="text-indigo-200 text-xs font-mono italic">Biometrically Secured</p>
                 <div className="mt-1 flex gap-2">
                    <span className="px-2 py-0.5 bg-emerald-500/20 rounded-md border border-emerald-500/30 text-[8px] text-emerald-300 font-black uppercase">NIK VERIFIED</span>
@@ -68,10 +70,10 @@ const Membership: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="text-right">
                  <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest">Skor Reputasi</p>
-                 <p className="text-sm font-black text-indigo-600 tracking-tighter">2,450 XP</p>
+                 <p className="text-sm font-black text-indigo-600 tracking-tighter">{user?.reputationScore || 0} XP</p>
               </div>
-              <button className="px-4 py-2 bg-slate-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all border border-indigo-100">
-                 Edit Profil
+              <button onClick={() => navigate(AppView.MEMBERSHIP_CERTIFICATE)} className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg">
+                 LIHAT SERTIFIKAT PDF
               </button>
             </div>
           </div>
@@ -79,7 +81,7 @@ const Membership: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
             <div>
               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Nama Lengkap (e-KTP)</p>
-              <p className="text-slate-700 font-bold uppercase">Budi Utama, S.T.</p>
+              <p className="text-slate-700 font-bold uppercase">{user?.name}</p>
             </div>
             <div>
               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">NIK (Hashed)</p>
@@ -88,12 +90,12 @@ const Membership: React.FC = () => {
             <div>
               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Status Keamanan</p>
               <div className="flex items-center gap-2">
-                 <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-lg">BIOMETRIC ACTIVE</span>
+                 <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-lg uppercase">Biometric Enabled</span>
               </div>
             </div>
             <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Status Keanggotaan</p>
-              <p className="text-emerald-600 font-black italic">Platinum Pioneer</p>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Nomor Anggota</p>
+              <p className="text-emerald-600 font-black italic">{user?.memberId}</p>
             </div>
           </div>
 
@@ -116,7 +118,7 @@ const Membership: React.FC = () => {
                    <span className="text-lg">🏆</span>
                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Lencana Kontribusi & Achievement</h5>
                 </div>
-                <span className="text-[9px] font-bold text-indigo-400 italic">7 dari 12 Lencana Terkumpul</span>
+                <button onClick={() => navigate(AppView.SHU_DISTRIBUTION)} className="text-[9px] font-bold text-indigo-600 italic hover:underline">Download Laporan SHU (PDF)</button>
              </div>
              <div className="flex flex-wrap gap-3">
                 {badges.map((badge, i) => (

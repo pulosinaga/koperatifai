@@ -49,10 +49,22 @@ import DutaEducationKit from './components/DutaEducationKit.tsx';
 import MemberSovereigntyGuide from './components/MemberSovereigntyGuide.tsx';
 import MemberEarningHub from './components/MemberEarningHub.tsx';
 import MemberTrustVault from './components/MemberTrustVault.tsx';
+import MemberInstallmentPayment from './components/MemberInstallmentPayment.tsx';
+import DutaLeaderboard from './components/DutaLeaderboard.tsx';
+import DutaBadges from './components/DutaBadges.tsx';
+import AwardingNight from './components/AwardingNight.tsx';
+import HallOfEchoes from './components/HallOfEchoes.tsx';
+import EconomicResiliency from './components/EconomicResiliency.tsx';
+import AppDistribution from './components/AppDistribution.tsx';
+import SecurityProtocol from './components/SecurityProtocol.tsx';
+import NotificationCenter from './components/NotificationCenter.tsx';
+import FounderRoyaltyVault from './components/FounderRoyaltyVault.tsx';
+import TaxComplianceEngine from './components/TaxComplianceEngine.tsx';
 
 const BottomNav: React.FC = () => {
-  const { currentView, navigate, user } = useAppContext();
+  const { currentView, navigate, goBack, user } = useAppContext();
   const role = user?.role || UserRole.MEMBER;
+  const isDashboard = currentView === AppView.DASHBOARD;
   
   const navItems = [
     { id: AppView.DASHBOARD, label: 'Home', icon: '📊' },
@@ -64,9 +76,9 @@ const BottomNav: React.FC = () => {
   } else if (role === UserRole.GOVERNMENT) {
     navItems.push({ id: AppView.GOV_TENANT_DASHBOARD, label: 'Monitor', icon: '🇮🇩' });
   } else if (role === UserRole.FOUNDER) {
-    navItems.push({ id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit', icon: '🛰️' });
+    navItems.push({ id: AppView.REVENUE_CENTER, label: 'Royalty', icon: '💎' });
   } else {
-    navItems.push({ id: AppView.MEMBER_EARNING_HUB, label: 'Rezeki', icon: '⛲' });
+    navItems.push({ id: AppView.NOTIFICATION_CENTER, label: 'Amanah', icon: '🔔' });
   }
 
   navItems.push({ id: AppView.AI_ADVISOR, label: 'AI', icon: '🤖' });
@@ -77,7 +89,7 @@ const BottomNav: React.FC = () => {
       {navItems.map((item) => (
         <button
           key={item.id}
-          onClick={() => navigate(item.id)}
+          onClick={() => navigate(item.id as AppView)}
           className={`flex flex-col items-center gap-1 transition-all flex-1 ${
             currentView === item.id ? 'text-indigo-600 scale-110' : 'text-slate-400'
           }`}
@@ -87,6 +99,16 @@ const BottomNav: React.FC = () => {
           {currentView === item.id && <div className="w-1 h-1 bg-indigo-600 rounded-full mt-0.5"></div>}
         </button>
       ))}
+      
+      {!isDashboard && (
+        <button
+          onClick={goBack}
+          className="flex flex-col items-center gap-1 transition-all flex-1 text-rose-500 active:scale-90"
+        >
+          <span className="text-xl">↩️</span>
+          <span className="text-[8px] font-black uppercase tracking-widest">Balik</span>
+        </button>
+      )}
     </nav>
   );
 };
@@ -121,7 +143,8 @@ const AppContent: React.FC = () => {
       [AppView.MEMBERSHIP_PROFILE]: <Membership />,
       [AppView.GLOBAL_COMMAND_CENTER]: <GlobalCommandCenter />,
       [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
-      [AppView.REVENUE_CENTER]: <DutaManagementCenter />,
+      [AppView.REVENUE_CENTER]: <FounderRoyaltyVault />,
+      [AppView.REVENUE_CENTER_TAX as any]: <TaxComplianceEngine />,
       [AppView.SYSTEM_HEALTH]: <CoopHealthCheck />,
       [AppView.SMART_MOBILITY]: <SmartMobility />,
       [AppView.DUTA_RECRUITMENT]: <DutaRecruitment />,
@@ -144,7 +167,16 @@ const AppContent: React.FC = () => {
       [AppView.DUTA_EDUCATION_KIT]: <DutaEducationKit />,
       [AppView.MEMBER_SOVEREIGNTY_GUIDE]: <MemberSovereigntyGuide />,
       [AppView.MEMBER_EARNING_HUB]: <MemberEarningHub />,
-      [AppView.MEMBER_TRUST_VAULT]: <MemberTrustVault />
+      [AppView.MEMBER_TRUST_VAULT]: <MemberTrustVault />,
+      [AppView.MEMBER_INSTALLMENT_PAYMENT]: <MemberInstallmentPayment />,
+      [AppView.DUTA_LEADERBOARD]: <DutaLeaderboard />,
+      [AppView.DUTA_BADGES]: <DutaBadges />,
+      [AppView.DUTA_AWARDING]: <AwardingNight />,
+      [AppView.DUTA_ECHOES]: <HallOfEchoes />,
+      [AppView.ECONOMIC_RESILIENCY]: <EconomicResiliency />,
+      [AppView.APP_DISTRIBUTION]: <AppDistribution />,
+      [AppView.SECURITY_PROTOCOL]: <SecurityProtocol />,
+      [AppView.NOTIFICATION_CENTER]: <NotificationCenter />
     };
 
     return views[currentView] || <Dashboard />;
@@ -172,8 +204,8 @@ const App: React.FC = () => {
   return (
     <AppProvider>
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[-1]">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[100px]"></div>
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px]"></div>
       </div>
       <AppContent />
     </AppProvider>

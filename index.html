@@ -18,7 +18,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS (Penggaya Visual) -->
+    <!-- PDF & Canvas Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -44,11 +48,6 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        #error-display {
-            display: none; position: fixed; inset: 0; background: #0f172a;
-            z-index: 2000; padding: 2rem; flex-direction: column; align-items: center; justify-content: center;
-        }
     </style>
 
     <script>
@@ -60,19 +59,8 @@
           SUPABASE_ANON_KEY: "sb_publishable_QzWl-pyGwwYWYLqiSZSLBQ_vyR469P_" 
         } 
       };
-
-      window.addEventListener('error', function(e) {
-        console.error("System Runtime Error:", e);
-        const errDisplay = document.getElementById('error-display');
-        const errDetails = document.getElementById('error-details');
-        if (errDisplay && errDetails && errDisplay.style.display !== 'flex') {
-            errDisplay.style.display = 'flex';
-            errDetails.innerText = e.message || "Gagal memuat modul antarmuka.";
-        }
-      });
     </script>
 
-    <!-- BERSIH: HANYA REACT 18 -->
     <script type="importmap">
 {
   "imports": {
@@ -83,8 +71,8 @@
     "recharts": "https://esm.sh/recharts@2.12.0?deps=react@18.2.0,react-dom@18.2.0",
     "@google/genai": "https://esm.sh/@google/genai?bundle",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2?bundle",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
@@ -92,61 +80,9 @@
 <body>
     <div id="loader">
         <div class="spinner"></div>
-        <p class="mt-6 font-black text-white text-xl tracking-widest">SENTINEL GUARD</p>
-        <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.3em] mt-2">Menyinkronkan Kriptografi...</p>
+        <p class="mt-6 font-black text-white text-xl tracking-widest uppercase">KoperatifAI</p>
     </div>
-
-    <div id="error-display">
-        <div class="text-6xl mb-4">⚠️</div>
-        <h3 class="text-2xl font-black text-rose-500 uppercase tracking-widest">Koneksi Terputus</h3>
-        <p id="error-details" class="mt-4 text-xs font-mono text-rose-200 bg-rose-950 p-4 rounded-xl border border-rose-900 text-left max-w-md w-full overflow-auto whitespace-pre-wrap"></p>
-        <button onclick="hardResetSystem()" class="mt-8 px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-900">Muat Ulang Sistem</button>
-    </div>
-
     <div id="root"></div>
-
-    <script>
-      async function hardResetSystem() {
-          try {
-              if ('serviceWorker' in navigator) {
-                  const regs = await navigator.serviceWorker.getRegistrations();
-                  for (let r of regs) await r.unregister();
-              }
-              const keys = await caches.keys();
-              for (let k of keys) await caches.delete(k);
-              localStorage.clear(); sessionStorage.clear();
-          } catch(e) {}
-          window.location.href = window.location.pathname + '?v=' + Date.now();
-      }
-
-      async function bootSystem() {
-          if (!('serviceWorker' in navigator)) throw new Error("Browser lawas. Gunakan Chrome/Safari terbaru.");
-          try {
-              await navigator.serviceWorker.register('./sw.js?v=' + Date.now(), { updateViaCache: 'none' });
-              const loadApp = () => {
-                  if (document.getElementById('app-script')) return; 
-                  const script = document.createElement('script');
-                  script.id = 'app-script'; script.type = 'module';
-                  script.src = './index.tsx?v=' + Date.now(); 
-                  document.body.appendChild(script);
-              };
-              if (navigator.serviceWorker.controller) loadApp();
-              else navigator.serviceWorker.addEventListener('controllerchange', loadApp, { once: true });
-          } catch (err) { throw err; }
-      }
-
-      bootSystem().catch(err => {
-          document.getElementById('error-display').style.display = 'flex';
-          document.getElementById('error-details').innerText = err.message;
-      });
-
-      const observer = new MutationObserver(() => {
-          if (document.getElementById('root').children.length > 0) {
-              document.getElementById('loader').style.display = 'none';
-              observer.disconnect();
-          }
-      });
-      observer.observe(document.getElementById('root'), { childList: true });
-    </script>
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
