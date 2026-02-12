@@ -3,9 +3,10 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 // AI Assistant service for financial advice and business coaching
 export const getFinancialAdvice = async (prompt: string): Promise<string> => {
   if (!navigator.onLine) {
-    return "⚠️ **Koneksi Terputus.** Sistem kedaulatan memerlukan jalur internet.";
+    return "⚠️ **Koneksi Terputus.** Sistem memerlukan internet untuk berpikir.";
   }
 
+  // Inisialisasi instance setiap pemanggilan untuk memastikan API_KEY terbaru dari environment
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
@@ -13,30 +14,34 @@ export const getFinancialAdvice = async (prompt: string): Promise<string> => {
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
-        systemInstruction: `Anda adalah STRATEGI-AI, Co-Founder Tekno untuk KoperatifAI. 
+        systemInstruction: `Anda adalah CHIEF STRATEGY OFFICER KoperatifAI. 
+        Tugas Anda adalah memberikan ide-ide online yang MENSETOR UANG (monetisasi) untuk koperasi kredit.
         
-        TUGAS ANDA:
-        1. Memberikan ide monetisasi (cara menghasilkan uang) yang KONKRIT untuk koperasi kredit.
-        2. Format jawaban wajib menggunakan:
-           - **Teks Tebal** untuk istilah kunci.
-           - Daftar poin (-) atau nomor (1.) untuk langkah-langkah.
-           - Paragraf pendek agar MUDAH DIBACA.
-        3. JANGAN PERNAH memulai dengan "Mohon maaf". Langsung berikan solusi atau analisis.
+        PRINSIP JAWABAN:
+        1. Langsung ke solusi teknis.
+        2. Berikan angka estimasi cuan (Rp 100 - Rp 1.000 per transaksi).
+        3. Gunakan format Markdown (Bold, List) agar sangat rapi.
+        4. JANGAN PERNAH minta maaf di awal. Langsung berikan strategi.
         
-        IDE CUAN WAJIB (Gunakan jika relevan):
-        - Biaya admin marketplace Rp 500 - 1.000 per transaksi.
-        - Bagi hasil pinjaman 0.9% untuk usaha produktif.
-        - Komisi PPOB (Pulsa/Listrik) yang kembali ke kas SHU.
-        - Jasa logistik "Duta Kurir" (pengantaran barang antar desa).
-        - Monetisasi data tren pasar desa untuk distributor besar.`,
+        IDE ONLINE YANG BISA DIHASILKAN UANG:
+        - Biaya admin top-up & tarik tunai (Rp 1.000).
+        - Margin dari marketplace "Pasar Rakyat" (Rp 500 per transaksi).
+        - Jasa pembayaran tagihan (PPOB) yang komisinya masuk ke SHU.
+        - Royalti IP Teknologi (Rp 100 per klik transaksi).
+        - Iuran Perlindungan DASKOP (Rp 5.000 / bulan).`,
         temperature: 0.8,
+        maxOutputTokens: 1000,
       },
     });
 
-    return response.text || "Sistem sedang mensinkronisasi data, silakan ulangi pertanyaan Bapak.";
+    return response.text || "Sistem sedang melakukan sinkronisasi ulang, silakan kirim ulang pesan Bapak.";
   } catch (error: any) {
     console.error("Gemini API Error:", error);
-    return "Terjadi gangguan pada jalur transmisi AI. Mohon pastikan API_KEY telah terkonfigurasi dengan benar di sistem Sentinel.";
+    // Error handling yang lebih spesifik agar user tidak bingung
+    if (error.message?.includes("API key")) {
+      return "❌ **Kunci Protokol Bermasalah.** Mohon pastikan API_KEY sudah terpasang dengan benar di sistem kedaulatan.";
+    }
+    return "Maaf Pak, 'Otak' sistem sedang mengalami kepadatan trafik kedaulatan. Mohon klik tombol kirim sekali lagi.";
   }
 };
 
@@ -45,11 +50,11 @@ export const getBusinessIdeas = async (category: string): Promise<string> => {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `Berikan 3 ide bisnis online spesifik untuk koperasi kredit di bidang: ${category}. Sertakan cara menghitung keuntungan (spread).`,
+      contents: `Berikan 3 ide bisnis online cepat untuk kategori: ${category} di koperasi.`,
     });
-    return response.text || "Ide sedang diproses.";
+    return response.text || "Gagal memproses ide.";
   } catch (e) {
-    return "Gagal memproses ide.";
+    return "Sedang memikirkan ide...";
   }
 };
 

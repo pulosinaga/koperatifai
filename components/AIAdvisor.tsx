@@ -4,11 +4,18 @@ import { ChatMessage } from '../types.ts';
 
 const AIAdvisor: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'Selamat malam Bapak Founder! **Strategi-AI** siap membedah potensi cuan koperasi kita. Apa ide besar yang ingin Bapak "Online-kan" hari ini?' }
+    { role: 'model', text: 'Selamat malam Bapak Founder! **Strategi-AI** siap membedah potensi cuan koperasi kita. Pilih salah satu topik di bawah atau ketik ide Bapak.' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const quickQuestions = [
+    "Apa yang bisa di-online-kan agar menghasilkan uang?",
+    "Cara ambil untung dari marketplace koperasi?",
+    "Bagaimana strategi royalti Rp 100 per transaksi?",
+    "Hitung potensi SHU dari 1.000 anggota aktif."
+  ];
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -16,29 +23,33 @@ const AIAdvisor: React.FC = () => {
 
   useEffect(scrollToBottom, [messages, isLoading]);
 
-  const formatText = (text: string) => {
-    // Fungsi sederhana untuk merender **bold** tanpa library eksternal
-    return text.split('**').map((part, i) => 
-      i % 2 === 1 ? <strong key={i} className="text-indigo-600 font-black">{part}</strong> : part
-    );
-  };
+  const handleSend = async (textOverride?: string) => {
+    const messageToSend = textOverride || input;
+    if (!messageToSend.trim() || isLoading) return;
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const userMsg = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setMessages(prev => [...prev, { role: 'user', text: messageToSend }]);
     setIsLoading(true);
 
     try {
-      const response = await getFinancialAdvice(userMsg);
+      const response = await getFinancialAdvice(messageToSend);
       setMessages(prev => [...prev, { role: 'model', text: response }]);
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'model', text: '⚠️ Terjadi kegagalan sinkronisasi dengan otak AI. Mohon kirim ulang.' }]);
+      setMessages(prev => [...prev, { role: 'model', text: '⚠️ Terjadi guncangan pada transmisi data. Mohon ketuk tombol kirim ulang.' }]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const formatText = (text: string) => {
+    // Sederhana: ubah **teks** menjadi bold dan \n menjadi line break
+    return text.split('\n').map((line, i) => (
+      <p key={i} className="mb-2">
+        {line.split('**').map((part, j) => (
+          j % 2 === 1 ? <strong key={j} className="text-indigo-600 font-black">{part}</strong> : part
+        ))}
+      </p>
+    ));
   };
 
   return (
@@ -46,20 +57,20 @@ const AIAdvisor: React.FC = () => {
       {/* Header Strategis */}
       <div className="p-8 bg-[#020617] text-white flex items-center justify-between border-b-4 border-indigo-600 relative">
         <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-3xl shadow-lg animate-pulse border border-white/10">
+          <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-3xl shadow-lg border border-white/10 animate-pulse">
             🤖
           </div>
           <div>
-            <h3 className="font-black italic uppercase tracking-tighter text-indigo-400 text-xl">Strategist Oracle v5.0</h3>
+            <h3 className="font-black italic uppercase tracking-tighter text-indigo-400 text-xl">Strategist Oracle v6.0</h3>
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> 
-              Sovereign Mind Online
+              Sovereign Brain Online
             </p>
           </div>
         </div>
         <div className="hidden sm:block text-right">
-           <p className="text-[8px] font-black text-slate-500 uppercase">Analysis Precision</p>
-           <p className="text-sm font-black text-emerald-400 italic">ULTRA-HIGH</p>
+           <p className="text-[8px] font-black text-slate-500 uppercase">System Status</p>
+           <p className="text-sm font-black text-emerald-400 italic">READY TO ADVISE</p>
         </div>
       </div>
 
@@ -72,7 +83,7 @@ const AIAdvisor: React.FC = () => {
                 ? 'bg-indigo-600 text-white rounded-tr-none' 
                 : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
             }`}>
-              <div className="text-sm md:text-base leading-relaxed whitespace-pre-wrap font-medium">
+              <div className="text-sm md:text-base leading-relaxed font-medium">
                 {formatText(msg.text)}
               </div>
               <div className={`flex items-center gap-2 mt-4 opacity-30 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -80,16 +91,6 @@ const AIAdvisor: React.FC = () => {
                   {msg.role === 'user' ? 'Founder' : 'Sovereign AI'} • {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </p>
               </div>
-              
-              {/* Floating Action (Copy) */}
-              {msg.role === 'model' && (
-                <button 
-                  onClick={() => { navigator.clipboard.writeText(msg.text); alert('Strategi disalin!'); }}
-                  className="absolute -right-4 -bottom-4 w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-indigo-50"
-                >
-                  📋
-                </button>
-              )}
             </div>
           </div>
         ))}
@@ -102,39 +103,44 @@ const AIAdvisor: React.FC = () => {
                 <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce [animation-delay:0.2s]"></div>
                 <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce [animation-delay:0.4s]"></div>
               </div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mengkalkulasi Profitabilitas...</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Merajut Strategi Cuan...</span>
             </div>
           </div>
         )}
         <div ref={chatEndRef} />
       </div>
 
-      {/* Input Center */}
-      <div className="p-8 bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.02)]">
+      {/* Input Center & Quick Suggestions */}
+      <div className="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_40px_rgba(0,0,0,0.02)] space-y-4">
+        <div className="flex flex-wrap gap-2 justify-center">
+           {quickQuestions.map((q, idx) => (
+             <button 
+                key={idx} 
+                onClick={() => handleSend(q)}
+                disabled={isLoading}
+                className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-bold border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all active:scale-95"
+             >
+                {q}
+             </button>
+           ))}
+        </div>
+
         <div className="flex gap-4 bg-slate-50 p-2 rounded-[3rem] border-2 border-slate-200 focus-within:border-indigo-500 focus-within:ring-8 focus-within:ring-indigo-50 transition-all shadow-inner group">
           <input 
             type="text" 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Tanyakan cara menghasilkan uang dari koperasi online..."
+            placeholder="Tanyakan ide digitalisasi koperasi..."
             className="flex-1 bg-transparent px-8 py-4 outline-none text-base font-bold text-slate-700 placeholder:text-slate-400"
           />
           <button 
-            onClick={handleSend}
+            onClick={() => handleSend()}
             disabled={isLoading || !input.trim()}
             className="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:bg-indigo-700 transition-all active:scale-90 disabled:opacity-20 disabled:grayscale group-hover:scale-105"
           >
             <span className="text-2xl">🚀</span>
           </button>
-        </div>
-        <div className="flex justify-center gap-8 mt-4">
-           <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest flex items-center gap-2">
-              <span className="w-1 h-1 bg-emerald-500 rounded-full"></span> Data Secure & Encrypted
-           </p>
-           <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest flex items-center gap-2">
-              <span className="w-1 h-1 bg-indigo-500 rounded-full"></span> Powered by Gemini 3 Flash
-           </p>
         </div>
       </div>
     </div>
