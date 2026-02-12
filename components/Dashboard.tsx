@@ -13,6 +13,14 @@ const chartData = [
   { name: 'Min', val: 8200 },
 ];
 
+const religiousHolidays = [
+  { name: 'Isra Mi\'raj', date: '07 Feb', faith: 'Islam' },
+  { name: 'Tahun Baru Imlek', date: '29 Jan', faith: 'Konghucu' },
+  { name: 'Hari Raya Nyepi', date: '29 Mar', faith: 'Hindu' },
+  { name: 'Wafat Yesus Kristus', date: '03 Apr', faith: 'Kristen' },
+  { name: 'Hari Raya Idul Fitri', date: '31 Mar', faith: 'Islam' },
+];
+
 const Dashboard: React.FC = () => {
   const { navigate, user } = useAppContext();
   const role = user?.role || UserRole.MEMBER;
@@ -43,7 +51,7 @@ const Dashboard: React.FC = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div className="space-y-1">
           <h2 className="text-3xl font-black text-slate-800 italic tracking-tight">
-            {role === UserRole.FOUNDER ? 'Cockpit Founder.' : `${getGreeting()}.`}
+            {role === UserRole.FOUNDER ? `Cockpit Founder • ${getGreeting()}` : `${getGreeting()}.`}
           </h2>
           <p className="text-slate-500 font-medium">Halo, {firstName}. Siap membangun kedaulatan hari ini?</p>
         </div>
@@ -54,27 +62,52 @@ const Dashboard: React.FC = () => {
            </button>
            <div className="px-4 py-2 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-white/10 shrink-0">
              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
-             <span className="text-[10px] font-black uppercase tracking-widest">AI Sentinel: Active</span>
+             <span className="text-[10px] font-black uppercase tracking-widest">AI Sentinel: Online</span>
            </div>
         </div>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {stats.map((s, i) => (
-          <div 
-            key={i} 
-            onClick={() => navigate(s.view as AppView)}
-            className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <span className="text-2xl group-hover:scale-125 transition-transform duration-500">{s.icon}</span>
-              <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">➔</div>
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        {/* Stats Column */}
+        <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {stats.map((s, i) => (
+            <div 
+              key={i} 
+              onClick={() => navigate(s.view as AppView)}
+              className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all group cursor-pointer"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-2xl group-hover:scale-125 transition-transform duration-500">{s.icon}</span>
+                <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">➔</div>
+              </div>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{s.label}</p>
+              <h3 className={`text-xl md:text-2xl font-black mt-1 ${s.color} italic tracking-tighter`}>{s.val}</h3>
             </div>
-            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{s.label}</p>
-            <h3 className={`text-xl md:text-2xl font-black mt-1 ${s.color} italic tracking-tighter`}>{s.val}</h3>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Religious Calendar (Bapak's Request) */}
+        <div className="bg-indigo-900 p-8 rounded-[3rem] text-white space-y-6 shadow-2xl relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+           <h4 className="font-black text-xs uppercase tracking-widest text-indigo-300">Hari Besar Keagamaan</h4>
+           <div className="space-y-4">
+              {religiousHolidays.map((h, i) => (
+                 <div key={i} className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <div>
+                       <p className="text-[10px] font-black text-emerald-400">{h.date}</p>
+                       <p className="text-xs font-bold">{h.name}</p>
+                    </div>
+                    <span className="text-[8px] px-2 py-1 bg-white/5 rounded uppercase font-black">{h.faith}</span>
+                 </div>
+              ))}
+           </div>
+           <div className="pt-4 text-center">
+              <p className="text-[9px] text-indigo-200 italic font-medium">"Berbeda-beda tapi satu kedaulatan ekonomi."</p>
+           </div>
+        </div>
+
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -82,7 +115,7 @@ const Dashboard: React.FC = () => {
            <div className="flex justify-between items-center px-2">
               <div>
                 <h4 className="font-black text-slate-800 text-sm uppercase tracking-widest italic">Pertumbuhan Kesejahteraan</h4>
-                <p className="text-[10px] text-slate-400 font-bold">Periode: 7 Hari Terakhir</p>
+                <p className="text-[10px] text-slate-400 font-bold">Periode: {new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</p>
               </div>
            </div>
            <div className="h-72 w-full">
@@ -114,7 +147,7 @@ const Dashboard: React.FC = () => {
                    { l: 'Tarik Tunai', i: '🏧', v: AppView.CASH_WITHDRAWAL },
                    { l: 'Kamera Sakti (QR)', i: '🤳', v: AppView.MEMBER_QRIS },
                    { l: 'Buku Tabungan', i: '📖', v: AppView.DIGITAL_PASSBOOK },
-                   { l: 'Chat Mentor AI', i: '🤖', v: AppView.AI_ADVISOR }
+                   { l: 'Bagikan Aplikasi', i: '📤', v: AppView.DEPLOYMENT_HUB }
                  ].map((act, i) => (
                    <button 
                     key={i}
