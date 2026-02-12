@@ -13,12 +13,16 @@ const chartData = [
   { name: 'Min', val: 8200 },
 ];
 
+// Data Hari Besar Nasional 2025 (Sinkronisasi Resmi)
 const religiousHolidays = [
-  { name: 'Isra Mi\'raj', date: '07 Feb', faith: 'Islam', icon: '🌙' },
-  { name: 'Tahun Baru Imlek', date: '29 Jan', faith: 'Konghucu', icon: '🏮' },
-  { name: 'Hari Raya Nyepi', date: '29 Mar', faith: 'Hindu', icon: '🕉️' },
-  { name: 'Wafat Yesus Kristus', date: '03 Apr', faith: 'Kristen', icon: '⛪' },
-  { name: 'Hari Raya Idul Fitri', date: '31 Mar', faith: 'Islam', icon: '🕌' },
+  { name: 'Tahun Baru Imlek 2576', date: '29 Jan', faith: 'Konghucu', icon: '🏮' },
+  { name: 'Isra Mi\'raj Nabi Muhammad', date: '27 Jan', faith: 'Islam', icon: '🌙' },
+  { name: 'Hari Raya Nyepi (Saka 1947)', date: '29 Mar', faith: 'Hindu', icon: '🕉️' },
+  { name: 'Idul Fitri 1446 H', date: '31 Mar', faith: 'Islam', icon: '🕌' },
+  { name: 'Wafat Yesus Kristus', date: '18 Apr', faith: 'Kristen', icon: '⛪' },
+  { name: 'Hari Raya Waisak 2569', date: '12 Mei', faith: 'Budha', icon: '☸️' },
+  { name: 'Idul Adha 1446 H', date: '07 Jun', faith: 'Islam', icon: '🕋' },
+  { name: 'Hari Raya Natal', date: '25 Des', faith: 'Katolik/Kristen', icon: '🎄' },
 ];
 
 const Dashboard: React.FC = () => {
@@ -53,7 +57,7 @@ const Dashboard: React.FC = () => {
           <h2 className="text-4xl font-black text-slate-800 italic tracking-tight leading-none">
             {role === UserRole.FOUNDER ? `Cockpit Founder • ${getGreeting()}` : `${getGreeting()}.`}
           </h2>
-          <p className="text-slate-500 font-bold text-lg">Halo, Bapak {firstName}. Kedaulatan dalam kendali Anda.</p>
+          <p className="text-slate-500 font-bold text-lg italic">Halo, {firstName}. Kedaulatan dalam kendali Anda.</p>
         </div>
         <div className="flex gap-2">
            <button onClick={() => navigate(AppView.NOTIFICATION_CENTER)} className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-xl relative">
@@ -62,7 +66,7 @@ const Dashboard: React.FC = () => {
            </button>
            <div className="px-5 py-3 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-white/10 shrink-0">
              <div className="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
-             <span className="text-[11px] font-black uppercase tracking-widest">Sentinel System: ACTIVE</span>
+             <span className="text-[11px] font-black uppercase tracking-widest">Sovereign Sentinel: ACTIVE</span>
            </div>
         </div>
       </header>
@@ -88,45 +92,40 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Religious Calendar (Penyempurnaan Bapak's Request) */}
+        {/* Sacred Calendar - Synced (Bapak's Request) */}
         <div className="bg-[#020617] p-10 rounded-[4rem] text-white space-y-8 shadow-2xl relative overflow-hidden border-b-8 border-indigo-600">
            <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
            <div className="flex justify-between items-center">
-              <h4 className="font-black text-xs uppercase tracking-[0.2em] text-indigo-400">Kalender Suci</h4>
-              <span className="text-xl">🕌</span>
+              <h4 className="font-black text-xs uppercase tracking-[0.2em] text-indigo-400">Kalender Suci Nasional</h4>
+              <span className="text-xl">🇮🇩</span>
            </div>
            <div className="space-y-5">
               {religiousHolidays.map((h, i) => (
-                 <div key={i} className="flex justify-between items-start border-b border-white/5 pb-3">
+                 <div key={i} className="flex justify-between items-start border-b border-white/5 pb-3 last:border-0">
                     <div className="flex gap-4">
                        <span className="text-xl">{h.icon}</span>
                        <div>
                           <p className="text-xs font-black text-emerald-400">{h.date}</p>
-                          <p className="text-sm font-bold text-slate-100">{h.name}</p>
+                          <p className="text-sm font-bold text-slate-100 leading-tight">{h.name}</p>
                        </div>
                     </div>
-                    <span className="text-[8px] px-2 py-1 bg-white/5 rounded-md uppercase font-black text-slate-400">{h.faith}</span>
+                    <span className="text-[7px] px-1.5 py-0.5 bg-white/5 rounded-md uppercase font-black text-slate-500">{h.faith}</span>
                  </div>
               ))}
            </div>
            <div className="pt-4 text-center">
-              <p className="text-[10px] text-indigo-200 italic font-medium">"Setiap hari raya adalah momen berbagi kemakmuran kolektif."</p>
+              <p className="text-[10px] text-indigo-200 italic font-medium">"Berbeda-beda namun satu kedaulatan ekonomi."</p>
            </div>
         </div>
 
       </div>
 
-      {/* Action Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-10 rounded-[4rem] shadow-sm border border-slate-100 space-y-10 overflow-hidden">
            <div className="flex justify-between items-center px-4">
               <div>
                 <h4 className="font-black text-slate-800 text-lg uppercase tracking-widest italic leading-none">Pertumbuhan Kesejahteraan</h4>
-                <p className="text-[11px] text-slate-400 font-bold mt-2">Sinkronisasi Ledger: {new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</p>
-              </div>
-              <div className="text-right">
-                 <p className="text-[10px] font-black text-emerald-600 uppercase">Yield Status</p>
-                 <p className="text-xl font-black text-slate-800">OPTIMAL</p>
+                <p className="text-[11px] text-slate-400 font-bold mt-2">Ledger Sync: {new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</p>
               </div>
            </div>
            <div className="h-80 w-full">
