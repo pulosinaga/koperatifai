@@ -3,7 +3,7 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 // AI Assistant service for financial advice and business coaching
 export const getFinancialAdvice = async (prompt: string): Promise<string> => {
   if (!navigator.onLine) {
-    return "Maaf, sepertinya Anda sedang offline. Fitur Asisten AI memerlukan koneksi internet untuk memberikan saran keuangan.";
+    return "⚠️ **Koneksi Terputus.** Sistem kedaulatan memerlukan jalur internet.";
   }
 
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -13,36 +13,55 @@ export const getFinancialAdvice = async (prompt: string): Promise<string> => {
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
-        systemInstruction: `Anda adalah penasihat keuangan, strategi bisnis, dan ekosistem sirkular ahli untuk Koperasi Kredit (Credit Union) KoperatifAI. 
+        systemInstruction: `Anda adalah STRATEGI-AI, Co-Founder Tekno untuk KoperatifAI. 
         
-        Aturan Jawaban Anda:
-        1. STRUKTUR: Gunakan poin-poin (1, 2, 3) atau bullet points (-) untuk menjelaskan langkah-langkah agar MUDAH DIBACA.
-        2. TONE: Gunakan gaya bahasa yang mendorong semangat wirausaha, kolaboratif, dan sangat praktis.
-        3. KONTEKS: 
-           - Tekankan bahwa setiap rupiah di KoperatifAI adalah milik anggota.
-           - Jelaskan manfaat bunga rendah 0.9% untuk usaha produktif.
-           - Hubungkan jawaban dengan fitur-fitur yang ada di app (Pasar Rakyat, Daskop, Tabungan Wajib).
-        4. SINGKAT: Jangan terlalu panjang lebar, langsung ke solusi.`,
-        temperature: 0.7,
+        TUGAS ANDA:
+        1. Memberikan ide monetisasi (cara menghasilkan uang) yang KONKRIT untuk koperasi kredit.
+        2. Format jawaban wajib menggunakan:
+           - **Teks Tebal** untuk istilah kunci.
+           - Daftar poin (-) atau nomor (1.) untuk langkah-langkah.
+           - Paragraf pendek agar MUDAH DIBACA.
+        3. JANGAN PERNAH memulai dengan "Mohon maaf". Langsung berikan solusi atau analisis.
+        
+        IDE CUAN WAJIB (Gunakan jika relevan):
+        - Biaya admin marketplace Rp 500 - 1.000 per transaksi.
+        - Bagi hasil pinjaman 0.9% untuk usaha produktif.
+        - Komisi PPOB (Pulsa/Listrik) yang kembali ke kas SHU.
+        - Jasa logistik "Duta Kurir" (pengantaran barang antar desa).
+        - Monetisasi data tren pasar desa untuk distributor besar.`,
+        temperature: 0.8,
       },
     });
-    return response.text || "Maaf, saya sedang mengalami kendala teknis saat memproses data Anda.";
-  } catch (error) {
+
+    return response.text || "Sistem sedang mensinkronisasi data, silakan ulangi pertanyaan Bapak.";
+  } catch (error: any) {
     console.error("Gemini API Error:", error);
-    return "Terjadi kesalahan saat menghubungi asisten AI. Pastikan sinyal internet Anda stabil.";
+    return "Terjadi gangguan pada jalur transmisi AI. Mohon pastikan API_KEY telah terkonfigurasi dengan benar di sistem Sentinel.";
   }
 };
 
-// Fungsi Baru: Pengingat Amanah (Smart Nudge)
-export const getFriendlyReminder = async (memberName: string, taskType: string): Promise<string> => {
+export const getBusinessIdeas = async (category: string): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
-    const response: GenerateContentResponse = await ai.models.generateContent({
+    const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `Buatkan kalimat pengingat singkat (maksimal 2 kalimat) untuk anggota bernama ${memberName} agar tidak lupa menyetor ${taskType}. Gunakan nada bicara kekeluargaan, sangat santun, namun menekankan bahwa kedisiplinannya akan menaikkan skor reputasi koperasinya dan memperbesar bagi hasil (Dividen). Jangan gunakan kata-kata penagihan hutang yang kasar.`,
+      contents: `Berikan 3 ide bisnis online spesifik untuk koperasi kredit di bidang: ${category}. Sertakan cara menghitung keuntungan (spread).`,
     });
-    return response.text || "Mari jaga amanah bersama untuk kemakmuran kita.";
-  } catch (error) {
-    return "Ayo jaga kedaulatan ekonomi kita dengan disiplin menabung.";
+    return response.text || "Ide sedang diproses.";
+  } catch (e) {
+    return "Gagal memproses ide.";
+  }
+};
+
+export const getFriendlyReminder = async (userName: string, taskType: string): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: `Buatkan pengingat ramah untuk ${userName} tentang ${taskType}.`,
+    });
+    return response.text || `Halo ${userName}, jangan lupa ${taskType} Anda.`;
+  } catch (e) {
+    return `Halo ${userName}, mari cek kewajiban kita hari ini.`;
   }
 };
