@@ -9,15 +9,15 @@ const Sidebar: React.FC = () => {
   const getMenuCategories = () => {
     const common = [
       { id: AppView.DASHBOARD, label: 'Portal Utama', icon: '📊' },
-      { id: AppView.APP_DISTRIBUTION, label: 'Sebarkan Aplikasi', icon: '📲' },
-      { id: AppView.SECURITY_PROTOCOL, label: 'Protokol Keamanan', icon: '🛡️' },
-      { id: AppView.ECONOMIC_RESILIENCY, label: 'Daya Tahan Ekonomi', icon: '📉' },
+      { id: AppView.ARISAN_DIGITAL, label: 'Smart Arisan', icon: '🌀' },
+      { id: AppView.ASSET_AUCTION, label: 'Lelang Rakyat', icon: '🔨' },
+      { id: AppView.WALLET_INTEGRATION, label: 'Bayar di Toko', icon: '🛒' },
     ];
 
     const finance = [
-      { id: AppView.CASH_WITHDRAWAL, label: 'Tarik Saldo', icon: '🏧' },
+      { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
       { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
-      { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🛒' },
+      { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🧺' },
       { id: AppView.MEMBER_QRIS, label: 'QRIS Bayar', icon: '🤳' },
     ];
 
@@ -25,35 +25,6 @@ const Sidebar: React.FC = () => {
       { label: 'Utama', items: common },
       { label: 'Layanan', items: finance },
     ];
-
-    if (role === UserRole.MEMBER) {
-      menu[0].items.push({ id: AppView.DUTA_ECHOES, label: 'Gema Rakyat', icon: '📣' });
-      menu[0].items.push({ id: AppView.MEMBER_SOVEREIGNTY_GUIDE, label: 'Panduan Rakyat', icon: '📜' });
-      menu[1].items.push({ id: AppView.MEMBER_EARNING_HUB, label: 'Pusat Rezeki', icon: '💰' });
-      menu[1].items.push({ id: AppView.MEMBER_TRUST_VAULT, label: 'Brankas Aman', icon: '🔒' });
-    }
-
-    if (role === UserRole.GOVERNMENT) {
-      menu.push({
-        label: 'Otoritas Negara',
-        items: [
-          { id: AppView.GOV_TENANT_DASHBOARD, label: 'Command Center', icon: '🇮🇩' },
-          { id: AppView.GOV_PASAR_RAKYAT_BRIDGE, label: 'Jembatan Pasar', icon: '🌉' },
-        ]
-      });
-    }
-
-    if (role === UserRole.LEADER) {
-      menu.push({
-        label: 'Area Duta',
-        items: [
-          { id: AppView.DUTA_AWARDING, label: 'Malam Ksatria', icon: '🎬' },
-          { id: AppView.DUTA_LEADERBOARD, label: 'Hall of Fame', icon: '🏆' },
-          { id: AppView.DUTA_BADGES, label: 'Lencana Ksatria', icon: '🎖️' },
-          { id: AppView.DUTA_EDUCATION_KIT, label: 'Edukasi Warga', icon: '📢' },
-        ]
-      });
-    }
 
     if (role === UserRole.FOUNDER) {
       menu.push({
@@ -106,16 +77,6 @@ const Sidebar: React.FC = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-100 space-y-4">
-        <div 
-          onClick={() => navigate(AppView.MEMBERSHIP_PROFILE)}
-          className="bg-slate-50 p-4 rounded-[2rem] flex items-center gap-3 cursor-pointer hover:bg-indigo-50 transition-all border border-transparent hover:border-indigo-100 group"
-        >
-          <div className="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 text-xl shadow-inner group-hover:scale-110 transition-transform">👤</div>
-          <div className="flex-1 overflow-hidden">
-            <p className="text-[9px] font-black text-slate-800 uppercase truncate italic tracking-tighter">{role}</p>
-            <p className="text-[10px] text-slate-400 font-bold truncate">{user?.name || 'Loading...'}</p>
-          </div>
-        </div>
         <button onClick={logout} className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 active:scale-95">LOGOUT</button>
       </div>
     </aside>

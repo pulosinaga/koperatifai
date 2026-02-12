@@ -84,13 +84,13 @@ const Dashboard: React.FC = () => {
       {/* MEMBER SERVICE HUB */}
       {role === UserRole.MEMBER && (
          <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm space-y-10">
-            <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-widest text-center md:text-left">Layanan Rakyat</h3>
+            <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-widest text-center md:text-left">Layanan Unggulan</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                {[
-                 { l: 'Nabung', i: '📥', v: AppView.DIGITAL_PASSBOOK, c: 'bg-emerald-50 text-emerald-600', d: 'Setor Mandiri/Duta' },
-                 { l: 'Bayar Cicilan', i: '💸', v: AppView.MEMBER_INSTALLMENT_PAYMENT, c: 'bg-rose-50 text-rose-600', d: 'Angsuran Produktif' },
-                 { l: 'Beli Barang', i: '🛒', v: AppView.MEMBER_MARKETPLACE, c: 'bg-indigo-50 text-indigo-600', d: 'Pasar Anggota' },
-                 { l: 'Iuran Proteksi', i: '🏥', v: AppView.BILL_PAYMENTS, c: 'bg-amber-50 text-amber-600', d: 'BPJS & Perisai Sehat' },
+                 { l: 'Smart Arisan', i: '🌀', v: AppView.ARISAN_DIGITAL, c: 'bg-indigo-50 text-indigo-600', d: 'Kocokan Transparan' },
+                 { l: 'Lelang Aset', i: '🔨', v: AppView.ASSET_AUCTION, c: 'bg-rose-50 text-rose-600', d: 'Beli Jaminan Murah' },
+                 { l: 'Beli Barang', i: '🛒', v: AppView.MEMBER_MARKETPLACE, c: 'bg-emerald-50 text-emerald-600', d: 'Pasar Anggota' },
+                 { l: 'Bayar Toko', i: '🏪', v: AppView.WALLET_INTEGRATION, c: 'bg-amber-50 text-amber-600', d: 'Gunakan Saldo' },
                ].map((serv, i) => (
                  <button 
                   key={i} 
@@ -164,7 +164,7 @@ const Dashboard: React.FC = () => {
                  {[
                    { l: 'Tarik Tunai', i: '🏧', v: AppView.CASH_WITHDRAWAL },
                    { l: 'Kamera Sakti (QR)', i: '🤳', v: AppView.MEMBER_QRIS },
-                   { l: 'Status Keanggotaan', i: '🛡️', v: AppView.MEMBERSHIP_CERTIFICATE },
+                   { l: 'Buku Tabungan', i: '📖', v: AppView.DIGITAL_PASSBOOK },
                    { l: 'Chat Mentor AI', i: '🤖', v: AppView.AI_ADVISOR }
                  ].map((act, i) => (
                    <button 
