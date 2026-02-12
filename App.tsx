@@ -27,6 +27,11 @@ import GlobalCommandCenter from './components/GlobalCommandCenter.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
 import DutaManagementCenter from './components/DutaManagementCenter.tsx';
 import CoopHealthCheck from './components/CoopHealthCheck.tsx';
+import StaffDashboard from './components/StaffDashboard.tsx';
+import TerritoryMap from './components/TerritoryMap.tsx';
+import DutaRecruitment from './components/DutaRecruitment.tsx';
+import TerritoryCommand from './components/TerritoryCommand.tsx';
+import DutaSOP from './components/DutaSOP.tsx';
 
 const BottomNav: React.FC = () => {
   const { currentView, navigate, user } = useAppContext();
@@ -42,6 +47,8 @@ const BottomNav: React.FC = () => {
     navItems.push({ id: AppView.REVENUE_CENTER, label: 'Duta', icon: '🛵' });
   } else if (role === UserRole.FOUNDER) {
     navItems.push({ id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit', icon: '🛰️' });
+  } else if (role === UserRole.STAFF) {
+    navItems.push({ id: AppView.TRANSACTIONS, label: 'Ops', icon: '📥' });
   } else {
     navItems.push({ id: AppView.MEMBER_MARKETPLACE, label: 'Pasar', icon: '🛒' });
   }
@@ -69,7 +76,7 @@ const BottomNav: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
-  const { isLoggedIn, currentView } = useAppContext();
+  const { isLoggedIn, currentView, user } = useAppContext();
   const [showLogin, setShowLogin] = useState(false);
 
   if (!isLoggedIn) {
@@ -78,9 +85,14 @@ const AppContent: React.FC = () => {
   }
 
   const renderContent = () => {
+    // Override Dashboard for STAFF
+    if (currentView === AppView.DASHBOARD && user?.role === UserRole.STAFF) {
+      return <StaffDashboard />;
+    }
+
     const views: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard />,
-      [AppView.TRANSACTIONS]: <TransactionHistory />,
+      [AppView.TRANSACTIONS]: user?.role === UserRole.STAFF ? <StaffDashboard /> : <TransactionHistory />,
       [AppView.CASH_WITHDRAWAL]: <CashWithdrawal />,
       [AppView.SHU_DISTRIBUTION]: <SHUDistribution />,
       [AppView.DIGITAL_PASSBOOK]: <DigitalPassbook />,
@@ -97,6 +109,10 @@ const AppContent: React.FC = () => {
       [AppView.REVENUE_CENTER]: <DutaManagementCenter />,
       [AppView.SYSTEM_HEALTH]: <CoopHealthCheck />,
       [AppView.SMART_MOBILITY]: <SmartMobility />,
+      [AppView.DUTA_RECRUITMENT]: <DutaRecruitment />,
+      [AppView.TERRITORY_MAP]: <TerritoryMap />,
+      [AppView.TERRITORY_COMMAND]: <TerritoryCommand />,
+      [AppView.DUTA_SOP]: <DutaSOP />,
     };
 
     return views[currentView] || <Dashboard />;
@@ -123,6 +139,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AppProvider>
+      {/* Background Orbs Global */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-[-1]">
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[100px]"></div>
+      </div>
       <AppContent />
     </AppProvider>
   );

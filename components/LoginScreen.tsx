@@ -12,6 +12,7 @@ const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const roles = [
     { id: UserRole.MEMBER, label: 'Anggota', icon: '👤', pin: '123456' },
     { id: UserRole.LEADER, label: 'Duta', icon: '🛵', pin: '111111' },
+    { id: UserRole.STAFF, label: 'Staf Ops', icon: '💻', pin: '555555' },
     { id: UserRole.BOARD, label: 'Pengurus', icon: '👔', pin: '888888' },
     { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️', pin: '777777' },
     { id: UserRole.FOUNDER, label: 'Founder', icon: '👑', pin: '999999' },
@@ -53,7 +54,7 @@ const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </div>
 
           {/* Role Selection Grid */}
-          <div className="grid grid-cols-5 gap-3 mb-10">
+          <div className="grid grid-cols-3 gap-3 mb-10">
              {roles.map(r => (
                <button 
                 key={r.id}
@@ -63,7 +64,7 @@ const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 }`}
                >
                  <span className="text-xl">{r.icon}</span>
-                 <span className="text-[7px] font-black uppercase tracking-tighter text-white">{r.label}</span>
+                 <span className="text-[7px] font-black uppercase tracking-tighter text-white text-center leading-tight">{r.label}</span>
                </button>
              ))}
           </div>
@@ -85,14 +86,14 @@ const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <button 
               type="submit"
               disabled={pin.length < 6 || isAuthenticating}
-              className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-500 transition-all active:scale-95 disabled:opacity-30"
+              className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-30"
             >
               {isAuthenticating ? 'MENYINKRONKAN...' : 'MASUK KE COCKPIT'}
             </button>
           </form>
 
           <p className="mt-8 text-center text-[9px] text-slate-500 font-bold uppercase tracking-widest">
-             Gunakan PIN Default Role untuk Demo (Lihat Dokumentasi)
+             {selectedRole === UserRole.STAFF ? "Hint: 555555" : "Gunakan PIN Default Role"}
           </p>
         </div>
       </div>

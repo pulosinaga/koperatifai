@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
 
   const getMenuCategories = () => {
     const common = [
-      { id: AppView.DASHBOARD, label: 'Dashboard', icon: '📊' },
+      { id: AppView.DASHBOARD, label: 'Portal Utama', icon: '📊' },
       { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
       { id: AppView.AI_ADVISOR, label: 'Asisten AI', icon: '🤖' },
     ];
@@ -24,16 +24,28 @@ const Sidebar: React.FC = () => {
     ];
 
     const menu = [
-      { label: 'Portal Utama', items: common },
+      { label: 'Utama', items: common },
       { label: 'Layanan', items: finance },
       { label: 'Niaga', items: commerce }
     ];
+
+    // STAFF Specific Menu
+    if (role === UserRole.STAFF) {
+      menu.push({
+        label: 'Operasional',
+        items: [
+          { id: AppView.TRANSACTIONS, label: 'Antrean Validasi', icon: '📥' },
+          { id: AppView.SYSTEM_HEALTH, label: 'Status Server', icon: '🩺' },
+        ]
+      });
+    }
 
     if (role === UserRole.LEADER) {
       menu.push({
         label: 'Area Duta',
         items: [
           { id: AppView.REVENUE_CENTER, label: 'Kinerja Wilayah', icon: '🛵' },
+          { id: AppView.DUTA_SOP, label: 'Manual SOP', icon: '📘' },
           { id: AppView.VOUCHING_SYSTEM, label: 'Validasi Anggota', icon: '🤝' },
         ]
       });
@@ -41,11 +53,17 @@ const Sidebar: React.FC = () => {
 
     if (role === UserRole.FOUNDER) {
       menu.push({
-        label: 'Otoritas',
+        label: 'Expansion Control',
+        items: [
+          { id: AppView.TERRITORY_COMMAND, label: 'Peta Komando', icon: '📍' },
+          { id: AppView.DUTA_RECRUITMENT, label: 'Otorisasi Duta', icon: '✒️' },
+        ]
+      });
+      menu.push({
+        label: 'Otoritas Pusat',
         items: [
           { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
           { id: AppView.DEPLOYMENT_HUB, label: 'Data Sync', icon: '🗄️' },
-          { id: AppView.SYSTEM_HEALTH, label: 'Audit Sistem', icon: '🩺' },
         ]
       });
     }
