@@ -41,6 +41,14 @@ import ServiceJourneyGuide from './components/ServiceJourneyGuide.tsx';
 import MemberBenefitSimulator from './components/MemberBenefitSimulator.tsx';
 import GovPasarRakyatBridge from './components/GovPasarRakyatBridge.tsx';
 import GovTenantDashboard from './components/GovTenantDashboard.tsx';
+import GovTenantManagement from './components/GovTenantManagement.tsx';
+import GovProposalGenerator from './components/GovProposalGenerator.tsx';
+import DutaMemberActivation from './components/DutaMemberActivation.tsx';
+import MemberActivationWizard from './components/MemberActivationWizard.tsx';
+import DutaEducationKit from './components/DutaEducationKit.tsx';
+import MemberSovereigntyGuide from './components/MemberSovereigntyGuide.tsx';
+import MemberEarningHub from './components/MemberEarningHub.tsx';
+import MemberTrustVault from './components/MemberTrustVault.tsx';
 
 const BottomNav: React.FC = () => {
   const { currentView, navigate, user } = useAppContext();
@@ -52,13 +60,13 @@ const BottomNav: React.FC = () => {
   ];
 
   if (role === UserRole.LEADER) {
-    navItems.push({ id: AppView.REVENUE_CENTER, label: 'Duta', icon: '🛵' });
+    navItems.push({ id: AppView.DUTA_EDUCATION_KIT, label: 'Edukasi', icon: '📢' });
   } else if (role === UserRole.GOVERNMENT) {
     navItems.push({ id: AppView.GOV_TENANT_DASHBOARD, label: 'Monitor', icon: '🇮🇩' });
   } else if (role === UserRole.FOUNDER) {
     navItems.push({ id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit', icon: '🛰️' });
   } else {
-    navItems.push({ id: AppView.MEMBER_MARKETPLACE, label: 'Pasar', icon: '🛒' });
+    navItems.push({ id: AppView.MEMBER_EARNING_HUB, label: 'Rezeki', icon: '⛲' });
   }
 
   navItems.push({ id: AppView.AI_ADVISOR, label: 'AI', icon: '🤖' });
@@ -129,6 +137,14 @@ const AppContent: React.FC = () => {
       [AppView.MEMBER_BENEFIT_SIMULATOR]: <MemberBenefitSimulator />,
       [AppView.GOV_PASAR_RAKYAT_BRIDGE]: <GovPasarRakyatBridge />,
       [AppView.GOV_TENANT_DASHBOARD]: <GovTenantDashboard />,
+      [AppView.GOV_TENANT_MANAGEMENT]: <GovTenantManagement />,
+      [AppView.GOV_PROPOSAL_GENERATOR]: <GovProposalGenerator />,
+      [AppView.DUTA_MEMBER_ACTIVATION]: <DutaMemberActivation />,
+      [AppView.MEMBER_ACTIVATION_WIZARD]: <MemberActivationWizard />,
+      [AppView.DUTA_EDUCATION_KIT]: <DutaEducationKit />,
+      [AppView.MEMBER_SOVEREIGNTY_GUIDE]: <MemberSovereigntyGuide />,
+      [AppView.MEMBER_EARNING_HUB]: <MemberEarningHub />,
+      [AppView.MEMBER_TRUST_VAULT]: <MemberTrustVault />
     };
 
     return views[currentView] || <Dashboard />;

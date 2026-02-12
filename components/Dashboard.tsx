@@ -46,6 +46,39 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
 
+      {/* Special Onboarding Banners for Members */}
+      {role === UserRole.MEMBER && (
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div 
+              onClick={() => navigate(AppView.MEMBER_EARNING_HUB)}
+              className="bg-emerald-600 p-8 rounded-[3rem] text-white flex items-center justify-between gap-6 shadow-xl cursor-pointer hover:bg-emerald-700 transition-all border-b-8 border-emerald-800"
+            >
+               <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl">💰</div>
+                  <div>
+                     <h3 className="text-xl font-black italic leading-tight">Cari Rezeki Tambahan?</h3>
+                     <p className="text-emerald-100 text-[10px] font-bold">Ajak Teman atau Jadi Kurir Desa.</p>
+                  </div>
+               </div>
+               <span className="text-xl">→</span>
+            </div>
+
+            <div 
+              onClick={() => navigate(AppView.MEMBER_TRUST_VAULT)}
+              className="bg-indigo-600 p-8 rounded-[3rem] text-white flex items-center justify-between gap-6 shadow-xl cursor-pointer hover:bg-indigo-700 transition-all border-b-8 border-indigo-800"
+            >
+               <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl">🛡️</div>
+                  <div>
+                     <h3 className="text-xl font-black italic leading-tight">Uang Saya Aman?</h3>
+                     <p className="text-indigo-100 text-[10px] font-bold">Pantau Brankas Emas & Bank Koperasi.</p>
+                  </div>
+               </div>
+               <span className="text-xl">→</span>
+            </div>
+         </div>
+      )}
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {stats.map((s, i) => (
@@ -126,26 +159,6 @@ const Dashboard: React.FC = () => {
            </div>
         </div>
       </div>
-
-      {/* Role Specific Highlight Section */}
-      {role === UserRole.MEMBER && (
-        <div className="p-8 bg-white border border-slate-100 rounded-[3.5rem] flex flex-col md:flex-row items-center gap-8 group">
-           <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-4xl shrink-0 group-hover:rotate-12 transition-transform">🌱</div>
-           <div className="flex-1 text-center md:text-left space-y-1">
-              <h4 className="text-xl font-black text-slate-800 italic">Target Celengan Anda</h4>
-              <p className="text-slate-500 text-sm">Sedikit demi sedikit, menjadi bukit kedaulatan.</p>
-           </div>
-           <div className="w-full md:w-64">
-              <div className="flex justify-between text-[10px] font-black uppercase mb-2">
-                 <span className="text-slate-400">Pencapaian: Rp 12.4M</span>
-                 <span className="text-emerald-600">82%</span>
-              </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                 <div className="h-full bg-emerald-500 animate-pulse" style={{ width: '82%' }}></div>
-              </div>
-           </div>
-        </div>
-      )}
     </div>
   );
 };

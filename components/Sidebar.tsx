@@ -16,12 +16,20 @@ const Sidebar: React.FC = () => {
     const finance = [
       { id: AppView.CASH_WITHDRAWAL, label: 'Tarik Saldo', icon: '🏧' },
       { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
+      { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🛒' },
+      { id: AppView.MEMBER_QRIS, label: 'QRIS Bayar', icon: '🤳' },
     ];
 
     const menu = [
       { label: 'Utama', items: common },
       { label: 'Layanan', items: finance },
     ];
+
+    if (role === UserRole.MEMBER) {
+      menu[0].items.push({ id: AppView.MEMBER_SOVEREIGNTY_GUIDE, label: 'Panduan Rakyat', icon: '📜' });
+      menu[1].items.push({ id: AppView.MEMBER_EARNING_HUB, label: 'Pusat Rezeki', icon: '⛲' });
+      menu[1].items.push({ id: AppView.MEMBER_TRUST_VAULT, label: 'Brankas Aman', icon: '🛡️' });
+    }
 
     if (role === UserRole.GOVERNMENT) {
       menu.push({
@@ -37,6 +45,7 @@ const Sidebar: React.FC = () => {
       menu.push({
         label: 'Area Duta',
         items: [
+          { id: AppView.DUTA_EDUCATION_KIT, label: 'Edukasi Warga', icon: '📢' },
           { id: AppView.SERVICE_JOURNEY_GUIDE, label: 'Peta Layanan', icon: '🗺️' },
           { id: AppView.MEMBER_BENEFIT_SIMULATOR, label: 'Simulasi Manfaat', icon: '⚖️' },
           { id: AppView.VILLAGE_SOCIAL_BUDGET, label: 'Anggaran Desa', icon: '🏦' },
@@ -47,10 +56,12 @@ const Sidebar: React.FC = () => {
 
     if (role === UserRole.FOUNDER) {
       menu.push({
-        label: 'Sinergi Negara',
+        label: 'Founder Controls',
         items: [
-          { id: AppView.GOV_PASAR_RAKYAT_BRIDGE, label: 'Jembatan Pasar', icon: '🇮🇩' },
-          { id: AppView.TERRITORY_COMMAND, label: 'Peta Komando', icon: '📍' },
+          { id: AppView.GOV_PROPOSAL_GENERATOR, label: 'Penawaran Negara', icon: '✉️' },
+          { id: AppView.GOV_TENANT_MANAGEMENT, label: 'Sewa Pemerintah', icon: '🏢' },
+          { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
+          { id: AppView.DEPLOYMENT_HUB, label: 'System Setup', icon: '⚙️' },
         ]
       });
     }
