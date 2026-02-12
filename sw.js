@@ -1,13 +1,11 @@
-// KoperatifAI - In-Browser JIT Compiler Service Worker (V4 - Auto Wipe)
+// KoperatifAI - JIT Compiler Service Worker v4.1
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.10/babel.min.js');
 
 self.addEventListener('install', (e) => {
-    // Paksa SW baru langsung mengambil alih
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-    // Saat SW baru aktif, HAPUS SEMUA CACHE LAMA secara otomatis
     e.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys.map(k => caches.delete(k)));
@@ -20,61 +18,39 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
     const url = new URL(e.request.url);
 
-    // Mencegat (Intercept) hanya untuk file TypeScript lokal
+    // Mencegat file .ts dan .tsx untuk di-transpile di sisi client
     if (url.origin === location.origin && (url.pathname.endsWith('.ts') || url.pathname.endsWith('.tsx'))) {
         e.respondWith(
-            fetch(e.request.url, { cache: 'no-store' }) // Selalu paksa ambil dari server
+            fetch(e.request.url, { cache: 'no-store' })
                 .then(response => {
-                    if (!response.ok) throw new Error("404 File Tidak Ditemukan: " + url.pathname);
+                    if (!response.ok) throw new Error("File 404: " + url.pathname);
                     return response.text();
                 })
                 .then(text => {
                     try {
                         const compiled = Babel.transform(text, {
                             presets: ['react', 'typescript'],
-                            filename: url.pathname
+                            filename: url.pathname,
+                            plugins: [
+                                // Memastikan JSX ditransformasi sesuai React 18
+                                ['transform-react-jsx', { runtime: 'automatic' }]
+                            ]
                         }).code;
 
                         return new Response(compiled, {
                             status: 200,
                             headers: {
                                 'Content-Type': 'application/javascript; charset=utf-8',
-                                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                                'Access-Control-Allow-Origin': '*'
+                                'Cache-Control': 'no-cache'
                             }
                         });
                     } catch (err) {
-                        console.error("Babel Compile Error di " + url.pathname, err);
-                        const errStr = err.message.replace(/`/g, '\\`').replace(/\n/g, '\\n');
-                        const errorScript = `
-                            const display = document.getElementById('error-display');
-                            const details = document.getElementById('error-details');
-                            if(display && details) {
-                                display.style.display = 'flex';
-                                details.innerText = "Syntax Error di file ${url.pathname}:\\n" + \`${errStr}\`;
-                            }
-                        `;
-                        return new Response(errorScript, {
+                        console.error("Babel Error [" + url.pathname + "]:", err);
+                        return new Response(`console.error('Babel Transpile Error: ${err.message}');`, {
                             status: 200,
-                            headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
+                            headers: { 'Content-Type': 'application/javascript' }
                         });
                     }
-                })
-                .catch(err => {
-                    console.error("Fetch Error di " + url.pathname, err);
-                    const errStr = err.message.replace(/`/g, '\\`');
-                    const errorScript = `
-                        const display = document.getElementById('error-display');
-                        const details = document.getElementById('error-details');
-                        if(display && details) {
-                            display.style.display = 'flex';
-                            details.innerText = "Gagal memuat file ${url.pathname}:\\n" + \`${errStr}\`;
-                        }
-                    `;
-                    return new Response(errorScript, {
-                        status: 200,
-                        headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
-                    });
                 })
         );
     }

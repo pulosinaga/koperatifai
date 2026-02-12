@@ -1,27 +1,38 @@
-
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 
-const startApp = () => {
+const mountApp = () => {
   const container = document.getElementById('root');
   if (container) {
     try {
       const root = createRoot(container);
       root.render(<App />);
-      console.log("KoperatifAI Core: Active");
+      
+      // Sembunyikan loader setelah React siap
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+          loader.classList.add('fade-out');
+          setTimeout(() => loader.remove(), 500);
+        }
+        console.log("KoperatifAI Sovereign Node: Online");
+      }, 300);
+      
     } catch (err) {
       console.error("Mount Failure:", err);
-      // Failsafe: sampaikan pesan ke loader
       const status = document.getElementById('loader-status');
-      if (status) status.innerText = "System Rebooting...";
+      if (status) {
+        status.innerText = "Critical Error: System Rebooting...";
+        status.className = "text-rose-500 font-black uppercase text-xs animate-bounce";
+      }
     }
   }
 };
 
-// Pastikan DOM siap
+// Eksekusi mount
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', startApp);
+  document.addEventListener('DOMContentLoaded', mountApp);
 } else {
-  startApp();
+  mountApp();
 }
