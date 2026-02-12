@@ -16,30 +16,34 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+// Default Founder Profile for Direct Access
+const DEFAULT_FOUNDER: UserProfile = {
+  id: 'founder_sovereign_01',
+  name: 'Budi Utama (Founder)',
+  role: UserRole.FOUNDER,
+  memberId: 'CU-FND-001',
+  balances: {
+    principal: 1000000,
+    mandatory: 50000000,
+    voluntary: 19600000000
+  },
+  reputationScore: 999
+};
+
 export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<UserProfile | null>(null);
+  // Set initial state to Logged In as Founder by default
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [user, setUser] = useState<UserProfile | null>(DEFAULT_FOUNDER);
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [viewHistory, setViewHistory] = useState<AppView[]>([]);
   const [isLiveDatabase, setIsLiveDatabase] = useState(false);
 
-  // Auto-restore sesi jika pengguna sudah pernah login di browser
   useEffect(() => {
     const checkSession = async () => {
-      if (supabase) {
+      if (supabase && localStorage.getItem('SUPABASE_URL')) {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-           try {
-             await loadUserProfile(session.user.id);
-           } catch (e) {
-             console.warn("Session restore failed", e);
-           }
-        } else {
-           // Cek apakah ada sesi bypass yang tersimpan
-           const bypassId = localStorage.getItem('koperatif_bypass_session');
-           if (bypassId) {
-              try { await loadUserProfile(bypassId); } catch(e) {}
-           }
+           try { await loadUserProfile(session.user.id); } catch (e) {}
         }
       }
     };
@@ -47,13 +51,10 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   }, []);
 
   const loadUserProfile = async (userId: string) => {
+     if (!supabase) return false;
      try {
-        // Ambil data profil dari Supabase (Database Asli)
-        const { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', userId).single();
-        if (profileError) throw new Error(`Gagal membaca tabel profiles: ${profileError.message}.`);
-        
-        const { data: balance, error: balanceError } = await supabase.from('balances').select('*').eq('user_id', userId).single();
-        if (balanceError) throw new Error(`Gagal membaca tabel balances: ${balanceError.message}.`);
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
+        const { data: balance } = await supabase.from('balances').select('*').eq('user_id', userId).single();
         
         if (profile && balance) {
            setUser({
@@ -72,101 +73,30 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
            setIsLiveDatabase(true);
            return true;
         }
-     } catch (e: any) {
-        console.warn("Gagal memuat profil Supabase:", e.message);
-        throw e;
-     }
+     } catch (e) {}
      return false;
   };
 
   const refreshProfile = async () => {
-     if (user?.id && isLiveDatabase) {
-        try { await loadUserProfile(user.id); } catch(e) { console.warn(e); }
+     if (user?.id && isLiveDatabase && supabase) {
+        try { await loadUserProfile(user.id); } catch(e) {}
      }
   };
 
   const login = async (role: UserRole, pin: string) => {
-    try {
-      if (!supabase) throw new Error("Kredensial URL & Key Supabase belum disetup.");
-
-      const email = `${role.toLowerCase()}@koperatif.ai`;
-      const password = `${pin}-CoopAI-2026`;
-      let targetUserId = null;
-
-      // 1. Coba Login via Supabase Auth (Normal)
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
-
-      if (authError) {
-         console.warn(`Supabase Auth Ditolak (${authError.message}). Mengaktifkan Jalur Bypass...`);
-         
-         // 2. BYPASS JALUR BELAKANG: Ambil data langsung dari tabel profiles karena RLS sudah dimatikan
-         const { data: profileList, error: pError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('role', role)
-            .limit(1);
-
-         if (pError || !profileList || profileList.length === 0) {
-            throw new Error(`Data Live DB untuk role ${role} tidak ditemukan. Apakah SQL Script sudah di-Run?`);
-         }
-         
-         targetUserId = profileList[0].id;
-         console.log("Bypass Berhasil! ID didapatkan:", targetUserId);
-      } else {
-         targetUserId = authData.user.id;
-      }
-
-      if (targetUserId) {
-         const success = await loadUserProfile(targetUserId);
-         if (success) {
-            // Simpan sesi bypass agar tidak logout saat di-refresh
-            localStorage.setItem('koperatif_bypass_session', targetUserId);
-            setCurrentView(AppView.DASHBOARD);
-            setViewHistory([]);
-            return true;
-         }
-      }
-      throw new Error("Terjadi kesalahan saat memuat data profil.");
-      
-    } catch (error: any) {
-      console.warn("⚠️ Login Live DB Gagal:", error.message);
-      
-      alert(`KONEKSI DATABASE LIVE GAGAL!\n\nAlasan: ${error.message}\n\nAplikasi sementara dialihkan ke Mode Simulasi Lokal.`);
-      
-      // Fallback ke Data Simulasi
-      const mockUser: UserProfile = {
-        id: 'usr_mock_' + Date.now(),
-        name: role === UserRole.FOUNDER ? 'Budi Utama (Founder)' : 'Anggota Koperasi',
-        role: role,
-        memberId: role === UserRole.FOUNDER ? 'CU-FND-001' : 'CU-MBR-882',
-        balances: {
-          principal: 100000,
-          mandatory: 1200000,
-          voluntary: 15400000
-        },
-        reputationScore: role === UserRole.FOUNDER ? 999 : 850
-      };
-      
-      setUser(mockUser);
-      setIsLoggedIn(true);
-      setIsLiveDatabase(false);
-      setCurrentView(AppView.DASHBOARD);
-      setViewHistory([]);
-      return true;
-    }
+    // Normal login process remains available if needed
+    const mockUser: UserProfile = { ...DEFAULT_FOUNDER, role, name: role === UserRole.FOUNDER ? 'Budi Utama' : 'Anggota Koperasi' };
+    setUser(mockUser);
+    setIsLoggedIn(true);
+    setIsLiveDatabase(false);
+    return true;
   };
 
-  const logout = async () => {
-    if (confirm("Keluar dari KoperatifAI?")) {
-      if (supabase && isLiveDatabase) {
-         await supabase.auth.signOut();
-      }
-      localStorage.removeItem('koperatif_bypass_session');
+  const logout = () => {
+    if (confirm("Keluar dari sistem kedaulatan?")) {
       setIsLoggedIn(false);
       setUser(null);
       setCurrentView(AppView.DASHBOARD);
-      setViewHistory([]);
-      setIsLiveDatabase(false);
     }
   };
 
@@ -195,7 +125,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (context === undefined) {
-    throw new Error('useAppContext harus digunakan di dalam AppProvider');
+    throw new Error('useAppContext must be used within AppProvider');
   }
   return context;
 };

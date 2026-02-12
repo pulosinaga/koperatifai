@@ -18,6 +18,14 @@ const Dashboard: React.FC = () => {
   const role = user?.role || UserRole.MEMBER;
   const firstName = user?.name.split(' ')[0] || 'Anggota';
 
+  const getGreeting = () => {
+    const hours = new Date().getHours();
+    if (hours >= 4 && hours < 11) return "Selamat Pagi";
+    if (hours >= 11 && hours < 15) return "Selamat Siang";
+    if (hours >= 15 && hours < 18.5) return "Selamat Sore";
+    return "Selamat Malam";
+  };
+
   const stats = role === UserRole.MEMBER ? [
     { label: 'Saldo Sukarela', val: `Rp ${user?.balances.voluntary.toLocaleString('id-ID')}`, icon: '💰', color: 'text-indigo-600', view: AppView.DIGITAL_PASSBOOK },
     { label: 'Sisa Pinjaman', val: 'Rp 4.250.000', icon: '💸', color: 'text-rose-500', view: AppView.LOAN_HISTORY },
@@ -35,7 +43,7 @@ const Dashboard: React.FC = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div className="space-y-1">
           <h2 className="text-3xl font-black text-slate-800 italic tracking-tight">
-            {role === UserRole.FOUNDER ? 'Cockpit Founder.' : role === UserRole.LEADER ? 'Dashboard Duta.' : 'Selamat Pagi.'}
+            {role === UserRole.FOUNDER ? 'Cockpit Founder.' : `${getGreeting()}.`}
           </h2>
           <p className="text-slate-500 font-medium">Halo, {firstName}. Siap membangun kedaulatan hari ini?</p>
         </div>
@@ -50,65 +58,6 @@ const Dashboard: React.FC = () => {
            </div>
         </div>
       </header>
-
-      {/* AMANAH METER: Status Kewajiban Anggota */}
-      {role === UserRole.MEMBER && (
-         <div className="bg-white p-8 rounded-[3.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-8">
-            <div className="w-32 h-32 relative shrink-0">
-               <svg className="w-full h-full rotate-[-90deg]" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="16" fill="none" className="stroke-slate-100" strokeWidth="4" />
-                  <circle cx="18" cy="18" r="16" fill="none" className="stroke-emerald-500" strokeWidth="4" strokeDasharray="75 100" strokeLinecap="round" />
-               </svg>
-               <div className="absolute inset-0 flex items-center justify-center font-black text-2xl text-slate-800">75%</div>
-            </div>
-            <div className="flex-1 space-y-4 text-center md:text-left">
-               <div>
-                  <h4 className="text-xl font-black text-slate-800 uppercase italic">Skor Amanah Anda</h4>
-                  <p className="text-sm text-slate-500">Satu langkah lagi menuju status <b>Anggota Platinum</b>.</p>
-               </div>
-               <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black">✓ Simpanan Pokok</span>
-                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black">✓ Angsuran Bulan Ini</span>
-                  <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black animate-pulse">⏳ Simpanan Wajib</span>
-               </div>
-            </div>
-            <button 
-               onClick={() => navigate(AppView.NOTIFICATION_CENTER)}
-               className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all"
-            >
-               BERESKAN AMANAH →
-            </button>
-         </div>
-      )}
-
-      {/* MEMBER SERVICE HUB */}
-      {role === UserRole.MEMBER && (
-         <div className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm space-y-10">
-            <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-widest text-center md:text-left">Layanan Unggulan</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-               {[
-                 { l: 'Smart Arisan', i: '🌀', v: AppView.ARISAN_DIGITAL, c: 'bg-indigo-50 text-indigo-600', d: 'Kocokan Transparan' },
-                 { l: 'Lelang Aset', i: '🔨', v: AppView.ASSET_AUCTION, c: 'bg-rose-50 text-rose-600', d: 'Beli Jaminan Murah' },
-                 { l: 'Beli Barang', i: '🛒', v: AppView.MEMBER_MARKETPLACE, c: 'bg-emerald-50 text-emerald-600', d: 'Pasar Anggota' },
-                 { l: 'Bayar Toko', i: '🏪', v: AppView.WALLET_INTEGRATION, c: 'bg-amber-50 text-amber-600', d: 'Gunakan Saldo' },
-               ].map((serv, i) => (
-                 <button 
-                  key={i} 
-                  onClick={() => navigate(serv.v)}
-                  className="flex flex-col items-center text-center space-y-4 group"
-                 >
-                    <div className={`w-20 h-20 rounded-[2.5rem] ${serv.c} flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform duration-500`}>
-                       {serv.i}
-                    </div>
-                    <div>
-                       <p className="font-black text-slate-800 text-xs uppercase tracking-tighter">{serv.l}</p>
-                       <p className="text-[8px] text-slate-400 font-bold uppercase mt-0.5">{serv.d}</p>
-                    </div>
-                 </button>
-               ))}
-            </div>
-         </div>
-      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">

@@ -3,8 +3,23 @@ import { getFinancialAdvice } from '../services/geminiService.ts';
 import { ChatMessage } from '../types.ts';
 
 const AIAdvisor: React.FC = () => {
+  const [time, setTime] = useState(new Date());
+  
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getGreeting = () => {
+    const hours = time.getHours();
+    if (hours >= 4 && hours < 11) return "Selamat Pagi";
+    if (hours >= 11 && hours < 15) return "Selamat Siang";
+    if (hours >= 15 && hours < 18.5) return "Selamat Sore";
+    return "Selamat Malam";
+  };
+
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'Selamat malam Bapak Founder! **Strategi-AI v8.0 (Instant Mode)** aktif. Jalur kedaulatan ekonomi sudah sinkron. Apa instruksi Bapak malam ini?' }
+    { role: 'model', text: `${getGreeting()} Bapak Founder! **Strategist Oracle v8.1** aktif. Seluruh jalur data kedaulatan telah sinkron. Apa instruksi strategis Bapak hari ini?` }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +29,7 @@ const AIAdvisor: React.FC = () => {
     "Apa yang bisa di-online-kan agar menghasilkan uang?",
     "Cara ambil untung dari marketplace koperasi?",
     "Strategi royalti Rp 100 per transaksi?",
-    "Hitung potensi SHU dari 1.000 anggota aktif."
+    "Ide bisnis online untuk anggota?"
   ];
 
   const scrollToBottom = () => {
@@ -35,7 +50,7 @@ const AIAdvisor: React.FC = () => {
       const response = await getFinancialAdvice(messageToSend);
       setMessages(prev => [...prev, { role: 'model', text: response }]);
     } catch (err: any) {
-      setMessages(prev => [...prev, { role: 'model', text: `⚠️ **Gangguan Jalur**: Sistem sedang menstabilkan data. Mohon klik kirim ulang pada tombol pertanyaan di bawah.` }]);
+      setMessages(prev => [...prev, { role: 'model', text: `⚠️ **Sinkronisasi Gagal**: Sistem sedang melakukan reboot jalur data. Mohon Bapak klik kirim ulang sekali lagi.` }]);
     } finally {
       setIsLoading(false);
     }
@@ -66,10 +81,10 @@ const AIAdvisor: React.FC = () => {
             🤖
           </div>
           <div>
-            <h3 className="font-black italic uppercase tracking-tighter text-indigo-400 text-xl">Strategist Oracle v8.0</h3>
+            <h3 className="font-black italic uppercase tracking-tighter text-indigo-400 text-xl">Strategist Oracle v8.1</h3>
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> 
-              Instant Neural Sync Online
+              PRO NEURAL BRIDGE ONLINE • {time.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}
             </p>
           </div>
         </div>
@@ -132,7 +147,7 @@ const AIAdvisor: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Tanyakan ide monetisasi..."
+            placeholder="Tanyakan langkah monetisasi..."
             className="flex-1 bg-transparent px-8 py-4 outline-none text-base font-bold text-slate-700 placeholder:text-slate-400"
           />
           <button 
