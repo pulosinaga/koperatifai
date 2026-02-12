@@ -1,56 +1,83 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppProvider, useAppContext } from './contexts/AppContext.tsx';
-import { AppView } from './types.ts';
+import { AppView, UserRole } from './types.ts';
 
-// Navigasi & Frame
+// Layout Components
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
-import Dashboard from './components/Dashboard.tsx';
 import LoginScreen from './components/LoginScreen.tsx';
+import PublicLanding from './components/PublicLanding.tsx';
+import Dashboard from './components/Dashboard.tsx';
 
-// Finansial
-import TransactionHistory from './components/TransactionHistory.tsx';
+// Feature Components
 import DigitalPassbook from './components/DigitalPassbook.tsx';
+import TransactionHistory from './components/TransactionHistory.tsx';
 import SHUDistribution from './components/SHUDistribution.tsx';
 import LoanSimulator from './components/LoanSimulator.tsx';
 import VouchingSystem from './components/VouchingSystem.tsx';
-import LoanHistory from './components/LoanHistory.tsx';
-import LoanReadiness from './components/LoanReadiness.tsx';
-import AICreditCommittee from './components/AICreditCommittee.tsx';
 import CashWithdrawal from './components/CashWithdrawal.tsx';
-
-// Niaga & Mobilitas
 import MemberMarketplace from './components/MemberMarketplace.tsx';
 import MerchantDashboard from './components/MerchantDashboard.tsx';
-import MemberQRIS from './components/MemberQRIS.tsx';
-import SmartProcurement from './components/SmartProcurement.tsx';
-import ArisanDigital from './components/ArisanDigital.tsx';
 import BillPayments from './components/BillPayments.tsx';
-import SmartMobility from './components/SmartMobility.tsx';
-
-// Proteksi & Edukasi
-import MemberHealthShield from './components/MemberHealthShield.tsx';
-import PersonalGoldSavings from './components/PersonalGoldSavings.tsx';
-import PensionFund from './components/PensionFund.tsx';
-import DaskopClaim from './components/DaskopClaim.tsx';
 import SmartEducation from './components/SmartEducation.tsx';
 import AIAdvisor from './components/AIAdvisor.tsx';
 import Membership from './components/Membership.tsx';
-
-// Founder Control
+import SmartMobility from './components/SmartMobility.tsx';
 import GlobalCommandCenter from './components/GlobalCommandCenter.tsx';
-import StrategicProfitCalculator from './components/StrategicProfitCalculator.tsx';
-import EcosystemRevenue from './components/EcosystemRevenue.tsx';
-import SystemHealth from './components/SystemHealth.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
 import DutaManagementCenter from './components/DutaManagementCenter.tsx';
+import CoopHealthCheck from './components/CoopHealthCheck.tsx';
+
+const BottomNav: React.FC = () => {
+  const { currentView, navigate, user } = useAppContext();
+  const role = user?.role || UserRole.MEMBER;
+  
+  const navItems = [
+    { id: AppView.DASHBOARD, label: 'Home', icon: '📊' },
+    { id: AppView.DIGITAL_PASSBOOK, label: 'Buku', icon: '📖' },
+  ];
+
+  // Role based middle icon
+  if (role === UserRole.LEADER) {
+    navItems.push({ id: AppView.REVENUE_CENTER, label: 'Duta', icon: '🛵' });
+  } else if (role === UserRole.FOUNDER) {
+    navItems.push({ id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit', icon: '🛰️' });
+  } else {
+    navItems.push({ id: AppView.MEMBER_MARKETPLACE, label: 'Pasar', icon: '🛒' });
+  }
+
+  navItems.push({ id: AppView.AI_ADVISOR, label: 'AI', icon: '🤖' });
+  navItems.push({ id: AppView.MEMBERSHIP_PROFILE, label: 'Profil', icon: '👤' });
+
+  return (
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around items-center py-3 pb-6 px-2 z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+      {navItems.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => navigate(item.id)}
+          className={`flex flex-col items-center gap-1 transition-all flex-1 ${
+            currentView === item.id ? 'text-indigo-600 scale-110' : 'text-slate-400'
+          }`}
+        >
+          <span className="text-xl">{item.icon}</span>
+          <span className="text-[8px] font-black uppercase tracking-widest">{item.label}</span>
+          {currentView === item.id && <div className="w-1 h-1 bg-indigo-600 rounded-full mt-0.5"></div>}
+        </button>
+      ))}
+    </nav>
+  );
+};
 
 const AppContent: React.FC = () => {
   const { isLoggedIn, currentView } = useAppContext();
+  const [showLogin, setShowLogin] = useState(false);
+
+  if (!isLoggedIn) {
+    if (showLogin) return <LoginScreen onBack={() => setShowLogin(false)} />;
+    return <PublicLanding onStart={() => setShowLogin(true)} />;
+  }
 
   const renderContent = () => {
-    if (!isLoggedIn) return <LoginScreen />;
-
     const views: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
@@ -59,50 +86,35 @@ const AppContent: React.FC = () => {
       [AppView.DIGITAL_PASSBOOK]: <DigitalPassbook />,
       [AppView.LOAN_SIMULATOR]: <LoanSimulator />,
       [AppView.VOUCHING_SYSTEM]: <VouchingSystem />,
-      [AppView.LOAN_HISTORY]: <LoanHistory />,
-      [AppView.LOAN_READINESS]: <LoanReadiness />,
-      [AppView.AI_CREDIT_COMMITTEE]: <AICreditCommittee />,
       [AppView.MEMBER_MARKETPLACE]: <MemberMarketplace />,
-      [AppView.SMART_MOBILITY]: <SmartMobility />,
       [AppView.MERCHANT_DASHBOARD]: <MerchantDashboard />,
       [AppView.BILL_PAYMENTS]: <BillPayments />,
-      [AppView.MEMBER_QRIS]: <MemberQRIS />,
-      [AppView.SMART_PROCUREMENT]: <SmartProcurement />,
-      [AppView.ARISAN_DIGITAL]: <ArisanDigital />,
-      [AppView.MEMBER_HEALTH_SHIELD]: <MemberHealthShield />,
-      [AppView.PERSONAL_GOLD]: <PersonalGoldSavings />,
-      [AppView.PENSION_FUND]: <PensionFund />,
-      [AppView.DASKOP_CLAIM]: <DaskopClaim />,
       [AppView.SMART_EDUCATION]: <SmartEducation />,
       [AppView.AI_ADVISOR]: <AIAdvisor />,
       [AppView.MEMBERSHIP_PROFILE]: <Membership />,
       [AppView.GLOBAL_COMMAND_CENTER]: <GlobalCommandCenter />,
-      [AppView.STRATEGIC_PROFIT_CALCULATOR]: <StrategicProfitCalculator />,
-      [AppView.ECOSYSTEM_REVENUE]: <EcosystemRevenue />,
-      [AppView.SYSTEM_HEALTH]: <SystemHealth />,
       [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
-      [AppView.REVENUE_CENTER]: <DutaManagementCenter />
+      [AppView.REVENUE_CENTER]: <DutaManagementCenter />,
+      [AppView.SYSTEM_HEALTH]: <CoopHealthCheck />,
+      [AppView.SMART_MOBILITY]: <SmartMobility />,
     };
 
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 h-full">
-        {views[currentView] || <Dashboard />}
-      </div>
-    );
+    return views[currentView] || <Dashboard />;
   };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden">
-      {isLoggedIn && <Sidebar />}
-      
+      <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        {isLoggedIn && <Header />}
-        
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-          <div className="max-w-7xl mx-auto h-full pb-10">
-            {renderContent()}
+        <Header />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar pb-28 lg:pb-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {renderContent()}
+            </div>
           </div>
         </main>
+        <BottomNav />
       </div>
     </div>
   );

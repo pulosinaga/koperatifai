@@ -1,286 +1,109 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { UserRole } from '../types.ts';
 import { useAppContext } from '../contexts/AppContext.tsx';
 
-const LoginScreen: React.FC = () => {
+const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { login } = useAppContext();
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
   const [isError, setIsError] = useState(false);
-  const [attempts, setAttempts] = useState(0);
-  const [lockoutTimer, setLockoutTimer] = useState(0);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  
-  const [loginStep, setLoginStep] = useState<'PIN' | '2FA' | 'FACE'>('PIN');
-  const [otp, setOtp] = useState('');
-  const [isScanning, setIsScanning] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const roles = [
-    { id: UserRole.FOUNDER, label: 'Founder', icon: '👑', masterPin: '999999', security: 'ULTRA' },
-    { id: UserRole.BOARD, label: 'Pengurus', icon: '👔', masterPin: '888888', security: 'HIGH' },
-    { id: UserRole.STAFF, label: 'Staf Admin', icon: '💻', masterPin: '000000', security: 'NORMAL' },
-    { id: UserRole.LEADER, label: 'Duta Wilayah', icon: '🛵', masterPin: '111111', security: 'BIOMETRIC' },
-    { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️', masterPin: '777777', security: 'HIGH' },
-    { id: UserRole.MEMBER, label: 'Anggota', icon: '👤', masterPin: '123456', security: 'NORMAL' },
+    { id: UserRole.MEMBER, label: 'Anggota', icon: '👤', pin: '123456' },
+    { id: UserRole.LEADER, label: 'Duta', icon: '🛵', pin: '111111' },
+    { id: UserRole.BOARD, label: 'Pengurus', icon: '👔', pin: '888888' },
+    { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️', pin: '777777' },
+    { id: UserRole.FOUNDER, label: 'Founder', icon: '👑', pin: '999999' },
   ];
 
-  useEffect(() => {
-    let interval: any;
-    if (lockoutTimer > 0) {
-      interval = setInterval(() => setLockoutTimer((t) => t - 1), 1000);
-    } else if (lockoutTimer === 0 && attempts >= 3) {
-      setAttempts(0);
-    }
-    return () => clearInterval(interval);
-  }, [lockoutTimer, attempts]);
-
-  const executeLogin = async (role: UserRole, currentPin: string) => {
-     setIsAuthenticating(true);
-     try {
-        await login(role, currentPin);
-     } catch (e) {
-        handleFailedAttempt();
-     } finally {
-        setIsAuthenticating(false);
-     }
-  };
-
-  const handlePinSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (lockoutTimer > 0 || isAuthenticating) return;
-
-    const roleData = roles.find(r => r.id === selectedRole);
-    if (pin === roleData?.masterPin) {
-      setAttempts(0);
-      if (roleData.security === 'ULTRA') {
-        setLoginStep('2FA');
-      } else if (roleData.security === 'BIOMETRIC') {
-        startFaceID();
-      } else {
-        await executeLogin(selectedRole, pin);
-      }
-    } else {
-      handleFailedAttempt();
+    setIsAuthenticating(true);
+    const success = await login(selectedRole, pin);
+    if (!success) {
+      setIsError(true);
+      setPin('');
+      setTimeout(() => setIsError(false), 1500);
     }
-  };
-
-  const handleOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otp === '1234') { 
-      startFaceID();
-    } else {
-      handleFailedAttempt();
-      setOtp('');
-    }
-  };
-
-  const handleFailedAttempt = () => {
-    const newAttempts = attempts + 1;
-    setAttempts(newAttempts);
-    setIsError(true);
-    setPin('');
-    if (newAttempts >= 3) setLockoutTimer(60);
-    setTimeout(() => setIsError(false), 2000);
-  };
-
-  const startFaceID = async () => {
-    setLoginStep('FACE');
-    setIsScanning(true);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      setTimeout(() => {
-        setIsScanning(false);
-        setTimeout(async () => {
-          stream.getTracks().forEach(track => track.stop());
-          await executeLogin(selectedRole, roles.find(r => r.id === selectedRole)?.masterPin || pin);
-        }, 1000);
-      }, 3000);
-    } catch (err) {
-      alert("Akses kamera ditolak. Verifikasi wajah dilewati untuk simulasi.");
-      setLoginStep('PIN');
-      await executeLogin(selectedRole, roles.find(r => r.id === selectedRole)?.masterPin || pin);
-    }
+    setIsAuthenticating(false);
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#020617] flex items-center justify-center p-4 sm:p-8 relative overflow-hidden font-sans">
-      {/* Background Ambience */}
-      <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
-
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 relative z-10 items-center">
-         
-         {/* Kiri: Brand & Security Info */}
-         <div className="flex flex-col space-y-10 text-center lg:text-left order-2 lg:order-1 mt-10 lg:mt-0">
-            <div className="space-y-6">
-               <div className="w-20 h-20 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-4xl shadow-[0_0_40px_rgba(79,70,229,0.4)] border border-indigo-400/30 mx-auto lg:mx-0 animate-pulse">
-                  🛡️
-               </div>
-               <h1 className="text-4xl md:text-5xl font-black text-white italic leading-tight tracking-tight">
-                  Sentinel Guard <br/>
-                  <span className="text-indigo-400">Authentication.</span>
-               </h1>
-               <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-md mx-auto lg:mx-0">
-                 Gerbang kedaulatan digital KoperatifAI. Seluruh akses dilindungi oleh enkripsi kelas militer dan verifikasi biometrik otonom.
-               </p>
-            </div>
-            
-            <div className="p-6 bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 space-y-5 max-w-sm mx-auto lg:mx-0 shadow-2xl">
-               <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Database Node</span>
-                  <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                     <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></span>
-                     <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Supabase Ready</span>
-                  </div>
-               </div>
-               <div className="space-y-3">
-                  <div className="flex justify-between items-center text-xs">
-                     <span className="font-bold text-slate-300">Biometric Engine</span>
-                     <span className="font-mono text-indigo-400 font-bold">STANDBY</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                     <span className="font-bold text-slate-300">Intrusion Sentry</span>
-                     <span className="font-mono text-emerald-400 font-bold">ACTIVE</span>
-                  </div>
-               </div>
-            </div>
-         </div>
-
-         {/* Kanan: Glassmorphism Login Panel */}
-         <div className="bg-white/10 backdrop-blur-2xl p-8 md:p-12 rounded-[3.5rem] shadow-2xl border border-white/20 relative overflow-hidden order-1 lg:order-2">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500"></div>
-
-            {loginStep === 'PIN' && (
-               <div className="space-y-10 animate-in slide-in-from-right duration-500">
-                  <div className="text-center space-y-2">
-                     <h2 className="text-2xl font-black text-white italic tracking-wide">Identifikasi Peran</h2>
-                     <p className="text-xs text-slate-400 font-medium">Pilih otoritas akses Anda di ekosistem.</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-3 md:gap-4">
-                     {roles.map(r => (
-                        <button 
-                           key={r.id}
-                           onClick={() => setSelectedRole(r.id)}
-                           className={`p-4 rounded-[1.5rem] border-2 flex flex-col items-center justify-center gap-3 transition-all ${
-                              selectedRole === r.id 
-                                ? 'border-indigo-500 bg-indigo-500/20 shadow-[0_0_20px_rgba(99,102,241,0.3)] scale-105' 
-                                : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
-                           }`}
-                        >
-                           <span className="text-3xl drop-shadow-lg">{r.icon}</span>
-                           <span className={`text-[9px] font-black uppercase tracking-widest ${selectedRole === r.id ? 'text-indigo-200' : 'text-slate-300'}`}>
-                             {r.label}
-                           </span>
-                        </button>
-                     ))}
-                  </div>
-
-                  <form onSubmit={handlePinSubmit} className="space-y-6 pt-6 border-t border-white/10">
-                     <div className="space-y-4 text-center">
-                        <label className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">
-                           {lockoutTimer > 0 ? `Terkunci: Coba lagi dalam ${lockoutTimer}s` : 'Masukkan PIN Keamanan'}
-                        </label>
-                        <input
-                           type="password"
-                           value={pin}
-                           onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                           disabled={lockoutTimer > 0 || isAuthenticating}
-                           placeholder="••••••"
-                           className={`w-full text-center text-4xl tracking-[0.5em] font-black p-6 rounded-[2rem] outline-none transition-all placeholder:text-white/20 ${
-                              isError 
-                                ? 'border-2 border-rose-500 text-rose-400 bg-rose-500/10 animate-shake' 
-                                : 'border-2 border-white/10 bg-black/40 text-white focus:border-indigo-500 focus:bg-black/60 shadow-inner'
-                           } ${lockoutTimer > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        />
-                     </div>
-                     <button 
-                        type="submit" 
-                        disabled={pin.length < 6 || lockoutTimer > 0 || isAuthenticating}
-                        className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(79,70,229,0.3)] hover:bg-indigo-500 transition-all disabled:opacity-30 disabled:shadow-none active:scale-95"
-                     >
-                        {isAuthenticating ? 'MENYINKRONKAN KUNCI...' : 'OTORISASI AKSES'}
-                     </button>
-                  </form>
-               </div>
-            )}
-
-            {loginStep === '2FA' && (
-               <div className="space-y-10 text-center animate-in slide-in-from-right duration-500">
-                  <div className="w-24 h-24 bg-indigo-500/20 rounded-full flex items-center justify-center text-5xl mx-auto border-4 border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.2)]">📱</div>
-                  <div className="space-y-3">
-                     <h3 className="text-2xl font-black text-white italic">Verifikasi Lapis Dua</h3>
-                     <p className="text-xs text-slate-400 px-4 leading-relaxed">Sistem mendeteksi akses otoritas tinggi. Masukkan 4 digit OTP dari perangkat Anda.</p>
-                  </div>
-                  <form onSubmit={handleOtpSubmit} className="space-y-6">
-                     <input
-                        type="text"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                        placeholder="1234"
-                        className="w-full text-center text-5xl tracking-[0.4em] font-black p-6 bg-black/40 text-white border-2 border-white/10 rounded-[2rem] outline-none focus:border-indigo-500 transition-all placeholder:text-white/20"
-                     />
-                     <button 
-                        type="submit" 
-                        disabled={otp.length < 4 || isAuthenticating}
-                        className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-500 transition-all disabled:opacity-30 active:scale-95"
-                     >
-                        {isAuthenticating ? 'VERIFIKASI SERVER...' : 'VERIFIKASI OTP'}
-                     </button>
-                  </form>
-               </div>
-            )}
-
-            {loginStep === 'FACE' && (
-               <div className="space-y-8 text-center animate-in zoom-in duration-500">
-                  <h3 className="text-2xl font-black text-white italic">Biometric Sentry</h3>
-                  <p className="text-xs text-slate-400">Posisikan wajah Anda di dalam area pindai hijau.</p>
-                  
-                  <div className="relative w-56 h-56 mx-auto rounded-full border-8 border-indigo-900/50 bg-black/50 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                     <video 
-                        ref={videoRef} 
-                        autoPlay 
-                        playsInline 
-                        muted 
-                        className="w-full h-full object-cover transform scale-x-[-1] opacity-80"
-                     />
-                     {isScanning && (
-                        <div className="absolute inset-0 border-4 border-emerald-500 rounded-full animate-ping opacity-50"></div>
-                     )}
-                     <div className={`absolute top-0 left-0 w-full h-3 bg-emerald-400 shadow-[0_0_20px_#34d399] transition-all duration-300 ${isScanning ? 'animate-scan-y' : 'hidden'}`}></div>
-                  </div>
-                  
-                  <div className="space-y-4 pt-4">
-                     <p className={`text-xs font-black uppercase tracking-widest ${isScanning ? 'text-indigo-400 animate-pulse' : 'text-emerald-400'}`}>
-                        {isScanning ? 'Menganalisis Titik Wajah...' : 'IDENTITAS TERVERIFIKASI'}
-                     </p>
-                  </div>
-               </div>
-            )}
-         </div>
-      </div>
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Orbs */}
+      <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[120px]"></div>
+      <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-600/5 rounded-full blur-[100px]"></div>
       
+      <div className="w-full max-w-md relative z-10 space-y-8">
+        <button 
+          onClick={onBack}
+          className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors mb-4"
+        >
+          ← Kembali ke Beranda
+        </button>
+
+        <div className="bg-white/10 backdrop-blur-2xl p-10 rounded-[4rem] border border-white/20 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-emerald-500"></div>
+          
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center text-4xl mx-auto shadow-xl mb-6">🛡️</div>
+            <h2 className="text-2xl font-black text-white italic tracking-tight uppercase">Otorisasi Akses</h2>
+            <p className="text-xs text-slate-400 mt-2 font-medium">Pilih peran dan masukkan PIN keamanan Anda.</p>
+          </div>
+
+          {/* Role Selection Grid */}
+          <div className="grid grid-cols-5 gap-3 mb-10">
+             {roles.map(r => (
+               <button 
+                key={r.id}
+                onClick={() => { setSelectedRole(r.id); setPin(''); }}
+                className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all border-2 ${
+                  selectedRole === r.id ? 'bg-indigo-600/20 border-indigo-500 scale-110 shadow-lg' : 'bg-white/5 border-transparent opacity-30 hover:opacity-100'
+                }`}
+               >
+                 <span className="text-xl">{r.icon}</span>
+                 <span className="text-[7px] font-black uppercase tracking-tighter text-white">{r.label}</span>
+               </button>
+             ))}
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] block text-center">PIN Rahasia 6 Digit</label>
+              <input 
+                type="password"
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0,6))}
+                placeholder="••••••"
+                className={`w-full bg-black/40 border-2 rounded-[2rem] p-6 text-4xl text-center font-black tracking-[0.5em] text-white outline-none transition-all ${
+                  isError ? 'border-rose-500 animate-shake bg-rose-500/10' : 'border-white/10 focus:border-indigo-500'
+                }`}
+              />
+            </div>
+
+            <button 
+              type="submit"
+              disabled={pin.length < 6 || isAuthenticating}
+              className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-500 transition-all active:scale-95 disabled:opacity-30"
+            >
+              {isAuthenticating ? 'MENYINKRONKAN...' : 'MASUK KE COCKPIT'}
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-[9px] text-slate-500 font-bold uppercase tracking-widest">
+             Gunakan PIN Default Role untuk Demo (Lihat Dokumentasi)
+          </p>
+        </div>
+      </div>
+
       <style>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-8px); }
           75% { transform: translateX(8px); }
         }
-        .animate-shake {
-          animation: shake 0.2s ease-in-out 0s 2;
-        }
-        @keyframes scan-y {
-          0% { top: 0; }
-          100% { top: 100%; }
-        }
-        .animate-scan-y {
-          animation: scan-y 2.5s ease-in-out infinite alternate;
-        }
+        .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
       `}</style>
     </div>
   );
