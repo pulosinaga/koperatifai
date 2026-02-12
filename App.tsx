@@ -32,6 +32,15 @@ import TerritoryMap from './components/TerritoryMap.tsx';
 import DutaRecruitment from './components/DutaRecruitment.tsx';
 import TerritoryCommand from './components/TerritoryCommand.tsx';
 import DutaSOP from './components/DutaSOP.tsx';
+import MemberAttraction from './components/MemberAttraction.tsx';
+import PromotionKit from './components/PromotionKit.tsx';
+import OfficialAssignmentLetter from './components/OfficialAssignmentLetter.tsx';
+import VillageSovereigntyHub from './components/VillageSovereigntyHub.tsx';
+import VillageSocialBudget from './components/VillageSocialBudget.tsx';
+import ServiceJourneyGuide from './components/ServiceJourneyGuide.tsx';
+import MemberBenefitSimulator from './components/MemberBenefitSimulator.tsx';
+import GovPasarRakyatBridge from './components/GovPasarRakyatBridge.tsx';
+import GovTenantDashboard from './components/GovTenantDashboard.tsx';
 
 const BottomNav: React.FC = () => {
   const { currentView, navigate, user } = useAppContext();
@@ -42,13 +51,12 @@ const BottomNav: React.FC = () => {
     { id: AppView.DIGITAL_PASSBOOK, label: 'Buku', icon: '📖' },
   ];
 
-  // Role based middle icon
   if (role === UserRole.LEADER) {
     navItems.push({ id: AppView.REVENUE_CENTER, label: 'Duta', icon: '🛵' });
+  } else if (role === UserRole.GOVERNMENT) {
+    navItems.push({ id: AppView.GOV_TENANT_DASHBOARD, label: 'Monitor', icon: '🇮🇩' });
   } else if (role === UserRole.FOUNDER) {
     navItems.push({ id: AppView.GLOBAL_COMMAND_CENTER, label: 'Cockpit', icon: '🛰️' });
-  } else if (role === UserRole.STAFF) {
-    navItems.push({ id: AppView.TRANSACTIONS, label: 'Ops', icon: '📥' });
   } else {
     navItems.push({ id: AppView.MEMBER_MARKETPLACE, label: 'Pasar', icon: '🛒' });
   }
@@ -85,7 +93,6 @@ const AppContent: React.FC = () => {
   }
 
   const renderContent = () => {
-    // Override Dashboard for STAFF
     if (currentView === AppView.DASHBOARD && user?.role === UserRole.STAFF) {
       return <StaffDashboard />;
     }
@@ -113,6 +120,15 @@ const AppContent: React.FC = () => {
       [AppView.TERRITORY_MAP]: <TerritoryMap />,
       [AppView.TERRITORY_COMMAND]: <TerritoryCommand />,
       [AppView.DUTA_SOP]: <DutaSOP />,
+      [AppView.MEMBER_ATTRACTION]: <MemberAttraction />,
+      [AppView.PROMOTION_KIT]: <PromotionKit />,
+      [AppView.OFFICIAL_ASSIGNMENT]: <OfficialAssignmentLetter />,
+      [AppView.VILLAGE_SOVEREIGNTY_HUB]: <VillageSovereigntyHub />,
+      [AppView.VILLAGE_SOCIAL_BUDGET]: <VillageSocialBudget />,
+      [AppView.SERVICE_JOURNEY_GUIDE]: <ServiceJourneyGuide />,
+      [AppView.MEMBER_BENEFIT_SIMULATOR]: <MemberBenefitSimulator />,
+      [AppView.GOV_PASAR_RAKYAT_BRIDGE]: <GovPasarRakyatBridge />,
+      [AppView.GOV_TENANT_DASHBOARD]: <GovTenantDashboard />,
     };
 
     return views[currentView] || <Dashboard />;
@@ -139,7 +155,6 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AppProvider>
-      {/* Background Orbs Global */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-[-1]">
         <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[100px]"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[100px]"></div>

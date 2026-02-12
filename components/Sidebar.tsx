@@ -18,24 +18,17 @@ const Sidebar: React.FC = () => {
       { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
     ];
 
-    const commerce = [
-      { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🛒' },
-      { id: AppView.BILL_PAYMENTS, label: 'Bayar & Proteksi', icon: '🛡️' },
-    ];
-
     const menu = [
       { label: 'Utama', items: common },
       { label: 'Layanan', items: finance },
-      { label: 'Niaga', items: commerce }
     ];
 
-    // STAFF Specific Menu
-    if (role === UserRole.STAFF) {
+    if (role === UserRole.GOVERNMENT) {
       menu.push({
-        label: 'Operasional',
+        label: 'Otoritas Negara',
         items: [
-          { id: AppView.TRANSACTIONS, label: 'Antrean Validasi', icon: '📥' },
-          { id: AppView.SYSTEM_HEALTH, label: 'Status Server', icon: '🩺' },
+          { id: AppView.GOV_TENANT_DASHBOARD, label: 'Command Center', icon: '🇮🇩' },
+          { id: AppView.GOV_PASAR_RAKYAT_BRIDGE, label: 'Jembatan Pasar', icon: '🌉' },
         ]
       });
     }
@@ -44,26 +37,20 @@ const Sidebar: React.FC = () => {
       menu.push({
         label: 'Area Duta',
         items: [
+          { id: AppView.SERVICE_JOURNEY_GUIDE, label: 'Peta Layanan', icon: '🗺️' },
+          { id: AppView.MEMBER_BENEFIT_SIMULATOR, label: 'Simulasi Manfaat', icon: '⚖️' },
+          { id: AppView.VILLAGE_SOCIAL_BUDGET, label: 'Anggaran Desa', icon: '🏦' },
           { id: AppView.REVENUE_CENTER, label: 'Kinerja Wilayah', icon: '🛵' },
-          { id: AppView.DUTA_SOP, label: 'Manual SOP', icon: '📘' },
-          { id: AppView.VOUCHING_SYSTEM, label: 'Validasi Anggota', icon: '🤝' },
         ]
       });
     }
 
     if (role === UserRole.FOUNDER) {
       menu.push({
-        label: 'Expansion Control',
+        label: 'Sinergi Negara',
         items: [
+          { id: AppView.GOV_PASAR_RAKYAT_BRIDGE, label: 'Jembatan Pasar', icon: '🇮🇩' },
           { id: AppView.TERRITORY_COMMAND, label: 'Peta Komando', icon: '📍' },
-          { id: AppView.DUTA_RECRUITMENT, label: 'Otorisasi Duta', icon: '✒️' },
-        ]
-      });
-      menu.push({
-        label: 'Otoritas Pusat',
-        items: [
-          { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
-          { id: AppView.DEPLOYMENT_HUB, label: 'Data Sync', icon: '🗄️' },
         ]
       });
     }

@@ -14,7 +14,7 @@ const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     { id: UserRole.LEADER, label: 'Duta', icon: '🛵', pin: '111111' },
     { id: UserRole.STAFF, label: 'Staf Ops', icon: '💻', pin: '555555' },
     { id: UserRole.BOARD, label: 'Pengurus', icon: '👔', pin: '888888' },
-    { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️', pin: '777777' },
+    { id: UserRole.GOVERNMENT, label: 'Negara', icon: '🇮🇩', pin: '112233' },
     { id: UserRole.FOUNDER, label: 'Founder', icon: '👑', pin: '999999' },
   ];
 
@@ -93,7 +93,7 @@ const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </form>
 
           <p className="mt-8 text-center text-[9px] text-slate-500 font-bold uppercase tracking-widest">
-             {selectedRole === UserRole.STAFF ? "Hint: 555555" : "Gunakan PIN Default Role"}
+             {selectedRole === UserRole.GOVERNMENT ? "Hint: 112233" : "Gunakan PIN Default Role"}
           </p>
         </div>
       </div>
