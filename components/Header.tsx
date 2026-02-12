@@ -23,22 +23,25 @@ const Header: React.FC = () => {
       case AppView.CASH_WITHDRAWAL: return 'Tarik Saldo';
       case AppView.DUTA_ECHOES: return 'Gema Rakyat';
       case AppView.DUTA_AWARDING: return 'Awarding Night';
+      case AppView.WALLET_INTEGRATION: return 'Bayar di Toko';
       default: return 'KoperatifAI';
     }
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-[110] w-full bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 py-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
-        {/* Tombol Back Mobile & Desktop */}
-        {!isDashboard && (
+        {/* Tombol Back: Tampil jika bukan di Dashboard */}
+        {!isDashboard ? (
           <button 
             onClick={goBack}
-            className="group flex items-center justify-center w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl transition-all hover:bg-indigo-600 hover:text-white active:scale-90 shadow-sm border border-indigo-100"
+            className="flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-xl transition-all hover:bg-indigo-700 active:scale-90 shadow-lg border border-indigo-500 z-50"
             title="Kembali"
           >
             <span className="text-xl font-bold">←</span>
           </button>
+        ) : (
+          <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black">◈</div>
         )}
         
         <div className="flex flex-col">
@@ -51,36 +54,30 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 md:gap-6">
-        {/* Status Sentry - Hidden on very small screens to save space */}
-        <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-slate-900 rounded-2xl border border-white/10 shadow-lg">
-           <div className="relative">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
-              <div className="absolute inset-0 w-2 h-2 bg-emerald-500 rounded-full"></div>
-           </div>
-           <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">AI Sentinel</span>
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Status Sentry */}
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-900 rounded-xl border border-white/10 shadow-md">
+           <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
+           <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">Active</span>
         </div>
 
-        {/* User Info & Quick Logout Mobile */}
+        {/* User Profile Info */}
         <div className="flex items-center gap-2">
            <div className="hidden md:flex flex-col items-end">
-              <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.1em]">{user?.role}</span>
-              <span className={`text-[8px] font-bold uppercase ${isLiveDatabase ? 'text-emerald-600' : 'text-amber-600'}`}>
-                {isLiveDatabase ? 'Live DB' : 'Local Mode'}
+              <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.1em]">{user?.role}</span>
+              <span className={`text-[7px] font-bold uppercase ${isLiveDatabase ? 'text-emerald-600' : 'text-amber-600'}`}>
+                {isLiveDatabase ? 'Live DB' : 'Local'}
               </span>
            </div>
            
-           <div 
-             onClick={() => !isDashboard && goBack()}
-             className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-xl shadow-inner border border-indigo-200 cursor-pointer hover:scale-105 transition-transform"
-           >
+           <div className="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center text-lg shadow-inner border border-indigo-200">
               👤
            </div>
 
-           {/* Tombol Keluar Cepat khusus Mobile */}
+           {/* Tombol Logout: Selalu terlihat di Header untuk kemudahan akses Founder */}
            <button 
              onClick={logout}
-             className="lg:hidden w-10 h-10 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center text-xl hover:bg-rose-600 hover:text-white transition-all active:scale-90"
+             className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center text-lg hover:bg-rose-600 hover:text-white transition-all active:scale-90 shadow-sm"
              title="Logout"
            >
              🚪

@@ -36,7 +36,7 @@ import HallOfEchoes from './components/HallOfEchoes.tsx';
 import AwardingNight from './components/AwardingNight.tsx';
 
 const BottomNav: React.FC = () => {
-  const { currentView, navigate, user } = useAppContext();
+  const { currentView, navigate } = useAppContext();
   
   const navItems = [
     { id: AppView.DASHBOARD, label: 'Home', icon: '📊' },
@@ -107,11 +107,12 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row overflow-hidden">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      <div className="flex-1 flex flex-col relative">
         <Header />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar pb-28 lg:pb-8">
+        {/* Main content area dengan padding bawah untuk bottom nav mobile */}
+        <main className="flex-1 p-4 md:p-8 pb-28 lg:pb-8 overflow-x-hidden">
           <div className="max-w-7xl mx-auto">
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               {renderContent()}
