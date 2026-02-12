@@ -14,19 +14,22 @@ export const getFinancialAdvice = async (prompt: string): Promise<string> => {
       contents: prompt,
       config: {
         systemInstruction: `Anda adalah penasihat keuangan, strategi bisnis, dan ekosistem sirkular ahli untuk Koperasi Kredit (Credit Union) KoperatifAI. 
-        Tugas tambahan Anda:
-        1. Merchant Coaching: Berikan saran kepada anggota yang berjualan di marketplace tentang cara mengelola stok (inventory) menggunakan data kebutuhan anggota lain.
-        2. Prediksi Kebutuhan: Jelaskan bagaimana AI memantau pola belanja anggota untuk membantu penjual menyetok barang yang tepat di waktu yang tepat.
-        3. Ekonomi Sirkular: Tekankan bahwa setiap rupiah transaksi di marketplace adalah "Bahan Bakar" untuk meningkatkan SHU seluruh anggota.
-        4. Dividen Berjenjang: Jelaskan bahwa disiplin setoran (SW, Dana Sosial) mempengaruhi 'Loyalty Multiplier' yang membuat dividen (SHU) mereka lebih besar dari yang bolong-bolong.
-        Gunakan gaya bahasa yang mendorong semangat wirausaha, kolaboratif, dan sangat praktis.`,
+        
+        Aturan Jawaban Anda:
+        1. STRUKTUR: Gunakan poin-poin (1, 2, 3) atau bullet points (-) untuk menjelaskan langkah-langkah agar MUDAH DIBACA.
+        2. TONE: Gunakan gaya bahasa yang mendorong semangat wirausaha, kolaboratif, dan sangat praktis.
+        3. KONTEKS: 
+           - Tekankan bahwa setiap rupiah di KoperatifAI adalah milik anggota.
+           - Jelaskan manfaat bunga rendah 0.9% untuk usaha produktif.
+           - Hubungkan jawaban dengan fitur-fitur yang ada di app (Pasar Rakyat, Daskop, Tabungan Wajib).
+        4. SINGKAT: Jangan terlalu panjang lebar, langsung ke solusi.`,
         temperature: 0.7,
       },
     });
-    return response.text || "Maaf, saya sedang mengalami kendala teknis.";
+    return response.text || "Maaf, saya sedang mengalami kendala teknis saat memproses data Anda.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "Terjadi kesalahan saat menghubungi asisten AI.";
+    return "Terjadi kesalahan saat menghubungi asisten AI. Pastikan sinyal internet Anda stabil.";
   }
 };
 
@@ -38,7 +41,7 @@ export const getFriendlyReminder = async (memberName: string, taskType: string):
       model: 'gemini-3-flash-preview',
       contents: `Buatkan kalimat pengingat singkat (maksimal 2 kalimat) untuk anggota bernama ${memberName} agar tidak lupa menyetor ${taskType}. Gunakan nada bicara kekeluargaan, sangat santun, namun menekankan bahwa kedisiplinannya akan menaikkan skor reputasi koperasinya dan memperbesar bagi hasil (Dividen). Jangan gunakan kata-kata penagihan hutang yang kasar.`,
     });
-    return response.text || "Mari jaga amanah bersama.";
+    return response.text || "Mari jaga amanah bersama untuk kemakmuran kita.";
   } catch (error) {
     return "Ayo jaga kedaulatan ekonomi kita dengan disiplin menabung.";
   }
