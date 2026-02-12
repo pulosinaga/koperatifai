@@ -4,17 +4,17 @@ import { ChatMessage } from '../types.ts';
 
 const AIAdvisor: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'Selamat malam Bapak Founder! **Strategi-AI** siap membedah potensi cuan koperasi kita. Pilih salah satu topik di bawah atau ketik ide Bapak.' }
+    { role: 'model', text: 'Selamat malam Bapak Founder! **Strategi-AI v7.0** (Pro Mode) sudah aktif. Apa rencana kedaulatan kita malam ini?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const quickQuestions = [
-    "Apa yang bisa di-online-kan agar menghasilkan uang?",
-    "Cara ambil untung dari marketplace koperasi?",
-    "Bagaimana strategi royalti Rp 100 per transaksi?",
-    "Hitung potensi SHU dari 1.000 anggota aktif."
+    "Cara ambil untung dari marketplace?",
+    "Strategi royalti Rp 100 per klik?",
+    "Ide bisnis online untuk anggota?",
+    "Hitung potensi SHU 10.000 orang"
   ];
 
   const scrollToBottom = () => {
@@ -32,24 +32,34 @@ const AIAdvisor: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Service sekarang sudah mengembalikan string error yang bermakna
       const response = await getFinancialAdvice(messageToSend);
       setMessages(prev => [...prev, { role: 'model', text: response }]);
-    } catch (err) {
-      setMessages(prev => [...prev, { role: 'model', text: '⚠️ Terjadi guncangan pada transmisi data. Mohon ketuk tombol kirim ulang.' }]);
+    } catch (err: any) {
+      setMessages(prev => [...prev, { role: 'model', text: `⚠️ **Guncangan Sistem**: ${err.message || 'Transmisi terputus'}.` }]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const formatText = (text: string) => {
-    // Sederhana: ubah **teks** menjadi bold dan \n menjadi line break
-    return text.split('\n').map((line, i) => (
-      <p key={i} className="mb-2">
-        {line.split('**').map((part, j) => (
-          j % 2 === 1 ? <strong key={j} className="text-indigo-600 font-black">{part}</strong> : part
-        ))}
-      </p>
-    ));
+    // Render Markdown Sederhana (Bold & Lists)
+    return text.split('\n').map((line, i) => {
+      const trimmed = line.trim();
+      if (!trimmed) return <div key={i} className="h-2" />;
+      
+      // Deteksi List
+      const isList = trimmed.startsWith('- ') || trimmed.startsWith('* ') || /^\d+\./.test(trimmed);
+      
+      return (
+        <p key={i} className={`mb-2 ${isList ? 'pl-4 relative' : ''}`}>
+          {isList && <span className="absolute left-0 text-indigo-400">•</span>}
+          {trimmed.split('**').map((part, j) => (
+            j % 2 === 1 ? <strong key={j} className="text-indigo-600 font-black">{part}</strong> : part
+          ))}
+        </p>
+      );
+    });
   };
 
   return (
@@ -61,16 +71,16 @@ const AIAdvisor: React.FC = () => {
             🤖
           </div>
           <div>
-            <h3 className="font-black italic uppercase tracking-tighter text-indigo-400 text-xl">Strategist Oracle v6.0</h3>
+            <h3 className="font-black italic uppercase tracking-tighter text-indigo-400 text-xl">Strategist Oracle v7.0</h3>
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> 
-              Sovereign Brain Online
+              Pro Neural Bridge Online
             </p>
           </div>
         </div>
         <div className="hidden sm:block text-right">
-           <p className="text-[8px] font-black text-slate-500 uppercase">System Status</p>
-           <p className="text-sm font-black text-emerald-400 italic">READY TO ADVISE</p>
+           <p className="text-[8px] font-black text-slate-500 uppercase">Processing Power</p>
+           <p className="text-sm font-black text-emerald-400 italic">MAXIMUM (PRO)</p>
         </div>
       </div>
 
@@ -78,7 +88,7 @@ const AIAdvisor: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 bg-slate-50/30 custom-scrollbar">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-4`}>
-            <div className={`max-w-[90%] md:max-w-[75%] px-8 py-6 rounded-[2.5rem] shadow-sm relative group ${
+            <div className={`max-w-[95%] md:max-w-[80%] px-8 py-6 rounded-[2.5rem] shadow-sm relative group ${
               msg.role === 'user' 
                 ? 'bg-indigo-600 text-white rounded-tr-none' 
                 : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
@@ -88,7 +98,7 @@ const AIAdvisor: React.FC = () => {
               </div>
               <div className={`flex items-center gap-2 mt-4 opacity-30 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <p className="text-[8px] font-black uppercase tracking-widest">
-                  {msg.role === 'user' ? 'Founder' : 'Sovereign AI'} • {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  {msg.role === 'user' ? 'Founder' : 'Strategy-AI'} • {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </p>
               </div>
             </div>
@@ -103,7 +113,7 @@ const AIAdvisor: React.FC = () => {
                 <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce [animation-delay:0.2s]"></div>
                 <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce [animation-delay:0.4s]"></div>
               </div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Merajut Strategi Cuan...</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Merajut Strategi Kedaulatan...</span>
             </div>
           </div>
         )}
@@ -131,7 +141,7 @@ const AIAdvisor: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Tanyakan ide digitalisasi koperasi..."
+            placeholder="Tanyakan langkah monetisasi koperasi..."
             className="flex-1 bg-transparent px-8 py-4 outline-none text-base font-bold text-slate-700 placeholder:text-slate-400"
           />
           <button 

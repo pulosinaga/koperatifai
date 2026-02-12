@@ -3,45 +3,59 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 // AI Assistant service for financial advice and business coaching
 export const getFinancialAdvice = async (prompt: string): Promise<string> => {
   if (!navigator.onLine) {
-    return "⚠️ **Koneksi Terputus.** Sistem memerlukan internet untuk berpikir.";
+    return "⚠️ **Koneksi Terputus.** Pastikan perangkat Bapak terhubung ke internet kedaulatan.";
   }
 
-  // Inisialisasi instance setiap pemanggilan untuk memastikan API_KEY terbaru dari environment
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey || apiKey === "") {
+    return "❌ **Peringatan Sentinel**: Kunci akses (API_KEY) belum terpasang di sistem. Mohon pastikan API_KEY sudah diisi di panel konfigurasi.";
+  }
+
+  // Gunakan Pro Preview untuk tugas strategi yang kompleks
+  const ai = new GoogleGenAI({ apiKey });
   
   try {
     const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-pro-preview',
       contents: prompt,
       config: {
-        systemInstruction: `Anda adalah CHIEF STRATEGY OFFICER KoperatifAI. 
-        Tugas Anda adalah memberikan ide-ide online yang MENSETOR UANG (monetisasi) untuk koperasi kredit.
+        systemInstruction: `Anda adalah CHIEF STRATEGY OFFICER (CSO) KoperatifAI. 
+        Tugas Anda adalah membedah ide bisnis koperasi dan memberikan cara MONETISASI (menghasilkan uang) yang sah dan cerdas.
         
-        PRINSIP JAWABAN:
-        1. Langsung ke solusi teknis.
-        2. Berikan angka estimasi cuan (Rp 100 - Rp 1.000 per transaksi).
-        3. Gunakan format Markdown (Bold, List) agar sangat rapi.
-        4. JANGAN PERNAH minta maaf di awal. Langsung berikan strategi.
+        KARAKTER JAWABAN:
+        1. SANGAT TERSTRUKTUR: Gunakan tabel jika ada perbandingan, dan daftar poin untuk langkah-langkah.
+        2. TO-THE-POINT: Langsung berikan solusi, jangan banyak basa-basi formal.
+        3. ANGKA RIIL: Berikan estimasi cuan dalam Rupiah (misal: Rp 100 - Rp 1.000 per klik).
+        4. ANTI-RIBET: Jelaskan bagaimana teknologi AI mempermudah segalanya.
         
-        IDE ONLINE YANG BISA DIHASILKAN UANG:
-        - Biaya admin top-up & tarik tunai (Rp 1.000).
-        - Margin dari marketplace "Pasar Rakyat" (Rp 500 per transaksi).
-        - Jasa pembayaran tagihan (PPOB) yang komisinya masuk ke SHU.
-        - Royalti IP Teknologi (Rp 100 per klik transaksi).
-        - Iuran Perlindungan DASKOP (Rp 5.000 / bulan).`,
+        IDE ONLINE WAJIB:
+        - Iuran jasa transaksi marketplace (Rp 500 - 1.000).
+        - Margin pengadaan barang grosir kolektif (2-5% lebih murah dari pasar).
+        - Royalti lisensi IP Founder (Rp 100/transaksi).
+        - Komisi PPOB (Pulsa/Listrik) yang dialokasikan ke SHU.`,
         temperature: 0.8,
-        maxOutputTokens: 1000,
+        maxOutputTokens: 2000,
       },
     });
 
-    return response.text || "Sistem sedang melakukan sinkronisasi ulang, silakan kirim ulang pesan Bapak.";
-  } catch (error: any) {
-    console.error("Gemini API Error:", error);
-    // Error handling yang lebih spesifik agar user tidak bingung
-    if (error.message?.includes("API key")) {
-      return "❌ **Kunci Protokol Bermasalah.** Mohon pastikan API_KEY sudah terpasang dengan benar di sistem kedaulatan.";
+    if (!response.text) {
+      return "⚠️ **Analisis Diblokir**: AI menganggap permintaan ini sensitif. Mohon gunakan bahasa yang lebih fokus pada 'Ekonomi Berjamaah'.";
     }
-    return "Maaf Pak, 'Otak' sistem sedang mengalami kepadatan trafik kedaulatan. Mohon klik tombol kirim sekali lagi.";
+
+    return response.text;
+  } catch (error: any) {
+    console.error("Gemini API Error Detail:", error);
+    
+    // Memberikan feedback yang jujur kepada Founder
+    if (error.message?.includes("API_KEY_INVALID")) {
+      return "❌ **Keamanan**: Kunci protokol API tidak valid. Mohon perbarui API_KEY Bapak.";
+    }
+    if (error.message?.includes("safety")) {
+      return "⚠️ **Safety Filter**: AI menolak menjawab karena topik dianggap berisiko tinggi. Mohon perhalus pertanyaan Bapak.";
+    }
+    
+    return `❌ **Kegagalan Jalur Data**: ${error.message || 'Gangguan Frekuensi AI'}. Mohon klik kirim ulang sekali lagi, Pak.`;
   }
 };
 
