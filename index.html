@@ -36,7 +36,7 @@
           color: white; 
           margin: 0; 
           overflow-x: hidden; 
-          overflow-y: auto; /* Memungkinkan scroll global */
+          overflow-y: auto;
         }
         #loader {
             position: fixed; inset: 0; display: flex; flex-direction: column;
@@ -50,7 +50,6 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
         
-        /* Custom scrollbar untuk estetika koperatif */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #1e1b4b; border-radius: 10px; }
@@ -58,14 +57,14 @@
     </style>
 
     <script>
-      window.process = { 
-        env: { 
-          NODE_ENV: "production",
-          API_KEY: "", // Injected automatically
-          SUPABASE_URL: "https://xfepyqifbejfhaopgpvj.supabase.co", 
-          SUPABASE_ANON_KEY: "sb_publishable_QzWl-pyGwwYWYLqiSZSLBQ_vyR469P_" 
-        } 
-      };
+      // Memastikan process.env tersedia tanpa menghapus API_KEY yang disuntikkan sistem
+      window.process = window.process || {};
+      window.process.env = window.process.env || {};
+      Object.assign(window.process.env, {
+        NODE_ENV: "production",
+        SUPABASE_URL: "https://xfepyqifbejfhaopgpvj.supabase.co", 
+        SUPABASE_ANON_KEY: "sb_publishable_QzWl-pyGwwYWYLqiSZSLBQ_vyR469P_"
+      });
     </script>
 
     <script type="importmap">
