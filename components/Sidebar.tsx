@@ -8,35 +8,59 @@ const Sidebar: React.FC = () => {
   const role = user?.role || UserRole.MEMBER;
 
   const getMenuCategories = () => {
-    // Menu dasar untuk semua orang
-    const common = [
-      { id: AppView.DASHBOARD, label: 'Portal Utama', icon: '📊' },
-      { id: AppView.ARISAN_DIGITAL, label: 'Smart Arisan', icon: '🌀' },
-      { id: AppView.ASSET_AUCTION, label: 'Lelang Rakyat', icon: '🔨' },
-      { id: AppView.WALLET_INTEGRATION, label: 'Bayar di Toko', icon: '🛒' },
+    const menu: { label: string, items: { id: AppView, label: string, icon: string }[] }[] = [
+      { 
+        label: 'Ekosistem', 
+        items: [
+          { id: AppView.DASHBOARD, label: 'Portal Utama', icon: '📊' },
+          { id: AppView.HIERARCHY_VISUALIZER, label: 'Struktur Organisasi', icon: '🌳' },
+        ]
+      }
     ];
 
-    const finance = [
-      { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
-      { id: AppView.LOAN_SIMULATOR, label: 'Simulasi Pinjaman', icon: '🧮' },
-      { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🧺' },
-      { id: AppView.MEMBER_QRIS, label: 'QRIS Bayar', icon: '🤳' },
-    ];
+    // Menu Tugas Aktif (Role-Specific)
+    if (role === UserRole.LEADER || role === UserRole.LEADER_PROVINCE) {
+      menu.push({
+        label: 'Tugas Lapangan',
+        items: [
+          { id: AppView.DUTA_TASK_CENTER, label: 'Pusat Tugas Duta', icon: '📋' },
+          { id: AppView.DUTA_PAYROLL_REPORT, label: 'Klaim Upah AI', icon: '💰' },
+          { id: AppView.NATIONAL_COMMAND_CENTER, label: 'Peta Wilayah', icon: '🗺️' },
+        ]
+      });
+    }
 
-    const menu = [
-      { label: 'Utama', items: common },
-      { label: 'Layanan', items: finance },
-    ];
+    if (role === UserRole.MEMBER) {
+      menu.push({
+        label: 'Misi Kedaulatan',
+        items: [
+          { id: AppView.MEMBER_TASK_CENTER, label: 'Daftar Misi Saya', icon: '🎯' },
+          { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
+          { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🧺' },
+        ]
+      });
+    }
 
-    // HANYA MUNCUL JIKA PERAN ADALAH FOUNDER
+    // Menu untuk Pemerintah (Audit Negara)
+    if (role === UserRole.GOVERNMENT) {
+      menu.push({
+        label: 'Audit & Kepatuhan',
+        items: [
+          { id: AppView.GOV_SOVEREIGNTY_VAULT, label: 'Brankas Transparansi', icon: '🏛️' },
+          { id: AppView.REVENUE_CENTER_TAX, label: 'Kepatuhan Pajak', icon: '⚖️' },
+          { id: AppView.SYSTEM_HEALTH, label: 'Audit Teknologi', icon: '🩺' },
+        ]
+      });
+    }
+
+    // HANYA FOUNDER (Bapak)
     if (role === UserRole.FOUNDER) {
       menu.push({
-        label: 'Founder Controls',
+        label: 'Sovereign Control',
         items: [
           { id: AppView.MONETIZATION_IDEAS, label: 'Ide Cuan Founder', icon: '🚀' },
           { id: AppView.REVENUE_CENTER, label: 'Royalty Vault', icon: '💎' },
-          { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
-          { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'National Commander', icon: '🦅' },
+          { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Executive Cockpit', icon: '🛰️' },
           { id: AppView.DEPLOYMENT_HUB, label: 'Sharing Hub', icon: '⚙️' },
         ]
       });
@@ -65,7 +89,7 @@ const Sidebar: React.FC = () => {
               {cat.items.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => navigate(item.id as AppView)}
+                  onClick={() => navigate(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                     currentView === item.id
                       ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 scale-[1.02]'
@@ -83,10 +107,10 @@ const Sidebar: React.FC = () => {
 
       <div className="p-4 border-t border-slate-100 space-y-4">
         <div className="px-4 py-2 bg-slate-50 rounded-xl">
-           <p className="text-[8px] font-black text-slate-400 uppercase">Identity</p>
+           <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Otoritas Aktif</p>
            <p className="text-[10px] font-bold text-slate-700 truncate">{user?.name}</p>
         </div>
-        <button onClick={logout} className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 active:scale-95">LOGOUT</button>
+        <button onClick={logout} className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 active:scale-95">KELUAR COCKPIT</button>
       </div>
     </aside>
   );

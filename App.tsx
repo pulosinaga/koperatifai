@@ -38,28 +38,42 @@ import AwardingNight from './components/AwardingNight.tsx';
 import NationalScaleStrategy from './components/NationalScaleStrategy.tsx';
 import HierarchyVisualizer from './components/HierarchyVisualizer.tsx';
 import MonetizationIdeas from './components/MonetizationIdeas.tsx';
+import NationalCommandCenter from './components/NationalCommandCenter.tsx';
+import GovSovereigntyVault from './components/GovSovereigntyVault.tsx';
+import DutaTaskCenter from './components/DutaTaskCenter.tsx';
+import MemberTaskCenter from './components/MemberTaskCenter.tsx';
+import DutaPayrollReport from './components/DutaPayrollReport.tsx';
 
 // DEFINISI AKSES VIEW (RBAC)
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
   [UserRole.FOUNDER]: Object.values(AppView), // Founder bisa semua
+  [UserRole.LEADER_PROVINCE]: [
+    AppView.DASHBOARD, AppView.NATIONAL_COMMAND_CENTER, AppView.HIERARCHY_VISUALIZER, 
+    AppView.TRANSACTIONS, AppView.NOTIFICATION_CENTER, AppView.MEMBERSHIP_PROFILE,
+    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT
+  ],
+  [UserRole.GOVERNMENT]: [
+    AppView.DASHBOARD, AppView.GOV_SOVEREIGNTY_VAULT, AppView.HIERARCHY_VISUALIZER, AppView.SYSTEM_HEALTH
+  ],
   [UserRole.BOARD]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
     AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.NOTIFICATION_CENTER
   ],
-  [UserRole.LEADER]: [ // Duta
+  [UserRole.LEADER]: [ // Duta Desa
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.LOAN_SIMULATOR,
     AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE,
-    AppView.NOTIFICATION_CENTER, AppView.SYSTEM_HEALTH, AppView.DUTA_ECHOES
+    AppView.NOTIFICATION_CENTER, AppView.SYSTEM_HEALTH, AppView.DUTA_ECHOES,
+    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT
   ],
   [UserRole.MEMBER]: [ // Anggota
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
-    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.WALLET_INTEGRATION, AppView.MEMBER_INSTALLMENT_PAYMENT
+    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.WALLET_INTEGRATION, AppView.MEMBER_INSTALLMENT_PAYMENT,
+    AppView.MEMBER_TASK_CENTER
   ],
   [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK],
   [UserRole.AUDITOR]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING],
-  [UserRole.GOVERNMENT]: [AppView.DASHBOARD, AppView.SYSTEM_HEALTH]
 };
 
 const BottomNav: React.FC = () => {
@@ -142,7 +156,13 @@ const AppContent: React.FC = () => {
       [AppView.MEMBER_INSTALLMENT_PAYMENT]: <MemberInstallmentPayment />,
       [AppView.DUTA_ECHOES]: <HallOfEchoes />,
       [AppView.DUTA_AWARDING]: <AwardingNight />,
-      [AppView.MONETIZATION_IDEAS]: <MonetizationIdeas />
+      [AppView.MONETIZATION_IDEAS]: <MonetizationIdeas />,
+      [AppView.NATIONAL_COMMAND_CENTER]: <NationalCommandCenter />,
+      [AppView.GOV_SOVEREIGNTY_VAULT]: <GovSovereigntyVault />,
+      [AppView.HIERARCHY_VISUALIZER]: <HierarchyVisualizer />,
+      [AppView.DUTA_TASK_CENTER]: <DutaTaskCenter />,
+      [AppView.MEMBER_TASK_CENTER]: <MemberTaskCenter />,
+      [AppView.DUTA_PAYROLL_REPORT]: <DutaPayrollReport />
     };
 
     return views[currentView] || <Dashboard />;

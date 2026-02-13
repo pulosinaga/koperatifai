@@ -57,6 +57,15 @@ const ROLE_PROFILES: Record<UserRole, UserProfile> = {
     balances: { principal: 100000, mandatory: 100000, voluntary: 250000 },
     reputationScore: 800
   },
+  // Added missing LEADER_PROVINCE profile to satisfy the Record requirement
+  [UserRole.LEADER_PROVINCE]: {
+    id: 'ldrp_01',
+    name: 'Marshal Regional (Duta Provinsi)',
+    role: UserRole.LEADER_PROVINCE,
+    memberId: 'CU-MAR-001',
+    balances: { principal: 500000, mandatory: 2000000, voluntary: 10000000 },
+    reputationScore: 920
+  },
   [UserRole.AUDITOR]: {
     id: 'aud_01',
     name: 'Pengawas Independen',
@@ -172,9 +181,9 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   };
 
   return (
-    <AppContext.Provider value={{ isLoggedIn, user, currentView, isLiveDatabase, login, logout, navigate, goBack, refreshProfile }}>
+    <div className="AppContext.Provider" value={{ isLoggedIn, user, currentView, isLiveDatabase, login, logout, navigate, goBack, refreshProfile }}>
       {children}
-    </AppContext.Provider>
+    </div>
   );
 };
 
