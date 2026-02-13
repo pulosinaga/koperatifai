@@ -1,16 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { UserRole } from '../types.ts';
 import { useAppContext } from '../contexts/AppContext.tsx';
 
-const LoginScreen: React.FC = () => {
+const LoginScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { login } = useAppContext();
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
-  const [isLockedByLink, setIsLockedByLink] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  // Otoritas PIN tetap yang kaku
   const roleAccess = {
     [UserRole.MEMBER]: '123456',
     [UserRole.LEADER]: '111111', 
@@ -19,39 +18,15 @@ const LoginScreen: React.FC = () => {
     [UserRole.AUDITOR]: '777777', 
     [UserRole.GOVERNMENT]: '112233',
     [UserRole.FOUNDER]: '999999',
+    [UserRole.LEADER_PROVINCE]: '222222',
   };
-
-  const roles = [
-    { id: UserRole.MEMBER, label: 'Anggota', icon: '👤' },
-    { id: UserRole.LEADER, label: 'Duta', icon: '🛵' },
-    { id: UserRole.STAFF, label: 'Staf Ops', icon: '💻' },
-    { id: UserRole.BOARD, label: 'Pengurus', icon: '👔' },
-    { id: UserRole.AUDITOR, label: 'Pengawas', icon: '⚖️' },
-    { id: UserRole.GOVERNMENT, label: 'Negara', icon: '🇮🇩' },
-    { id: UserRole.FOUNDER, label: 'Founder', icon: '👑' },
-  ];
-
-  // LOGIKA DETEKSI TAUTAN TERKUNCI (Deep Link Detection)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const targetRole = params.get('targetRole');
-    
-    if (targetRole && Object.values(UserRole).includes(targetRole as UserRole)) {
-       setSelectedRole(targetRole as UserRole);
-       setIsLockedByLink(true);
-    }
-  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsAuthenticating(true);
     
     if (pin === roleAccess[selectedRole]) {
-       const success = await login(selectedRole, pin);
-       if (!success) {
-         setIsError(true);
-         setPin('');
-       }
+       await login(selectedRole, pin);
     } else {
        setIsError(true);
        setPin('');
@@ -60,108 +35,39 @@ const LoginScreen: React.FC = () => {
     setIsAuthenticating(false);
   };
 
-  const currentRoleObj = roles.find(r => r.id === selectedRole);
-
   return (
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-indigo-600/10 rounded-full blur-[120px]"></div>
-      <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-600/5 rounded-full blur-[100px]"></div>
-      
-      <div className="w-full max-w-md relative z-10 space-y-8">
-        <div className="bg-white/10 backdrop-blur-2xl p-10 rounded-[4rem] border border-white/20 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-emerald-500"></div>
-          
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl p-10 rounded-[4rem] border border-white/20 shadow-2xl relative z-10">
           <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center text-4xl mx-auto shadow-xl mb-6 shadow-indigo-500/20">
-               {isLockedByLink ? '🔐' : '🛡️'}
-            </div>
-            <h2 className="text-2xl font-black text-white italic tracking-tight uppercase">
-               {isLockedByLink ? 'Akses Terkunci' : 'Otoritas KoperatifAI'}
-            </h2>
-            <p className="text-xs text-slate-400 mt-2 font-medium italic">
-               {isLockedByLink 
-                 ? `Anda sedang mengakses jalur khusus: ${currentRoleObj?.label}`
-                 : 'Pilih peran kedaulatan Anda malam ini.'}
-            </p>
+            <h2 className="text-2xl font-black text-white italic uppercase">Cockpit Otoritas</h2>
+            <p className="text-xs text-slate-400 mt-2">Pilih peran Anda dan masukkan PIN.</p>
           </div>
 
-          {/* Role Selection Grid - Disembunyikan jika Locked by Link */}
-          {!isLockedByLink ? (
-             <div className="grid grid-cols-4 gap-2 mb-10">
-                {roles.map(r => (
-                  <button 
-                   key={r.id}
-                   onClick={() => { setSelectedRole(r.id); setPin(''); }}
-                   className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all border-2 ${
-                     selectedRole === r.id ? 'bg-indigo-600/30 border-indigo-500 scale-110 shadow-lg' : 'bg-white/5 border-transparent opacity-30 hover:opacity-100'
-                   }`}
-                  >
-                    <span className="text-xl">{r.icon}</span>
-                    <span className="text-[7px] font-black uppercase tracking-tighter text-white text-center leading-tight">{r.label}</span>
-                  </button>
-                ))}
-             </div>
-          ) : (
-             <div className="flex flex-col items-center gap-4 mb-10 p-6 bg-indigo-600/20 rounded-[2.5rem] border border-indigo-500/30 animate-in zoom-in">
-                <span className="text-6xl">{currentRoleObj?.icon}</span>
-                <div className="text-center">
-                   <p className="text-xl font-black text-white uppercase italic tracking-widest">{currentRoleObj?.label}</p>
-                   <p className="text-[9px] font-black text-indigo-400 uppercase mt-1">IDENTITY RESTRICTED BY INVITE</p>
-                </div>
-                <button 
-                  onClick={() => { setIsLockedByLink(false); window.history.replaceState({}, '', '/'); }}
-                  className="text-[8px] font-bold text-slate-500 hover:text-white uppercase tracking-widest underline"
-                >
-                   Batal & Gunakan Akses Umum
-                </button>
-             </div>
-          )}
+          <div className="grid grid-cols-4 gap-2 mb-10">
+             {Object.keys(roleAccess).map(role => (
+               <button 
+                key={role}
+                onClick={() => setSelectedRole(role as UserRole)}
+                className={`p-3 rounded-2xl transition-all ${selectedRole === role ? 'bg-indigo-600 text-white scale-110 shadow-lg' : 'bg-white/5 text-slate-500'}`}
+               >
+                 <span className="text-[7px] font-black uppercase">{role}</span>
+               </button>
+             ))}
+          </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] block text-center">Masukkan PIN Otoritas</label>
-              <input 
-                type="password"
-                value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0,6))}
-                placeholder="••••••"
-                autoFocus
-                className={`w-full bg-black/40 border-2 rounded-[2rem] p-6 text-4xl text-center font-black tracking-[0.5em] text-white outline-none transition-all ${
-                  isError ? 'border-rose-500 animate-shake bg-rose-500/10' : 'border-white/10 focus:border-indigo-500'
-                }`}
-              />
-            </div>
-
-            <button 
-              type="submit"
-              disabled={pin.length < 6 || isAuthenticating}
-              className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-30"
-            >
-              {isAuthenticating ? 'MENYINKRONKAN...' : 'AUTENTIKASI SEKARANG'}
-            </button>
+            <input 
+              type="password"
+              value={pin}
+              onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0,6))}
+              placeholder="PIN"
+              className="w-full bg-black/40 border-2 border-white/10 rounded-[2rem] p-6 text-4xl text-center font-black tracking-[0.5em] text-white outline-none focus:border-indigo-500"
+            />
+            <button className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase text-xs">MASUK SISTEM</button>
           </form>
-
-          {isError && (
-             <p className="mt-6 text-center text-[10px] text-rose-500 font-black uppercase tracking-widest animate-bounce">
-                ❌ PIN Salah / Otoritas Tidak Cocok!
-             </p>
-          )}
-
-          <p className="mt-8 text-center text-[8px] text-slate-600 font-bold uppercase tracking-widest">
-             Sovereign Access Control © 2026
-          </p>
-        </div>
+          
+          <button onClick={onBack} className="w-full mt-4 text-[10px] font-black text-slate-500 hover:text-white uppercase tracking-widest">KEMBALI KE BERANDA</button>
       </div>
-
-      <style>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-8px); }
-          75% { transform: translateX(8px); }
-        }
-        .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
-      `}</style>
     </div>
   );
 };

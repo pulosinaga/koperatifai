@@ -18,12 +18,12 @@ const Sidebar: React.FC = () => {
       }
     ];
 
-    // Menu Tugas Aktif (Role-Specific)
     if (role === UserRole.LEADER || role === UserRole.LEADER_PROVINCE) {
       menu.push({
-        label: 'Tugas Lapangan',
+        label: 'Otoritas Duta',
         items: [
-          { id: AppView.DUTA_TASK_CENTER, label: 'Pusat Tugas Duta', icon: '📋' },
+          { id: AppView.DUTA_TASK_CENTER, label: 'Pusat Tugas', icon: '📋' },
+          { id: AppView.MEMBERSHIP_PROFILE, label: 'Kamera Sakti (KYC)', icon: '🤳' },
           { id: AppView.DUTA_PAYROLL_REPORT, label: 'Klaim Upah AI', icon: '💰' },
           { id: AppView.NATIONAL_COMMAND_CENTER, label: 'Peta Wilayah', icon: '🗺️' },
         ]
@@ -34,31 +34,18 @@ const Sidebar: React.FC = () => {
       menu.push({
         label: 'Misi Kedaulatan',
         items: [
-          { id: AppView.MEMBER_TASK_CENTER, label: 'Daftar Misi Saya', icon: '🎯' },
+          { id: AppView.MEMBER_TASK_CENTER, label: 'Misi Saya', icon: '🎯' },
           { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
           { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🧺' },
         ]
       });
     }
 
-    // Menu untuk Pemerintah (Audit Negara)
-    if (role === UserRole.GOVERNMENT) {
-      menu.push({
-        label: 'Audit & Kepatuhan',
-        items: [
-          { id: AppView.GOV_SOVEREIGNTY_VAULT, label: 'Brankas Transparansi', icon: '🏛️' },
-          { id: AppView.REVENUE_CENTER_TAX, label: 'Kepatuhan Pajak', icon: '⚖️' },
-          { id: AppView.SYSTEM_HEALTH, label: 'Audit Teknologi', icon: '🩺' },
-        ]
-      });
-    }
-
-    // HANYA FOUNDER (Bapak)
     if (role === UserRole.FOUNDER) {
       menu.push({
         label: 'Sovereign Control',
         items: [
-          { id: AppView.MONETIZATION_IDEAS, label: 'Ide Cuan Founder', icon: '🚀' },
+          { id: AppView.MONETIZATION_IDEAS, label: 'Ide Cuan', icon: '🚀' },
           { id: AppView.REVENUE_CENTER, label: 'Royalty Vault', icon: '💎' },
           { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Executive Cockpit', icon: '🛰️' },
           { id: AppView.DEPLOYMENT_HUB, label: 'Sharing Hub', icon: '⚙️' },
@@ -73,27 +60,22 @@ const Sidebar: React.FC = () => {
     <aside className="w-72 bg-white border-r border-slate-200 flex flex-col h-full hidden lg:flex shadow-2xl z-50">
       <div className="p-8">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-200 font-black">◈</div>
-          <div>
-            <h1 className="text-xl font-black text-slate-800 tracking-tighter italic leading-none">KoperatifAI</h1>
-            <p className="text-[8px] font-black text-indigo-500 uppercase tracking-widest mt-1">{role} Access</p>
-          </div>
+          <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg font-black">◈</div>
+          <h1 className="text-xl font-black text-slate-800 tracking-tighter italic leading-none">KoperatifAI</h1>
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-4 space-y-8 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto p-4 space-y-8">
         {getMenuCategories().map((cat, idx) => (
           <div key={idx} className="space-y-2">
-            <p className="px-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{cat.label}</p>
+            <p className="px-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">{cat.label}</p>
             <div className="space-y-1">
               {cat.items.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navigate(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
-                    currentView === item.id
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 scale-[1.02]'
-                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                    currentView === item.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 scale-[1.02]' : 'text-slate-500 hover:bg-slate-50'
                   }`}
                 >
                   <span className="text-lg">{item.icon}</span>
@@ -105,12 +87,8 @@ const Sidebar: React.FC = () => {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-100 space-y-4">
-        <div className="px-4 py-2 bg-slate-50 rounded-xl">
-           <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Otoritas Aktif</p>
-           <p className="text-[10px] font-bold text-slate-700 truncate">{user?.name}</p>
-        </div>
-        <button onClick={logout} className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100 active:scale-95">KELUAR COCKPIT</button>
+      <div className="p-4 border-t border-slate-100">
+        <button onClick={logout} className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all border border-rose-100">KELUAR</button>
       </div>
     </aside>
   );
