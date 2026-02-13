@@ -45,9 +45,9 @@ const Dashboard: React.FC = () => {
     { label: 'Estimasi SHU', val: 'Rp 245.500', icon: '✨', color: 'text-amber-600', view: AppView.SHU_DISTRIBUTION },
   ] : [
     { label: 'Total Aset Kelola', val: 'Rp 19.6 M', icon: '🌐', color: 'text-indigo-600', view: AppView.GLOBAL_COMMAND_CENTER },
-    { label: 'Jumlah Duta', val: '128 Pimpinan', icon: '🛵', color: 'text-amber-600', view: AppView.REVENUE_CENTER },
+    { label: 'Otoritas Tol', val: 'Hierarchy Sync', icon: '🦅', color: 'text-amber-600', view: AppView.SYSTEM_HEALTH },
     { label: 'Inflow Hari Ini', val: 'Rp 12.4 Jt', icon: '📥', color: 'text-emerald-600', view: AppView.TRANSACTIONS },
-    { label: 'Status Sistem', val: '99.9% Uptime', icon: '🛰️', color: 'text-rose-600', view: AppView.SYSTEM_HEALTH },
+    { label: 'SLA AI Ops', val: '99.9% Uptime', icon: '🛰️', color: 'text-rose-600', view: AppView.REVENUE_CENTER },
   ];
 
   return (

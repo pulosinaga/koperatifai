@@ -34,6 +34,8 @@ import WalletIntegration from './components/WalletIntegration.tsx';
 import MemberInstallmentPayment from './components/MemberInstallmentPayment.tsx';
 import HallOfEchoes from './components/HallOfEchoes.tsx';
 import AwardingNight from './components/AwardingNight.tsx';
+import NationalScaleStrategy from './components/NationalScaleStrategy.tsx';
+import HierarchyVisualizer from './components/HierarchyVisualizer.tsx';
 
 const BottomNav: React.FC = () => {
   const { currentView, navigate } = useAppContext();
@@ -93,6 +95,8 @@ const AppContent: React.FC = () => {
       [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
       [AppView.REVENUE_CENTER]: <FounderRoyaltyVault />,
       [AppView.REVENUE_CENTER_TAX]: <TaxComplianceEngine />,
+      [AppView.STRATEGIC_PROFIT_CALCULATOR]: <NationalScaleStrategy />,
+      [AppView.SYSTEM_HEALTH]: <HierarchyVisualizer />, // Menggunakan view ini untuk visualisasi hirarki
       [AppView.SMART_MOBILITY]: <SmartMobility />,
       [AppView.ARISAN_DIGITAL]: <ArisanDigital />,
       [AppView.ASSET_AUCTION]: <AssetAuction />,

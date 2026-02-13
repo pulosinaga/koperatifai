@@ -32,7 +32,8 @@ const Sidebar: React.FC = () => {
         items: [
           { id: AppView.REVENUE_CENTER, label: 'Royalty Vault', icon: '💎' },
           { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Global Cockpit', icon: '🛰️' },
-          { id: AppView.DEPLOYMENT_HUB, label: 'System Setup', icon: '⚙️' },
+          { id: AppView.STRATEGIC_PROFIT_CALCULATOR, label: 'National Commander', icon: '🦅' },
+          { id: AppView.DEPLOYMENT_HUB, label: 'Sharing Hub', icon: '⚙️' },
         ]
       });
     }

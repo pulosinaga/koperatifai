@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserRole } from '../types.ts';
 import { useAppContext } from '../contexts/AppContext.tsx';
 
@@ -6,16 +6,17 @@ const LoginScreen: React.FC = () => {
   const { login } = useAppContext();
   const [pin, setPin] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.MEMBER);
+  const [isLockedByLink, setIsLockedByLink] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  // Otoritas PIN tetap yang tidak bisa saling tukar (Sesuai Permintaan Bapak)
+  // Otoritas PIN tetap yang kaku
   const roleAccess = {
     [UserRole.MEMBER]: '123456',
-    [UserRole.LEADER]: '111111', // Duta
+    [UserRole.LEADER]: '111111', 
     [UserRole.STAFF]: '555555',
-    [UserRole.BOARD]: '888888', // Pengurus
-    [UserRole.AUDITOR]: '777777', // Pengawas
+    [UserRole.BOARD]: '888888', 
+    [UserRole.AUDITOR]: '777777', 
     [UserRole.GOVERNMENT]: '112233',
     [UserRole.FOUNDER]: '999999',
   };
@@ -30,11 +31,21 @@ const LoginScreen: React.FC = () => {
     { id: UserRole.FOUNDER, label: 'Founder', icon: '👑' },
   ];
 
+  // LOGIKA DETEKSI TAUTAN TERKUNCI (Deep Link Detection)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const targetRole = params.get('targetRole');
+    
+    if (targetRole && Object.values(UserRole).includes(targetRole as UserRole)) {
+       setSelectedRole(targetRole as UserRole);
+       setIsLockedByLink(true);
+    }
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsAuthenticating(true);
     
-    // Validasi Otoritas PIN yang Kaku
     if (pin === roleAccess[selectedRole]) {
        const success = await login(selectedRole, pin);
        if (!success) {
@@ -49,6 +60,8 @@ const LoginScreen: React.FC = () => {
     setIsAuthenticating(false);
   };
 
+  const currentRoleObj = roles.find(r => r.id === selectedRole);
+
   return (
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background Orbs */}
@@ -60,35 +73,60 @@ const LoginScreen: React.FC = () => {
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-emerald-500"></div>
           
           <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center text-4xl mx-auto shadow-xl mb-6 shadow-indigo-500/20">🛡️</div>
-            <h2 className="text-2xl font-black text-white italic tracking-tight uppercase">Otoritas KoperatifAI</h2>
-            <p className="text-xs text-slate-400 mt-2 font-medium italic">Pilih peran kedaulatan Anda malam ini.</p>
+            <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center text-4xl mx-auto shadow-xl mb-6 shadow-indigo-500/20">
+               {isLockedByLink ? '🔐' : '🛡️'}
+            </div>
+            <h2 className="text-2xl font-black text-white italic tracking-tight uppercase">
+               {isLockedByLink ? 'Akses Terkunci' : 'Otoritas KoperatifAI'}
+            </h2>
+            <p className="text-xs text-slate-400 mt-2 font-medium italic">
+               {isLockedByLink 
+                 ? `Anda sedang mengakses jalur khusus: ${currentRoleObj?.label}`
+                 : 'Pilih peran kedaulatan Anda malam ini.'}
+            </p>
           </div>
 
-          {/* Role Selection Grid */}
-          <div className="grid grid-cols-4 gap-2 mb-10">
-             {roles.map(r => (
-               <button 
-                key={r.id}
-                onClick={() => { setSelectedRole(r.id); setPin(''); }}
-                className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all border-2 ${
-                  selectedRole === r.id ? 'bg-indigo-600/30 border-indigo-500 scale-110 shadow-lg' : 'bg-white/5 border-transparent opacity-30 hover:opacity-100'
-                }`}
-               >
-                 <span className="text-xl">{r.icon}</span>
-                 <span className="text-[7px] font-black uppercase tracking-tighter text-white text-center leading-tight">{r.label}</span>
-               </button>
-             ))}
-          </div>
+          {/* Role Selection Grid - Disembunyikan jika Locked by Link */}
+          {!isLockedByLink ? (
+             <div className="grid grid-cols-4 gap-2 mb-10">
+                {roles.map(r => (
+                  <button 
+                   key={r.id}
+                   onClick={() => { setSelectedRole(r.id); setPin(''); }}
+                   className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all border-2 ${
+                     selectedRole === r.id ? 'bg-indigo-600/30 border-indigo-500 scale-110 shadow-lg' : 'bg-white/5 border-transparent opacity-30 hover:opacity-100'
+                   }`}
+                  >
+                    <span className="text-xl">{r.icon}</span>
+                    <span className="text-[7px] font-black uppercase tracking-tighter text-white text-center leading-tight">{r.label}</span>
+                  </button>
+                ))}
+             </div>
+          ) : (
+             <div className="flex flex-col items-center gap-4 mb-10 p-6 bg-indigo-600/20 rounded-[2.5rem] border border-indigo-500/30 animate-in zoom-in">
+                <span className="text-6xl">{currentRoleObj?.icon}</span>
+                <div className="text-center">
+                   <p className="text-xl font-black text-white uppercase italic tracking-widest">{currentRoleObj?.label}</p>
+                   <p className="text-[9px] font-black text-indigo-400 uppercase mt-1">IDENTITY RESTRICTED BY INVITE</p>
+                </div>
+                <button 
+                  onClick={() => { setIsLockedByLink(false); window.history.replaceState({}, '', '/'); }}
+                  className="text-[8px] font-bold text-slate-500 hover:text-white uppercase tracking-widest underline"
+                >
+                   Batal & Gunakan Akses Umum
+                </button>
+             </div>
+          )}
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] block text-center">PIN Rahasia Peran</label>
+              <label className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] block text-center">Masukkan PIN Otoritas</label>
               <input 
                 type="password"
                 value={pin}
                 onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0,6))}
                 placeholder="••••••"
+                autoFocus
                 className={`w-full bg-black/40 border-2 rounded-[2rem] p-6 text-4xl text-center font-black tracking-[0.5em] text-white outline-none transition-all ${
                   isError ? 'border-rose-500 animate-shake bg-rose-500/10' : 'border-white/10 focus:border-indigo-500'
                 }`}
@@ -100,18 +138,18 @@ const LoginScreen: React.FC = () => {
               disabled={pin.length < 6 || isAuthenticating}
               className="w-full py-5 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-xl hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-30"
             >
-              {isAuthenticating ? 'MENYINKRONKAN...' : 'AUTENTIKASI OTORITAS'}
+              {isAuthenticating ? 'MENYINKRONKAN...' : 'AUTENTIKASI SEKARANG'}
             </button>
           </form>
 
           {isError && (
              <p className="mt-6 text-center text-[10px] text-rose-500 font-black uppercase tracking-widest animate-bounce">
-                ❌ PIN Salah / Tidak Sesuai Otoritas!
+                ❌ PIN Salah / Otoritas Tidak Cocok!
              </p>
           )}
 
           <p className="mt-8 text-center text-[8px] text-slate-600 font-bold uppercase tracking-widest">
-             Founder Access System © 2026
+             Sovereign Access Control © 2026
           </p>
         </div>
       </div>
