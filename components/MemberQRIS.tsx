@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const MemberQRIS: React.FC = () => {
@@ -11,24 +12,24 @@ const MemberQRIS: React.FC = () => {
   };
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-500 pb-20 max-w-4xl mx-auto">
+    <div className="space-y-12 pb-24 max-w-4xl mx-auto">
       <div className="text-center space-y-4">
-         <h2 className="text-4xl font-black text-slate-800 italic tracking-tight uppercase">Cap Digital Anggota</h2>
-         <p className="text-slate-500 text-lg">"Gampang seperti ambil foto saja!"</p>
+         <h2 className="text-4xl font-black text-slate-800 italic tracking-tight uppercase">Kamera Sakti Bayar</h2>
+         <p className="text-slate-500 text-lg">"Tinggal bidik gambar kotak di warung, bayar jadi gampang!"</p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-12 items-center">
-         {/* The Simplified UI for Gaptek */}
-         <div className="w-full max-w-md bg-white rounded-[4rem] shadow-2xl overflow-hidden border-8 border-indigo-600 p-12 flex flex-col items-center space-y-10">
+      <div className="flex flex-col items-center">
+         {/* The Simplified UI for Mobile */}
+         <div className="w-full max-w-md bg-white rounded-[4rem] shadow-2xl overflow-hidden border-8 border-indigo-600 p-10 flex flex-col items-center space-y-10">
             {!showScanner ? (
                <div className="text-center space-y-10 animate-in zoom-in">
                   <div className="w-48 h-48 bg-indigo-50 rounded-[3rem] flex items-center justify-center text-8xl shadow-inner relative">
                      📸
                      <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-3xl shadow-lg animate-bounce">✓</div>
                   </div>
-                  <div className="space-y-4">
-                     <h3 className="text-3xl font-black text-slate-800">SAYA MAU BAYAR</h3>
-                     <p className="text-slate-400 font-medium leading-relaxed">Ketuk tombol di bawah, lalu arahkan ke gambar kotak di warung.</p>
+                  <div className="space-y-4 px-6">
+                     <h3 className="text-3xl font-black text-slate-800 uppercase italic">SAYA MAU BAYAR</h3>
+                     <p className="text-slate-400 font-medium leading-relaxed italic text-sm">"Ketuk tombol di bawah, arahkan ke QR warung."</p>
                   </div>
                   <button 
                     onClick={() => setShowScanner(true)}
@@ -45,7 +46,7 @@ const MemberQRIS: React.FC = () => {
                         <div className="absolute top-0 left-0 w-full h-1 bg-indigo-400 animate-scan-y shadow-[0_0_20px_#818cf8]"></div>
                      </div>
                      <div className="absolute bottom-10 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white text-[10px] font-black uppercase tracking-widest">
-                        {isSimulatingVoice ? '📢 "Posisikan gambar kotak di dalam garis"' : 'KAMERA AKTIF'}
+                        {isSimulatingVoice ? '📢 "BIDIK GAMBAR KOTAK"' : 'KAMERA AKTIF'}
                      </div>
                   </div>
                   
@@ -66,33 +67,11 @@ const MemberQRIS: React.FC = () => {
             )}
          </div>
 
-         {/* Explanation Sidebar */}
-         <div className="flex-1 space-y-8">
-            <div className="bg-slate-900 p-10 rounded-[3.5rem] text-white space-y-6 shadow-xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl"></div>
-               <h4 className="text-xl font-black italic text-indigo-400">Kenapa Sangat Mudah?</h4>
-               <ul className="space-y-6">
-                  {[
-                    { t: 'Tanpa Ketik Nominal', d: 'AI akan membaca jumlah belanja dari kode warung secara otomatis.', i: '🤖' },
-                    { t: 'Konfirmasi Suara', d: 'Sistem akan menyebutkan nama pemilik warung lewat speaker HP Anda.', i: '📢' },
-                    { t: 'Langsung Masuk', d: 'Uang pindah antar anggota seketika, tanpa biaya potongan bank.', i: '⚡' }
-                  ].map((item, i) => (
-                    <li key={i} className="flex gap-4 items-start">
-                       <span className="text-2xl">{item.i}</span>
-                       <div>
-                          <h5 className="font-bold text-sm text-indigo-200">{item.t}</h5>
-                          <p className="text-[11px] text-slate-400 leading-relaxed italic">"{item.d}"</p>
-                       </div>
-                    </li>
-                  ))}
-               </ul>
-            </div>
-
-            <div className="p-8 bg-indigo-50 border border-indigo-100 rounded-[3rem] text-center">
-               <p className="text-xs text-indigo-700 leading-relaxed italic font-bold">
-                  "Duta: Saat mengajar warga, jangan sebut QRIS. Sebut saja 'Kamera Sakti'. Anggota hanya perlu buka kamera, uang terbayar, bonus SHU bertambah."
-               </p>
-            </div>
+         {/* Instructions for Duta explaining to Elders */}
+         <div className="mt-12 p-8 bg-indigo-50 border border-indigo-100 rounded-[3rem] text-center max-w-xl">
+            <p className="text-xs text-indigo-700 leading-relaxed font-bold italic">
+               "Duta: Saat mengajar warga yang gaptek, jangan sebut 'Scan QRIS'. Sebut saja 'Kamera Sakti'. Katakan mereka hanya perlu memotret kotak di warung, uang akan terbayar otomatis."
+            </p>
          </div>
       </div>
       

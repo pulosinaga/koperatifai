@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useAppContext } from './contexts/AppContext.tsx';
 import { AppView, UserRole } from './types.ts';
 
@@ -23,19 +23,10 @@ import BillPayments from './components/BillPayments.tsx';
 import SmartEducation from './components/SmartEducation.tsx';
 import AIAdvisor from './components/AIAdvisor.tsx';
 import Membership from './components/Membership.tsx';
-import SmartMobility from './components/SmartMobility.tsx';
 import GlobalCommandCenter from './components/GlobalCommandCenter.tsx';
 import DeploymentHub from './components/DeploymentHub.tsx';
 import NotificationCenter from './components/NotificationCenter.tsx';
 import FounderRoyaltyVault from './components/FounderRoyaltyVault.tsx';
-import TaxComplianceEngine from './components/TaxComplianceEngine.tsx';
-import ArisanDigital from './components/ArisanDigital.tsx';
-import AssetAuction from './components/AssetAuction.tsx';
-import WalletIntegration from './components/WalletIntegration.tsx';
-import MemberInstallmentPayment from './components/MemberInstallmentPayment.tsx';
-import HallOfEchoes from './components/HallOfEchoes.tsx';
-import AwardingNight from './components/AwardingNight.tsx';
-import NationalScaleStrategy from './components/NationalScaleStrategy.tsx';
 import HierarchyVisualizer from './components/HierarchyVisualizer.tsx';
 import MonetizationIdeas from './components/MonetizationIdeas.tsx';
 import NationalCommandCenter from './components/NationalCommandCenter.tsx';
@@ -43,14 +34,16 @@ import GovSovereigntyVault from './components/GovSovereigntyVault.tsx';
 import DutaTaskCenter from './components/DutaTaskCenter.tsx';
 import MemberTaskCenter from './components/MemberTaskCenter.tsx';
 import DutaPayrollReport from './components/DutaPayrollReport.tsx';
+import DutaFieldVerification from './components/DutaFieldVerification.tsx';
+import MemberQRIS from './components/MemberQRIS.tsx';
 
-// DEFINISI AKSES VIEW (RBAC)
+// RBAC Permissions Mapping
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
-  [UserRole.FOUNDER]: Object.values(AppView), // Founder bisa semua
+  [UserRole.FOUNDER]: Object.values(AppView),
   [UserRole.LEADER_PROVINCE]: [
     AppView.DASHBOARD, AppView.NATIONAL_COMMAND_CENTER, AppView.HIERARCHY_VISUALIZER, 
     AppView.TRANSACTIONS, AppView.NOTIFICATION_CENTER, AppView.MEMBERSHIP_PROFILE,
-    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT
+    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.DUTA_ECHOES
   ],
   [UserRole.GOVERNMENT]: [
     AppView.DASHBOARD, AppView.GOV_SOVEREIGNTY_VAULT, AppView.HIERARCHY_VISUALIZER, AppView.SYSTEM_HEALTH
@@ -58,37 +51,35 @@ const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
   [UserRole.BOARD]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
-    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.NOTIFICATION_CENTER
+    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.NOTIFICATION_CENTER, AppView.HIERARCHY_VISUALIZER
   ],
-  [UserRole.LEADER]: [ // Duta Desa
+  [UserRole.LEADER]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.LOAN_SIMULATOR,
     AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE,
-    AppView.NOTIFICATION_CENTER, AppView.SYSTEM_HEALTH, AppView.DUTA_ECHOES,
-    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT
+    AppView.NOTIFICATION_CENTER, AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.HIERARCHY_VISUALIZER
   ],
-  [UserRole.MEMBER]: [ // Anggota
+  [UserRole.MEMBER]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
-    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.WALLET_INTEGRATION, AppView.MEMBER_INSTALLMENT_PAYMENT,
-    AppView.MEMBER_TASK_CENTER
+    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.MEMBER_TASK_CENTER, AppView.HIERARCHY_VISUALIZER,
+    AppView.MEMBER_QRIS
   ],
-  [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK],
-  [UserRole.AUDITOR]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING],
+  [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.HIERARCHY_VISUALIZER],
+  [UserRole.AUDITOR]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING, AppView.HIERARCHY_VISUALIZER],
 };
 
-const BottomNav: React.FC = () => {
+const BottomNav: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
   const { currentView, navigate } = useAppContext();
   
   const navItems = [
     { id: AppView.DASHBOARD, label: 'Home', icon: '📊' },
-    { id: AppView.DIGITAL_PASSBOOK, label: 'Buku', icon: '📖' },
-    { id: AppView.WALLET_INTEGRATION, label: 'Toko', icon: '🛒' },
-    { id: AppView.AI_ADVISOR, label: 'AI', icon: '🤖' },
-    { id: AppView.MEMBERSHIP_PROFILE, label: 'Profil', icon: '👤' }
+    { id: AppView.DUTA_TASK_CENTER, label: 'Tugas', icon: '📋' },
+    { id: AppView.MEMBER_QRIS, label: 'Kamera', icon: '🤳' },
+    { id: AppView.AI_ADVISOR, label: 'Chat AI', icon: '🤖' },
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around items-center py-3 pb-6 px-2 z-[100] shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around items-center py-3 pb-6 px-2 z-[40] shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
       {navItems.map((item) => (
         <button
           key={item.id}
@@ -99,34 +90,41 @@ const BottomNav: React.FC = () => {
         >
           <span className="text-xl">{item.icon}</span>
           <span className="text-[8px] font-black uppercase tracking-widest">{item.label}</span>
-          {currentView === item.id && <div className="w-1 h-1 bg-indigo-600 rounded-full mt-0.5"></div>}
         </button>
       ))}
+      <button
+        onClick={onMenuToggle}
+        className="flex flex-col items-center gap-1 transition-all flex-1 text-slate-400"
+      >
+        <span className="text-xl">☰</span>
+        <span className="text-[8px] font-black uppercase tracking-widest">Menu</span>
+      </button>
     </nav>
   );
 };
 
 const AppContent: React.FC = () => {
-  const { isLoggedIn, currentView, user, navigate } = useAppContext();
+  const { isLoggedIn, currentView, user } = useAppContext();
   const [showLogin, setShowLogin] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Close mobile menu when view changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    window.scrollTo(0,0);
+  }, [currentView]);
 
   if (!isLoggedIn) {
     if (showLogin) return <LoginScreen onBack={() => setShowLogin(false)} />;
     return <PublicLanding onStart={() => setShowLogin(true)} />;
   }
 
-  // VALIDASI OTORITAS VIEW (GUARD)
   const userRole = user?.role || UserRole.MEMBER;
   const allowedViews = VIEW_PERMISSIONS[userRole] || [AppView.DASHBOARD];
-  
   const isAuthorized = allowedViews.includes(currentView);
 
   const renderContent = () => {
-    // Jika tidak punya akses, paksa ke Dashboard
-    if (!isAuthorized) {
-      console.warn(`Unauthorized access to ${currentView} by ${userRole}`);
-      return <Dashboard />;
-    }
+    if (!isAuthorized) return <Dashboard />;
 
     const views: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard />,
@@ -145,24 +143,16 @@ const AppContent: React.FC = () => {
       [AppView.GLOBAL_COMMAND_CENTER]: <GlobalCommandCenter />,
       [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
       [AppView.REVENUE_CENTER]: <FounderRoyaltyVault />,
-      [AppView.REVENUE_CENTER_TAX]: <TaxComplianceEngine />,
-      [AppView.STRATEGIC_PROFIT_CALCULATOR]: <NationalScaleStrategy />,
-      [AppView.SYSTEM_HEALTH]: <HierarchyVisualizer />,
-      [AppView.SMART_MOBILITY]: <SmartMobility />,
-      [AppView.ARISAN_DIGITAL]: <ArisanDigital />,
-      [AppView.ASSET_AUCTION]: <AssetAuction />,
-      [AppView.WALLET_INTEGRATION]: <WalletIntegration />,
       [AppView.NOTIFICATION_CENTER]: <NotificationCenter />,
-      [AppView.MEMBER_INSTALLMENT_PAYMENT]: <MemberInstallmentPayment />,
-      [AppView.DUTA_ECHOES]: <HallOfEchoes />,
-      [AppView.DUTA_AWARDING]: <AwardingNight />,
+      [AppView.HIERARCHY_VISUALIZER]: <HierarchyVisualizer />,
       [AppView.MONETIZATION_IDEAS]: <MonetizationIdeas />,
       [AppView.NATIONAL_COMMAND_CENTER]: <NationalCommandCenter />,
       [AppView.GOV_SOVEREIGNTY_VAULT]: <GovSovereigntyVault />,
-      [AppView.HIERARCHY_VISUALIZER]: <HierarchyVisualizer />,
       [AppView.DUTA_TASK_CENTER]: <DutaTaskCenter />,
       [AppView.MEMBER_TASK_CENTER]: <MemberTaskCenter />,
-      [AppView.DUTA_PAYROLL_REPORT]: <DutaPayrollReport />
+      [AppView.DUTA_PAYROLL_REPORT]: <DutaPayrollReport />,
+      [UserRole.MEMBER]: <MemberTaskCenter />, // Fallback
+      [AppView.MEMBER_QRIS]: <MemberQRIS />
     };
 
     return views[currentView] || <Dashboard />;
@@ -170,17 +160,36 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row">
-      <Sidebar />
-      <div className="flex-1 flex flex-col relative">
+      {/* Sidebar - Desktop & Mobile Drawer */}
+      <div className={`
+        ${isMobileMenuOpen ? 'fixed inset-0 z-[200] translate-x-0' : 'fixed inset-y-0 -translate-x-full lg:translate-x-0 lg:relative'} 
+        lg:block transition-transform duration-300 ease-in-out
+      `}>
+        {/* Backdrop for mobile */}
+        {isMobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm lg:hidden" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+        )}
+        <div className="relative h-full">
+          <Sidebar />
+        </div>
+      </div>
+
+      <div className="flex-1 flex flex-col min-h-screen">
         <Header />
-        <main className="flex-1 p-4 md:p-8 pb-28 lg:pb-8 overflow-x-hidden">
+        
+        {/* Content Area - Scrollable */}
+        <main className="flex-1 p-4 md:p-8 pb-32 lg:pb-12">
           <div className="max-w-7xl mx-auto">
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               {renderContent()}
             </div>
           </div>
         </main>
-        <BottomNav />
+        
+        <BottomNav onMenuToggle={() => setIsMobileMenuOpen(true)} />
       </div>
     </div>
   );
