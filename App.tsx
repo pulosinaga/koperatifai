@@ -36,6 +36,7 @@ import MemberTaskCenter from './components/MemberTaskCenter.tsx';
 import DutaPayrollReport from './components/DutaPayrollReport.tsx';
 import DutaFieldVerification from './components/DutaFieldVerification.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
+import CoopHealthCheck from './components/CoopHealthCheck.tsx'; // New Audit View
 
 // RBAC Permissions Mapping
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
@@ -56,16 +57,20 @@ const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
   [UserRole.LEADER]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.LOAN_SIMULATOR,
     AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE,
-    AppView.NOTIFICATION_CENTER, AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.HIERARCHY_VISUALIZER
+    AppView.NOTIFICATION_CENTER, AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.HIERARCHY_VISUALIZER,
+    AppView.CASH_WITHDRAWAL
   ],
   [UserRole.MEMBER]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
     AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.MEMBER_TASK_CENTER, AppView.HIERARCHY_VISUALIZER,
-    AppView.MEMBER_QRIS
+    AppView.MEMBER_QRIS, AppView.CASH_WITHDRAWAL
   ],
   [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.HIERARCHY_VISUALIZER],
-  [UserRole.AUDITOR]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING, AppView.HIERARCHY_VISUALIZER],
+  [UserRole.AUDITOR]: [
+    AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING, AppView.HIERARCHY_VISUALIZER, 
+    AppView.SYSTEM_HEALTH, AppView.GLOBAL_COMMAND_CENTER // Auditor view
+  ],
 };
 
 const BottomNav: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
@@ -108,7 +113,6 @@ const AppContent: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Close mobile menu when view changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
     window.scrollTo(0,0);
@@ -139,8 +143,8 @@ const AppContent: React.FC = () => {
       [AppView.BILL_PAYMENTS]: <BillPayments />,
       [AppView.SMART_EDUCATION]: <SmartEducation />,
       [AppView.AI_ADVISOR]: <AIAdvisor />,
-      [AppView.MEMBERSHIP_PROFILE]: <Membership />,
-      [AppView.GLOBAL_COMMAND_CENTER]: <GlobalCommandCenter />,
+      [AppView.MEMBERSHIP_PROFILE]: userRole === UserRole.LEADER ? <DutaFieldVerification /> : <Membership />,
+      [AppView.GLOBAL_COMMAND_CENTER]: userRole === UserRole.AUDITOR ? <CoopHealthCheck /> : <GlobalCommandCenter />,
       [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
       [AppView.REVENUE_CENTER]: <FounderRoyaltyVault />,
       [AppView.NOTIFICATION_CENTER]: <NotificationCenter />,
@@ -148,10 +152,9 @@ const AppContent: React.FC = () => {
       [AppView.MONETIZATION_IDEAS]: <MonetizationIdeas />,
       [AppView.NATIONAL_COMMAND_CENTER]: <NationalCommandCenter />,
       [AppView.GOV_SOVEREIGNTY_VAULT]: <GovSovereigntyVault />,
-      [AppView.DUTA_TASK_CENTER]: <DutaTaskCenter />,
+      [AppView.DUTA_TASK_CENTER]: userRole === UserRole.MEMBER ? <MemberTaskCenter /> : <DutaTaskCenter />,
       [AppView.MEMBER_TASK_CENTER]: <MemberTaskCenter />,
       [AppView.DUTA_PAYROLL_REPORT]: <DutaPayrollReport />,
-      [UserRole.MEMBER]: <MemberTaskCenter />, // Fallback
       [AppView.MEMBER_QRIS]: <MemberQRIS />
     };
 
@@ -160,12 +163,10 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col lg:flex-row">
-      {/* Sidebar - Desktop & Mobile Drawer */}
       <div className={`
         ${isMobileMenuOpen ? 'fixed inset-0 z-[200] translate-x-0' : 'fixed inset-y-0 -translate-x-full lg:translate-x-0 lg:relative'} 
         lg:block transition-transform duration-300 ease-in-out
       `}>
-        {/* Backdrop for mobile */}
         {isMobileMenuOpen && (
           <div 
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm lg:hidden" 
@@ -179,8 +180,6 @@ const AppContent: React.FC = () => {
 
       <div className="flex-1 flex flex-col min-h-screen">
         <Header />
-        
-        {/* Content Area - Scrollable */}
         <main className="flex-1 p-4 md:p-8 pb-32 lg:pb-12">
           <div className="max-w-7xl mx-auto">
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -188,7 +187,6 @@ const AppContent: React.FC = () => {
             </div>
           </div>
         </main>
-        
         <BottomNav onMenuToggle={() => setIsMobileMenuOpen(true)} />
       </div>
     </div>
