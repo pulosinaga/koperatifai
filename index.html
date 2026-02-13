@@ -51,6 +51,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #root { min-height: 100vh; background: #f8fafc; }
+        .error-overlay { position: fixed; inset: 0; background: #991b1b; color: white; display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px; text-align: center; }
     </style>
 
     <script>
@@ -91,48 +92,41 @@
     <script type="module">
       const statusEl = document.getElementById('loader-status');
       
-      async function startApp() {
+      async function launchApp() {
         try {
           statusEl.innerText = "Activating Interface...";
-          const mainModule = await import('./index.tsx');
-          console.log("KoperatifAI: Module loaded successfully");
+          await import('./index.tsx');
         } catch (err) {
           console.error("Boot error:", err);
-          statusEl.innerText = "Sync failed. Retrying...";
-          setTimeout(() => location.reload(), 2000);
+          statusEl.innerText = "Retrying Sovereign Node...";
+          setTimeout(() => location.reload(), 1000);
         }
       }
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
-          reg.onupdatefound = () => {
-            const installingWorker = reg.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                location.reload();
-              }
-            };
-          };
-
+          // Jika SW sudah aktif dan mengontrol halaman, langsung jalankan
           if (navigator.serviceWorker.controller) {
-            startApp();
+            launchApp();
           } else {
-            // Jika belum ada controller, tunggu controllerchange atau reload
+            // Jika pendaftaran baru, tunggu hingga SW mengontrol halaman
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-              startApp();
+              window.location.reload();
             });
-            // Fallback reload jika controller tidak kunjung muncul
+            // Beri waktu sejenak untuk aktivasi otomatis
             setTimeout(() => {
-              if (!navigator.serviceWorker.controller) location.reload();
-            }, 1500);
+              if (!navigator.serviceWorker.controller) {
+                statusEl.innerText = "Stabilizing Link...";
+                window.location.reload();
+              }
+            }, 2000);
           }
         }).catch(err => {
-          console.error("SW Registration failed:", err);
-          statusEl.innerText = "Security Shield Error. Reloading...";
+          statusEl.innerText = "Connection Shield Error.";
           location.reload();
         });
       } else {
-        startApp();
+        launchApp();
       }
     </script>
 </body>
