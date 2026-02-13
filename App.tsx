@@ -36,7 +36,7 @@ import MemberTaskCenter from './components/MemberTaskCenter.tsx';
 import DutaPayrollReport from './components/DutaPayrollReport.tsx';
 import DutaFieldVerification from './components/DutaFieldVerification.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
-import CoopHealthCheck from './components/CoopHealthCheck.tsx'; // New Audit View
+import CoopHealthCheck from './components/CoopHealthCheck.tsx';
 
 // RBAC Permissions Mapping
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
@@ -69,7 +69,7 @@ const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
   [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.HIERARCHY_VISUALIZER],
   [UserRole.AUDITOR]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING, AppView.HIERARCHY_VISUALIZER, 
-    AppView.SYSTEM_HEALTH, AppView.GLOBAL_COMMAND_CENTER // Auditor view
+    AppView.SYSTEM_HEALTH, AppView.GLOBAL_COMMAND_CENTER
   ],
 };
 

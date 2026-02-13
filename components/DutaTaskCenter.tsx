@@ -7,8 +7,7 @@ const DutaTaskCenter: React.FC = () => {
   const { navigate } = useAppContext();
 
   const flowSteps = [
-    // Fix: Using MEMBERSHIP_PROFILE for KYC to align with Sidebar and App routing
-    { s: 1, t: 'KAMERA SAKTI', d: 'Misi KYC: Scan KTP & Wajah warga.', i: '🤳', view: AppView.MEMBERSHIP_PROFILE }, // Updated logic in DutaFieldVerification
+    { s: 1, t: 'KAMERA SAKTI', d: 'Misi KYC: Scan KTP & Wajah warga.', i: '🤳', view: AppView.MEMBERSHIP_PROFILE },
     { s: 2, t: 'VOUCHING', d: 'Jaminan Karakter: Saksi integritas.', i: '🛡️', view: AppView.VOUCHING_SYSTEM },
     { s: 3, t: 'TARIK TUNAI', d: 'Bantu anggota cairkan saldo.', i: '🏧', view: AppView.CASH_WITHDRAWAL },
     { s: 4, t: 'KLAIM GAJI', d: 'Tarik upah jasa dari hasil kerja.', i: '💰', view: AppView.DUTA_PAYROLL_REPORT }
@@ -29,7 +28,6 @@ const DutaTaskCenter: React.FC = () => {
                {flowSteps.map((step) => (
                   <button 
                     key={step.s}
-                    // Fix: Change step.id to step.s as the property 'id' does not exist on the type
                     onClick={() => navigate(step.view as AppView)}
                     className="bg-white/10 p-5 rounded-3xl border border-white/10 flex flex-col items-center text-center space-y-3 hover:bg-white/20 transition-all"
                   >
@@ -47,8 +45,7 @@ const DutaTaskCenter: React.FC = () => {
             
             {/* Task 1 Card */}
             <div 
-               // Fix: Correct navigation to MEMBERSHIP_PROFILE for KYC action
-               onClick={() => navigate(AppView.MEMBERSHIP_PROFILE)} // Actually routes to DutaFieldVerification via logic in App.tsx
+               onClick={() => navigate(AppView.MEMBERSHIP_PROFILE)}
                className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group flex items-center justify-between gap-6"
             >
                <div className="flex gap-6 items-center">
