@@ -1,10 +1,9 @@
 {
   "name": "KoperatifAI - Fullstack Credit Union",
-  "description": "Platform koperasi digital dengan integrasi Supabase Database dan Babel Standalone Processing untuk kedaulatan data anggota.",
+  "description": "Platform koperasi digital dengan integrasi Supabase Database dan hardware access untuk kedaulatan data anggota.",
   "requestFramePermissions": [
     "camera",
-    "microphone",
     "geolocation",
-    "bluetooth"
+    "microphone"
   ]
 }

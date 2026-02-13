@@ -14,6 +14,7 @@ const Sidebar: React.FC = () => {
         items: [
           { id: AppView.DASHBOARD, label: 'Portal Utama', icon: '📊' },
           { id: AppView.HIERARCHY_VISUALIZER, label: 'Struktur Organisasi', icon: '🌳' },
+          { id: AppView.LEGAL_COMPLIANCE, label: 'Legal Standing', icon: '📜' },
         ]
       }
     ];
@@ -36,6 +37,7 @@ const Sidebar: React.FC = () => {
         items: [
           { id: AppView.MEMBER_TASK_CENTER, label: 'Misi Saya', icon: '🎯' },
           { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
+          { id: AppView.BYLAWS_EXPLORER, label: 'Konstitusi AD/ART', icon: '⚖️' },
           { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🧺' },
           { id: AppView.LOAN_SIMULATOR, label: 'Simulator Kredit', icon: '🧮' },
           { id: AppView.MEMBER_QRIS, label: 'Kamera Bayar', icon: '🤳' },
@@ -48,7 +50,10 @@ const Sidebar: React.FC = () => {
         label: 'Sovereign Control',
         items: [
           { id: AppView.MONETIZATION_IDEAS, label: 'Ide Cuan', icon: '🚀' },
+          { id: AppView.POLICY_ENFORCEMENT, label: 'Kunci Kebijakan', icon: '⚓' },
           { id: AppView.REVENUE_CENTER, label: 'Royalty Vault', icon: '💎' },
+          { id: AppView.BYLAWS_GENERATOR, label: 'Generator AD/ART', icon: '📝' },
+          { id: AppView.NATIONAL_LICENSE_GUIDE, label: 'Lisensi Nasional', icon: '🇮🇩' },
           { id: AppView.GLOBAL_COMMAND_CENTER, label: 'Executive Cockpit', icon: '🛰️' },
           { id: AppView.DEPLOYMENT_HUB, label: 'Sharing Hub', icon: '⚙️' },
         ]

@@ -37,6 +37,19 @@ import DutaPayrollReport from './components/DutaPayrollReport.tsx';
 import DutaFieldVerification from './components/DutaFieldVerification.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
 import CoopHealthCheck from './components/CoopHealthCheck.tsx';
+import SystemHealth from './components/SystemHealth.tsx';
+import LoanHistory from './components/LoanHistory.tsx';
+import AccountingReports from './components/AccountingReports.tsx';
+import MemberHealthShield from './components/MemberHealthShield.tsx';
+
+// Legal Standing Components
+import LegalComplianceHub from './components/LegalComplianceHub.tsx';
+import BylawsExplorer from './components/BylawsExplorer.tsx';
+import PolicyEnforcement from './components/PolicyEnforcement.tsx';
+
+// National Expansion Components
+import ADARTGenerator from './components/ADARTGenerator.tsx';
+import NationalLicenseGuide from './components/NationalLicenseGuide.tsx';
 
 // RBAC Permissions Mapping
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
@@ -44,32 +57,33 @@ const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
   [UserRole.LEADER_PROVINCE]: [
     AppView.DASHBOARD, AppView.NATIONAL_COMMAND_CENTER, AppView.HIERARCHY_VISUALIZER, 
     AppView.TRANSACTIONS, AppView.NOTIFICATION_CENTER, AppView.MEMBERSHIP_PROFILE,
-    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.DUTA_ECHOES
+    AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.LEGAL_COMPLIANCE
   ],
   [UserRole.GOVERNMENT]: [
-    AppView.DASHBOARD, AppView.GOV_SOVEREIGNTY_VAULT, AppView.HIERARCHY_VISUALIZER, AppView.SYSTEM_HEALTH
+    AppView.DASHBOARD, AppView.GOV_SOVEREIGNTY_VAULT, AppView.HIERARCHY_VISUALIZER, AppView.LEGAL_COMPLIANCE
   ],
   [UserRole.BOARD]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
-    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.NOTIFICATION_CENTER, AppView.HIERARCHY_VISUALIZER
+    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.NOTIFICATION_CENTER, AppView.HIERARCHY_VISUALIZER,
+    AppView.LEGAL_COMPLIANCE, AppView.BYLAWS_EXPLORER
   ],
   [UserRole.LEADER]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.LOAN_SIMULATOR,
     AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE,
     AppView.NOTIFICATION_CENTER, AppView.DUTA_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.HIERARCHY_VISUALIZER,
-    AppView.CASH_WITHDRAWAL
+    AppView.CASH_WITHDRAWAL, AppView.LEGAL_COMPLIANCE
   ],
   [UserRole.MEMBER]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
     AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.MEMBER_TASK_CENTER, AppView.HIERARCHY_VISUALIZER,
-    AppView.MEMBER_QRIS, AppView.CASH_WITHDRAWAL
+    AppView.MEMBER_QRIS, AppView.CASH_WITHDRAWAL, AppView.BYLAWS_EXPLORER
   ],
   [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.HIERARCHY_VISUALIZER],
   [UserRole.AUDITOR]: [
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING, AppView.HIERARCHY_VISUALIZER, 
-    AppView.SYSTEM_HEALTH, AppView.GLOBAL_COMMAND_CENTER
+    AppView.GLOBAL_COMMAND_CENTER, AppView.LEGAL_COMPLIANCE
   ],
 };
 
@@ -155,7 +169,16 @@ const AppContent: React.FC = () => {
       [AppView.DUTA_TASK_CENTER]: userRole === UserRole.MEMBER ? <MemberTaskCenter /> : <DutaTaskCenter />,
       [AppView.MEMBER_TASK_CENTER]: <MemberTaskCenter />,
       [AppView.DUTA_PAYROLL_REPORT]: <DutaPayrollReport />,
-      [AppView.MEMBER_QRIS]: <MemberQRIS />
+      [AppView.MEMBER_QRIS]: <MemberQRIS />,
+      [AppView.SYSTEM_HEALTH]: <SystemHealth />,
+      [AppView.LOAN_HISTORY]: <LoanHistory />,
+      [AppView.ACCOUNTING]: <AccountingReports />,
+      [AppView.MEMBER_HEALTH_SHIELD]: <MemberHealthShield />,
+      [AppView.LEGAL_COMPLIANCE]: <LegalComplianceHub />,
+      [AppView.BYLAWS_EXPLORER]: <BylawsExplorer />,
+      [AppView.POLICY_ENFORCEMENT]: <PolicyEnforcement />,
+      [AppView.BYLAWS_GENERATOR]: <ADARTGenerator />,
+      [AppView.NATIONAL_LICENSE_GUIDE]: <NationalLicenseGuide />
     };
 
     return views[currentView] || <Dashboard />;
