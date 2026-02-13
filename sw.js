@@ -1,5 +1,5 @@
 
-// KoperatifAI - JIT Compiler Service Worker v6.0
+// KoperatifAI - JIT Compiler Service Worker v7.0
 importScripts('https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.10/babel.min.js');
 
 self.addEventListener('install', (e) => {
@@ -16,20 +16,21 @@ self.addEventListener('fetch', (e) => {
         e.respondWith(
             fetch(e.request)
                 .then(res => {
-                    if (!res.ok) throw new Error('Source file missing');
+                    if (!res.ok) throw new Error('File not found');
                     return res.text();
                 })
                 .then(text => {
-                    const transformed = Babel.transform(text, {
+                    const code = Babel.transform(text, {
                         presets: ['react', 'typescript'],
                         plugins: [['transform-react-jsx', { runtime: 'automatic' }]]
                     }).code;
-                    return new Response(transformed, {
+                    return new Response(code, {
                         headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
                     });
                 })
                 .catch(err => {
-                    return new Response(`console.error('Core Engine Error: ${err.message}');`, {
+                    console.error('Transpile Error:', url.pathname, err);
+                    return new Response(`console.error('Core Engine Failure on ${url.pathname}: ${err.message}');`, {
                         headers: { 'Content-Type': 'application/javascript' }
                     });
                 })

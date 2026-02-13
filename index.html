@@ -51,7 +51,6 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #root { min-height: 100vh; background: #f8fafc; }
-        .error-overlay { position: fixed; inset: 0; background: #991b1b; color: white; display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px; text-align: center; }
     </style>
 
     <script>
@@ -95,37 +94,46 @@
       async function launchApp() {
         try {
           statusEl.innerText = "Activating Interface...";
+          // Menggunakan dynamic import untuk memastikan transpilasi sw.js berjalan
           await import('./index.tsx');
+          console.log("KoperatifAI: Online");
         } catch (err) {
           console.error("Boot error:", err);
-          statusEl.innerText = "Retrying Sovereign Node...";
-          setTimeout(() => location.reload(), 1000);
+          statusEl.innerText = "Stabilizing Node...";
+          setTimeout(() => location.reload(), 1500);
         }
       }
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
-          // Jika SW sudah aktif dan mengontrol halaman, langsung jalankan
+          // Jika SW baru saja diinstal, tunggu sampai dia aktif
+          if (reg.installing) {
+            statusEl.innerText = "Calibrating Shield...";
+            reg.installing.addEventListener('statechange', (e) => {
+              if (e.target.state === 'activated') window.location.reload();
+            });
+          }
+          
+          // Jika sudah ada controller (SW aktif menguasai halaman), jalankan app
           if (navigator.serviceWorker.controller) {
             launchApp();
           } else {
-            // Jika pendaftaran baru, tunggu hingga SW mengontrol halaman
+            // Tunggu kontrol berpindah ke SW
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-              window.location.reload();
+              launchApp();
             });
-            // Beri waktu sejenak untuk aktivasi otomatis
+            // Force reload jika dalam 3 detik tidak ada controller (pendaftaran pertama)
             setTimeout(() => {
-              if (!navigator.serviceWorker.controller) {
-                statusEl.innerText = "Stabilizing Link...";
-                window.location.reload();
-              }
-            }, 2000);
+              if (!navigator.serviceWorker.controller) window.location.reload();
+            }, 3000);
           }
         }).catch(err => {
-          statusEl.innerText = "Connection Shield Error.";
+          console.error("SW Fail:", err);
+          statusEl.innerText = "Rebooting Core...";
           location.reload();
         });
       } else {
+        // Fallback jika browser sangat lama
         launchApp();
       }
     </script>
