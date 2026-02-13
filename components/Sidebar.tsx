@@ -38,6 +38,7 @@ const Sidebar: React.FC = () => {
           { id: AppView.MEMBER_TASK_CENTER, label: 'Misi Saya', icon: '🎯' },
           { id: AppView.DIGITAL_PASSBOOK, label: 'Buku Tabungan', icon: '📖' },
           { id: AppView.BYLAWS_EXPLORER, label: 'Konstitusi AD/ART', icon: '⚖️' },
+          { id: AppView.LEGAL_ROADMAP, label: 'Roadmap Legal', icon: '🗺️' },
           { id: AppView.MEMBER_MARKETPLACE, label: 'Pasar Rakyat', icon: '🧺' },
           { id: AppView.LOAN_SIMULATOR, label: 'Simulator Kredit', icon: '🧮' },
           { id: AppView.MEMBER_QRIS, label: 'Kamera Bayar', icon: '🤳' },
@@ -49,7 +50,8 @@ const Sidebar: React.FC = () => {
       menu.push({
         label: 'Sovereign Control',
         items: [
-          { id: AppView.MONETIZATION_IDEAS, label: 'Ide Cuan', icon: '🚀' },
+          { id: AppView.BOOTSTRAP_CENTER, label: 'Misi 50 Juta', icon: '🚀' },
+          { id: AppView.MONETIZATION_IDEAS, label: 'Ide Cuan', icon: '💰' },
           { id: AppView.POLICY_ENFORCEMENT, label: 'Kunci Kebijakan', icon: '⚓' },
           { id: AppView.REVENUE_CENTER, label: 'Royalty Vault', icon: '💎' },
           { id: AppView.BYLAWS_GENERATOR, label: 'Generator AD/ART', icon: '📝' },

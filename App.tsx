@@ -51,6 +51,11 @@ import PolicyEnforcement from './components/PolicyEnforcement.tsx';
 import ADARTGenerator from './components/ADARTGenerator.tsx';
 import NationalLicenseGuide from './components/NationalLicenseGuide.tsx';
 
+// Bootstrap Components
+import CapitalAccumulation from './components/CapitalAccumulation.tsx';
+import LegalRoadmap from './components/LegalRoadmap.tsx';
+import FounderBootstrapCenter from './components/FounderBootstrapCenter.tsx';
+
 // RBAC Permissions Mapping
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
   [UserRole.FOUNDER]: Object.values(AppView),
@@ -78,7 +83,7 @@ const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
     AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
     AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
     AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.MEMBER_TASK_CENTER, AppView.HIERARCHY_VISUALIZER,
-    AppView.MEMBER_QRIS, AppView.CASH_WITHDRAWAL, AppView.BYLAWS_EXPLORER
+    AppView.MEMBER_QRIS, AppView.CASH_WITHDRAWAL, AppView.BYLAWS_EXPLORER, AppView.LEGAL_ROADMAP
   ],
   [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.HIERARCHY_VISUALIZER],
   [UserRole.AUDITOR]: [
@@ -178,7 +183,10 @@ const AppContent: React.FC = () => {
       [AppView.BYLAWS_EXPLORER]: <BylawsExplorer />,
       [AppView.POLICY_ENFORCEMENT]: <PolicyEnforcement />,
       [AppView.BYLAWS_GENERATOR]: <ADARTGenerator />,
-      [AppView.NATIONAL_LICENSE_GUIDE]: <NationalLicenseGuide />
+      [AppView.NATIONAL_LICENSE_GUIDE]: <NationalLicenseGuide />,
+      [AppView.CAPITAL_ACCUMULATION]: <CapitalAccumulation />,
+      [AppView.LEGAL_ROADMAP]: <LegalRoadmap />,
+      [AppView.BOOTSTRAP_CENTER]: <FounderBootstrapCenter />
     };
 
     return views[currentView] || <Dashboard />;
