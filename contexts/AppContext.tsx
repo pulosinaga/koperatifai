@@ -57,7 +57,6 @@ const ROLE_PROFILES: Record<UserRole, UserProfile> = {
     balances: { principal: 100000, mandatory: 100000, voluntary: 250000 },
     reputationScore: 800
   },
-  // Added missing LEADER_PROVINCE profile to satisfy the Record requirement
   [UserRole.LEADER_PROVINCE]: {
     id: 'ldrp_01',
     name: 'Marshal Regional (Duta Provinsi)',
@@ -91,17 +90,12 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   const [viewHistory, setViewHistory] = useState<AppView[]>([]);
   const [isLiveDatabase, setIsLiveDatabase] = useState(false);
 
-  // DETEKSI PERUBAHAN PERAN VIA URL (PROTEKSI OTORITAS)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const targetRole = params.get('targetRole');
-    
-    // Jika ada permintaan peran baru di URL tapi kita sedang login sebagai peran lain (misal: Founder)
     if (targetRole && isLoggedIn && user && user.role !== targetRole) {
-       console.log("Otoritas tidak cocok. Melakukan reset keamanan...");
        setIsLoggedIn(false);
        setUser(null);
-       // Biarkan LoginScreen menangani pemilihan peran sesuai URL
     }
   }, [isLoggedIn, user]);
 
@@ -181,9 +175,9 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   };
 
   return (
-    <div className="AppContext.Provider" value={{ isLoggedIn, user, currentView, isLiveDatabase, login, logout, navigate, goBack, refreshProfile }}>
+    <AppContext.Provider value={{ isLoggedIn, user, currentView, isLiveDatabase, login, logout, navigate, goBack, refreshProfile }}>
       {children}
-    </div>
+    </AppContext.Provider>
   );
 };
 
