@@ -36,7 +36,6 @@ import MemberTaskCenter from './components/MemberTaskCenter.tsx';
 import DutaPayrollReport from './components/DutaPayrollReport.tsx';
 import DutaFieldVerification from './components/DutaFieldVerification.tsx';
 import MemberQRIS from './components/MemberQRIS.tsx';
-import CoopHealthCheck from './components/CoopHealthCheck.tsx';
 import SystemHealth from './components/SystemHealth.tsx';
 import LoanHistory from './components/LoanHistory.tsx';
 import AccountingReports from './components/AccountingReports.tsx';
@@ -58,7 +57,18 @@ import FounderBootstrapCenter from './components/FounderBootstrapCenter.tsx';
 
 // RBAC Permissions Mapping
 const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
-  [UserRole.FOUNDER]: Object.values(AppView),
+  [UserRole.FOUNDER]: [
+    AppView.DASHBOARD, AppView.BOOTSTRAP_CENTER, AppView.CAPITAL_ACCUMULATION, AppView.LEGAL_ROADMAP,
+    AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK, AppView.LOAN_SIMULATOR,
+    AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.MERCHANT_DASHBOARD, AppView.BILL_PAYMENTS,
+    AppView.SMART_EDUCATION, AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.GLOBAL_COMMAND_CENTER,
+    AppView.DEPLOYMENT_HUB, AppView.REVENUE_CENTER, AppView.NOTIFICATION_CENTER, AppView.MONETIZATION_IDEAS,
+    AppView.NATIONAL_COMMAND_CENTER, AppView.GOV_SOVEREIGNTY_VAULT, AppView.HIERARCHY_VISUALIZER,
+    AppView.DUTA_TASK_CENTER, AppView.MEMBER_TASK_CENTER, AppView.DUTA_PAYROLL_REPORT, AppView.MEMBER_QRIS,
+    AppView.CASH_WITHDRAWAL, AppView.LEGAL_COMPLIANCE, AppView.BYLAWS_EXPLORER, AppView.POLICY_ENFORCEMENT,
+    AppView.SYSTEM_HEALTH, AppView.LOAN_HISTORY, AppView.ACCOUNTING, AppView.MEMBER_HEALTH_SHIELD,
+    AppView.BYLAWS_GENERATOR, AppView.NATIONAL_LICENSE_GUIDE
+  ],
   [UserRole.LEADER_PROVINCE]: [
     AppView.DASHBOARD, AppView.NATIONAL_COMMAND_CENTER, AppView.HIERARCHY_VISUALIZER, 
     AppView.TRANSACTIONS, AppView.NOTIFICATION_CENTER, AppView.MEMBERSHIP_PROFILE,
@@ -163,7 +173,7 @@ const AppContent: React.FC = () => {
       [AppView.SMART_EDUCATION]: <SmartEducation />,
       [AppView.AI_ADVISOR]: <AIAdvisor />,
       [AppView.MEMBERSHIP_PROFILE]: userRole === UserRole.LEADER ? <DutaFieldVerification /> : <Membership />,
-      [AppView.GLOBAL_COMMAND_CENTER]: userRole === UserRole.AUDITOR ? <CoopHealthCheck /> : <GlobalCommandCenter />,
+      [AppView.GLOBAL_COMMAND_CENTER]: userRole === UserRole.AUDITOR ? <SystemHealth /> : <GlobalCommandCenter />,
       [AppView.DEPLOYMENT_HUB]: <DeploymentHub />,
       [AppView.REVENUE_CENTER]: <FounderRoyaltyVault />,
       [AppView.NOTIFICATION_CENTER]: <NotificationCenter />,

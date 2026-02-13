@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AreaChart, Area, XAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { AppView, UserRole } from '../types.ts';
@@ -27,7 +28,7 @@ const religiousHolidays = [
 const Dashboard: React.FC = () => {
   const { navigate, user } = useAppContext();
   const role = user?.role || UserRole.MEMBER;
-  const firstName = user?.name.split(' ')[0] || 'User';
+  const firstName = user?.name?.split(' ')[0] || 'User';
 
   const getGreeting = () => {
     const hours = new Date().getHours();
@@ -37,18 +38,17 @@ const Dashboard: React.FC = () => {
     return "Selamat Malam";
   };
 
-  // LOGIKA STATISTIK BERDASARKAN PERAN (SECURITY FIX)
   const getStats = () => {
     if (role === UserRole.FOUNDER) {
       return [
-        { label: 'Total Aset Kelola', val: 'Rp 19.6 M', icon: '🌐', color: 'text-indigo-600', view: AppView.GLOBAL_COMMAND_CENTER },
+        { label: 'Progres Bootstrap', val: 'Rp 15.4 Jt', icon: '🌱', color: 'text-indigo-600', view: AppView.BOOTSTRAP_CENTER },
         { label: 'Otoritas Tol', val: 'Global Sync', icon: '🦅', color: 'text-amber-600', view: AppView.SYSTEM_HEALTH },
         { label: 'Revenue Royalti', val: 'Rp 145 Jt', icon: '📥', color: 'text-emerald-600', view: AppView.REVENUE_CENTER },
         { label: 'SLA AI Ops', val: '99.9%', icon: '🛰️', color: 'text-rose-600', view: AppView.DEPLOYMENT_HUB },
       ];
     }
     
-    if (role === UserRole.LEADER) { // Duta
+    if (role === UserRole.LEADER) {
       return [
         { label: 'Anggota Binaan', val: '128 Orang', icon: '👥', color: 'text-indigo-600', view: AppView.TRANSACTIONS },
         { label: 'Komisi Saya', val: 'Rp 1.950.000', icon: '💰', color: 'text-emerald-600', view: AppView.DIGITAL_PASSBOOK },
@@ -57,11 +57,10 @@ const Dashboard: React.FC = () => {
       ];
     }
 
-    // Default Member
     return [
-      { label: 'Saldo Sukarela', val: `Rp ${user?.balances.voluntary.toLocaleString('id-ID')}`, icon: '💰', color: 'text-indigo-600', view: AppView.DIGITAL_PASSBOOK },
+      { label: 'Saldo Sukarela', val: `Rp ${user?.balances?.voluntary?.toLocaleString('id-ID') || '0'}`, icon: '💰', color: 'text-indigo-600', view: AppView.DIGITAL_PASSBOOK },
       { label: 'Sisa Pinjaman', val: 'Rp 4.250.000', icon: '💸', color: 'text-rose-500', view: AppView.LOAN_HISTORY },
-      { label: 'Reputasi AI', val: `${user?.reputationScore}`, icon: '🛡️', color: 'text-emerald-600', view: AppView.MEMBERSHIP_PROFILE },
+      { label: 'Reputasi AI', val: `${user?.reputationScore || '0'}`, icon: '🛡️', color: 'text-emerald-600', view: AppView.MEMBERSHIP_PROFILE },
       { label: 'Estimasi SHU', val: 'Rp 245.500', icon: '✨', color: 'text-amber-600', view: AppView.SHU_DISTRIBUTION },
     ];
   };
@@ -77,7 +76,7 @@ const Dashboard: React.FC = () => {
              role === UserRole.LEADER ? `Terminal Duta • ${getGreeting()}` : 
              `${getGreeting()}.`}
           </h2>
-          <p className="text-slate-500 font-bold text-lg italic">Halo, {firstName}. {role === UserRole.FOUNDER ? 'Kedaulatan dalam kendali Anda.' : 'Selamat datang di rumah ekonomi rakyat.'}</p>
+          <p className="text-slate-500 font-bold text-lg italic">Halo, {firstName}. {role === UserRole.FOUNDER ? 'Misi pendirian sedang berjalan.' : 'Selamat datang di rumah ekonomi rakyat.'}</p>
         </div>
         <div className="flex gap-2">
            <button onClick={() => navigate(AppView.NOTIFICATION_CENTER)} className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-xl relative">
@@ -166,7 +165,7 @@ const Dashboard: React.FC = () => {
               <h4 className="text-2xl font-black italic text-white tracking-tighter">Otoritas Digital</h4>
               <div className="space-y-3 relative z-10">
                  {[
-                   { l: 'Tarik Tunai', i: '🏧', v: AppView.CASH_WITHDRAWAL },
+                   { l: 'Misi 50 Juta', i: '🚀', v: AppView.BOOTSTRAP_CENTER },
                    { l: 'Kamera Sakti (QR)', i: '🤳', v: AppView.MEMBER_QRIS },
                    { l: 'Buku Tabungan', i: '📖', v: AppView.DIGITAL_PASSBOOK },
                    { l: 'Bantuan AI', i: '🤖', v: AppView.AI_ADVISOR }
