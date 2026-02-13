@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { AppProvider, useAppContext } from './contexts/AppContext.tsx';
 import { AppView, UserRole } from './types.ts';
@@ -36,6 +37,30 @@ import HallOfEchoes from './components/HallOfEchoes.tsx';
 import AwardingNight from './components/AwardingNight.tsx';
 import NationalScaleStrategy from './components/NationalScaleStrategy.tsx';
 import HierarchyVisualizer from './components/HierarchyVisualizer.tsx';
+import MonetizationIdeas from './components/MonetizationIdeas.tsx';
+
+// DEFINISI AKSES VIEW (RBAC)
+const VIEW_PERMISSIONS: Record<UserRole, AppView[]> = {
+  [UserRole.FOUNDER]: Object.values(AppView), // Founder bisa semua
+  [UserRole.BOARD]: [
+    AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
+    AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
+    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.NOTIFICATION_CENTER
+  ],
+  [UserRole.LEADER]: [ // Duta
+    AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK, AppView.LOAN_SIMULATOR,
+    AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE,
+    AppView.NOTIFICATION_CENTER, AppView.SYSTEM_HEALTH, AppView.DUTA_ECHOES
+  ],
+  [UserRole.MEMBER]: [ // Anggota
+    AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.SHU_DISTRIBUTION, AppView.DIGITAL_PASSBOOK,
+    AppView.LOAN_SIMULATOR, AppView.VOUCHING_SYSTEM, AppView.MEMBER_MARKETPLACE, AppView.BILL_PAYMENTS,
+    AppView.AI_ADVISOR, AppView.MEMBERSHIP_PROFILE, AppView.WALLET_INTEGRATION, AppView.MEMBER_INSTALLMENT_PAYMENT
+  ],
+  [UserRole.STAFF]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.DIGITAL_PASSBOOK],
+  [UserRole.AUDITOR]: [AppView.DASHBOARD, AppView.TRANSACTIONS, AppView.ACCOUNTING],
+  [UserRole.GOVERNMENT]: [AppView.DASHBOARD, AppView.SYSTEM_HEALTH]
+};
 
 const BottomNav: React.FC = () => {
   const { currentView, navigate } = useAppContext();
@@ -68,7 +93,7 @@ const BottomNav: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
-  const { isLoggedIn, currentView } = useAppContext();
+  const { isLoggedIn, currentView, user, navigate } = useAppContext();
   const [showLogin, setShowLogin] = useState(false);
 
   if (!isLoggedIn) {
@@ -76,7 +101,19 @@ const AppContent: React.FC = () => {
     return <PublicLanding onStart={() => setShowLogin(true)} />;
   }
 
+  // VALIDASI OTORITAS VIEW (GUARD)
+  const userRole = user?.role || UserRole.MEMBER;
+  const allowedViews = VIEW_PERMISSIONS[userRole] || [AppView.DASHBOARD];
+  
+  const isAuthorized = allowedViews.includes(currentView);
+
   const renderContent = () => {
+    // Jika tidak punya akses, paksa ke Dashboard
+    if (!isAuthorized) {
+      console.warn(`Unauthorized access to ${currentView} by ${userRole}`);
+      return <Dashboard />;
+    }
+
     const views: Record<string, React.ReactNode> = {
       [AppView.DASHBOARD]: <Dashboard />,
       [AppView.TRANSACTIONS]: <TransactionHistory />,
@@ -96,7 +133,7 @@ const AppContent: React.FC = () => {
       [AppView.REVENUE_CENTER]: <FounderRoyaltyVault />,
       [AppView.REVENUE_CENTER_TAX]: <TaxComplianceEngine />,
       [AppView.STRATEGIC_PROFIT_CALCULATOR]: <NationalScaleStrategy />,
-      [AppView.SYSTEM_HEALTH]: <HierarchyVisualizer />, // Menggunakan view ini untuk visualisasi hirarki
+      [AppView.SYSTEM_HEALTH]: <HierarchyVisualizer />,
       [AppView.SMART_MOBILITY]: <SmartMobility />,
       [AppView.ARISAN_DIGITAL]: <ArisanDigital />,
       [AppView.ASSET_AUCTION]: <AssetAuction />,
@@ -104,7 +141,8 @@ const AppContent: React.FC = () => {
       [AppView.NOTIFICATION_CENTER]: <NotificationCenter />,
       [AppView.MEMBER_INSTALLMENT_PAYMENT]: <MemberInstallmentPayment />,
       [AppView.DUTA_ECHOES]: <HallOfEchoes />,
-      [AppView.DUTA_AWARDING]: <AwardingNight />
+      [AppView.DUTA_AWARDING]: <AwardingNight />,
+      [AppView.MONETIZATION_IDEAS]: <MonetizationIdeas />
     };
 
     return views[currentView] || <Dashboard />;
@@ -115,7 +153,6 @@ const AppContent: React.FC = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col relative">
         <Header />
-        {/* Main content area dengan padding bawah untuk bottom nav mobile */}
         <main className="flex-1 p-4 md:p-8 pb-28 lg:pb-8 overflow-x-hidden">
           <div className="max-w-7xl mx-auto">
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">

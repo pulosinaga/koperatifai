@@ -13,7 +13,6 @@ const chartData = [
   { name: 'Min', val: 8200 },
 ];
 
-// Data Hari Besar Nasional 2025 (Sinkronisasi Resmi)
 const religiousHolidays = [
   { name: 'Tahun Baru Imlek 2576', date: '29 Jan', faith: 'Konghucu', icon: '🏮' },
   { name: 'Isra Mi\'raj Nabi Muhammad', date: '27 Jan', faith: 'Islam', icon: '🌙' },
@@ -28,7 +27,7 @@ const religiousHolidays = [
 const Dashboard: React.FC = () => {
   const { navigate, user } = useAppContext();
   const role = user?.role || UserRole.MEMBER;
-  const firstName = user?.name.split(' ')[0] || 'Anggota';
+  const firstName = user?.name.split(' ')[0] || 'User';
 
   const getGreeting = () => {
     const hours = new Date().getHours();
@@ -38,26 +37,47 @@ const Dashboard: React.FC = () => {
     return "Selamat Malam";
   };
 
-  const stats = role === UserRole.MEMBER ? [
-    { label: 'Saldo Sukarela', val: `Rp ${user?.balances.voluntary.toLocaleString('id-ID')}`, icon: '💰', color: 'text-indigo-600', view: AppView.DIGITAL_PASSBOOK },
-    { label: 'Sisa Pinjaman', val: 'Rp 4.250.000', icon: '💸', color: 'text-rose-500', view: AppView.LOAN_HISTORY },
-    { label: 'Reputasi AI', val: `${user?.reputationScore}`, icon: '🛡️', color: 'text-emerald-600', view: AppView.MEMBERSHIP_PROFILE },
-    { label: 'Estimasi SHU', val: 'Rp 245.500', icon: '✨', color: 'text-amber-600', view: AppView.SHU_DISTRIBUTION },
-  ] : [
-    { label: 'Total Aset Kelola', val: 'Rp 19.6 M', icon: '🌐', color: 'text-indigo-600', view: AppView.GLOBAL_COMMAND_CENTER },
-    { label: 'Otoritas Tol', val: 'Hierarchy Sync', icon: '🦅', color: 'text-amber-600', view: AppView.SYSTEM_HEALTH },
-    { label: 'Inflow Hari Ini', val: 'Rp 12.4 Jt', icon: '📥', color: 'text-emerald-600', view: AppView.TRANSACTIONS },
-    { label: 'SLA AI Ops', val: '99.9% Uptime', icon: '🛰️', color: 'text-rose-600', view: AppView.REVENUE_CENTER },
-  ];
+  // LOGIKA STATISTIK BERDASARKAN PERAN (SECURITY FIX)
+  const getStats = () => {
+    if (role === UserRole.FOUNDER) {
+      return [
+        { label: 'Total Aset Kelola', val: 'Rp 19.6 M', icon: '🌐', color: 'text-indigo-600', view: AppView.GLOBAL_COMMAND_CENTER },
+        { label: 'Otoritas Tol', val: 'Global Sync', icon: '🦅', color: 'text-amber-600', view: AppView.SYSTEM_HEALTH },
+        { label: 'Revenue Royalti', val: 'Rp 145 Jt', icon: '📥', color: 'text-emerald-600', view: AppView.REVENUE_CENTER },
+        { label: 'SLA AI Ops', val: '99.9%', icon: '🛰️', color: 'text-rose-600', view: AppView.DEPLOYMENT_HUB },
+      ];
+    }
+    
+    if (role === UserRole.LEADER) { // Duta
+      return [
+        { label: 'Anggota Binaan', val: '128 Orang', icon: '👥', color: 'text-indigo-600', view: AppView.TRANSACTIONS },
+        { label: 'Komisi Saya', val: 'Rp 1.950.000', icon: '💰', color: 'text-emerald-600', view: AppView.DIGITAL_PASSBOOK },
+        { label: 'Status Wilayah', val: 'Optimal', icon: '📍', color: 'text-amber-600', view: AppView.SYSTEM_HEALTH },
+        { label: 'Skor Integritas', val: '98%', icon: '🛡️', color: 'text-blue-600', view: AppView.MEMBERSHIP_PROFILE },
+      ];
+    }
+
+    // Default Member
+    return [
+      { label: 'Saldo Sukarela', val: `Rp ${user?.balances.voluntary.toLocaleString('id-ID')}`, icon: '💰', color: 'text-indigo-600', view: AppView.DIGITAL_PASSBOOK },
+      { label: 'Sisa Pinjaman', val: 'Rp 4.250.000', icon: '💸', color: 'text-rose-500', view: AppView.LOAN_HISTORY },
+      { label: 'Reputasi AI', val: `${user?.reputationScore}`, icon: '🛡️', color: 'text-emerald-600', view: AppView.MEMBERSHIP_PROFILE },
+      { label: 'Estimasi SHU', val: 'Rp 245.500', icon: '✨', color: 'text-amber-600', view: AppView.SHU_DISTRIBUTION },
+    ];
+  };
+
+  const stats = getStats();
 
   return (
     <div className="space-y-8 pb-10">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div className="space-y-1">
           <h2 className="text-4xl font-black text-slate-800 italic tracking-tight leading-none">
-            {role === UserRole.FOUNDER ? `Cockpit Founder • ${getGreeting()}` : `${getGreeting()}.`}
+            {role === UserRole.FOUNDER ? `Cockpit Founder • ${getGreeting()}` : 
+             role === UserRole.LEADER ? `Terminal Duta • ${getGreeting()}` : 
+             `${getGreeting()}.`}
           </h2>
-          <p className="text-slate-500 font-bold text-lg italic">Halo, {firstName}. Kedaulatan dalam kendali Anda.</p>
+          <p className="text-slate-500 font-bold text-lg italic">Halo, {firstName}. {role === UserRole.FOUNDER ? 'Kedaulatan dalam kendali Anda.' : 'Selamat datang di rumah ekonomi rakyat.'}</p>
         </div>
         <div className="flex gap-2">
            <button onClick={() => navigate(AppView.NOTIFICATION_CENTER)} className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-xl relative">
@@ -66,15 +86,12 @@ const Dashboard: React.FC = () => {
            </button>
            <div className="px-5 py-3 bg-slate-900 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-white/10 shrink-0">
              <div className="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
-             <span className="text-[11px] font-black uppercase tracking-widest">Sovereign Sentinel: ACTIVE</span>
+             <span className="text-[11px] font-black uppercase tracking-widest">{role} ACCESS ACTIVE</span>
            </div>
         </div>
       </header>
 
-      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
-        {/* Stats Column */}
         <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
           {stats.map((s, i) => (
             <div 
@@ -92,7 +109,6 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Sacred Calendar - Synced (Bapak's Request) */}
         <div className="bg-[#020617] p-10 rounded-[4rem] text-white space-y-8 shadow-2xl relative overflow-hidden border-b-8 border-indigo-600">
            <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
            <div className="flex justify-between items-center">
@@ -113,11 +129,7 @@ const Dashboard: React.FC = () => {
                  </div>
               ))}
            </div>
-           <div className="pt-4 text-center">
-              <p className="text-[10px] text-indigo-200 italic font-medium">"Berbeda-beda namun satu kedaulatan ekonomi."</p>
-           </div>
         </div>
-
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -157,7 +169,7 @@ const Dashboard: React.FC = () => {
                    { l: 'Tarik Tunai', i: '🏧', v: AppView.CASH_WITHDRAWAL },
                    { l: 'Kamera Sakti (QR)', i: '🤳', v: AppView.MEMBER_QRIS },
                    { l: 'Buku Tabungan', i: '📖', v: AppView.DIGITAL_PASSBOOK },
-                   { l: 'Sharing Hub', i: '📤', v: AppView.DEPLOYMENT_HUB }
+                   { l: 'Bantuan AI', i: '🤖', v: AppView.AI_ADVISOR }
                  ].map((act, i) => (
                    <button 
                     key={i}

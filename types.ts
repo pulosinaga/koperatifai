@@ -36,10 +36,10 @@ export enum AppView {
   CASH_WITHDRAWAL = 'CASH_WITHDRAWAL',
   SMART_MOBILITY = 'SMART_MOBILITY',
   NOTIFICATION_CENTER = 'NOTIFICATION_CENTER',
-  /* Added missing views to fix TypeScript errors in components/Dashboard.tsx and components/Header.tsx */
   MEMBER_INSTALLMENT_PAYMENT = 'MEMBER_INSTALLMENT_PAYMENT',
   DUTA_ECHOES = 'DUTA_ECHOES',
-  DUTA_AWARDING = 'DUTA_AWARDING'
+  DUTA_AWARDING = 'DUTA_AWARDING',
+  MONETIZATION_IDEAS = 'MONETIZATION_IDEAS'
 }
 
 export enum UserRole {

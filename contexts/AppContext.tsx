@@ -16,27 +16,85 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-// Default Founder Profile for Direct Access
-const DEFAULT_FOUNDER: UserProfile = {
-  id: 'founder_sovereign_01',
-  name: 'Budi Utama (Founder)',
-  role: UserRole.FOUNDER,
-  memberId: 'CU-FND-001',
-  balances: {
-    principal: 1000000,
-    mandatory: 50000000,
-    voluntary: 19600000000
+const ROLE_PROFILES: Record<UserRole, UserProfile> = {
+  [UserRole.FOUNDER]: {
+    id: 'fnd_01',
+    name: 'Budi Utama (Founder)',
+    role: UserRole.FOUNDER,
+    memberId: 'CU-FND-001',
+    balances: { principal: 1000000, mandatory: 50000000, voluntary: 19600000000 },
+    reputationScore: 999
   },
-  reputationScore: 999
+  [UserRole.LEADER]: {
+    id: 'ldr_01',
+    name: 'Joni Setiawan (Duta)',
+    role: UserRole.LEADER,
+    memberId: 'CU-LDR-042',
+    balances: { principal: 100000, mandatory: 500000, voluntary: 1900000 },
+    reputationScore: 850
+  },
+  [UserRole.MEMBER]: {
+    id: 'mbr_01',
+    name: 'Rakyat Jelata (Anggota)',
+    role: UserRole.MEMBER,
+    memberId: 'CU-MBR-882',
+    balances: { principal: 100000, mandatory: 20000, voluntary: 50000 },
+    reputationScore: 650
+  },
+  [UserRole.BOARD]: {
+    id: 'brd_01',
+    name: 'Dewan Pengurus',
+    role: UserRole.BOARD,
+    memberId: 'CU-BRD-005',
+    balances: { principal: 500000, mandatory: 1000000, voluntary: 5000000 },
+    reputationScore: 900
+  },
+  [UserRole.STAFF]: {
+    id: 'stf_01',
+    name: 'Staf Operasional',
+    role: UserRole.STAFF,
+    memberId: 'CU-STF-099',
+    balances: { principal: 100000, mandatory: 100000, voluntary: 250000 },
+    reputationScore: 800
+  },
+  [UserRole.AUDITOR]: {
+    id: 'aud_01',
+    name: 'Pengawas Independen',
+    role: UserRole.AUDITOR,
+    memberId: 'CU-AUD-007',
+    balances: { principal: 100000, mandatory: 100000, voluntary: 0 },
+    reputationScore: 950
+  },
+  [UserRole.GOVERNMENT]: {
+    id: 'gov_01',
+    name: 'Admin Kemenkop/Pemda',
+    role: UserRole.GOVERNMENT,
+    memberId: 'GOV-RI-001',
+    balances: { principal: 0, mandatory: 0, voluntary: 0 },
+    reputationScore: 1000
+  }
 };
 
 export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  // Set initial state to Logged In as Founder by default
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [user, setUser] = useState<UserProfile | null>(DEFAULT_FOUNDER);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
   const [viewHistory, setViewHistory] = useState<AppView[]>([]);
   const [isLiveDatabase, setIsLiveDatabase] = useState(false);
+
+  // DETEKSI PERUBAHAN PERAN VIA URL (PROTEKSI OTORITAS)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const targetRole = params.get('targetRole');
+    
+    // Jika ada permintaan peran baru di URL tapi kita sedang login sebagai peran lain (misal: Founder)
+    if (targetRole && isLoggedIn && user && user.role !== targetRole) {
+       console.log("Otoritas tidak cocok. Melakukan reset keamanan...");
+       setIsLoggedIn(false);
+       setUser(null);
+       // Biarkan LoginScreen menangani pemilihan peran sesuai URL
+    }
+  }, [isLoggedIn, user]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -55,18 +113,11 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
      try {
         const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
         const { data: balance } = await supabase.from('balances').select('*').eq('user_id', userId).single();
-        
         if (profile && balance) {
            setUser({
-              id: profile.id,
-              name: profile.name,
-              role: profile.role as UserRole,
-              memberId: profile.member_id,
-              balances: {
-                 principal: Number(balance.principal),
-                 mandatory: Number(balance.mandatory),
-                 voluntary: Number(balance.voluntary)
-              },
+              id: profile.id, name: profile.name,
+              role: profile.role as UserRole, memberId: profile.member_id,
+              balances: { principal: Number(balance.principal), mandatory: Number(balance.mandatory), voluntary: Number(balance.voluntary) },
               reputationScore: profile.reputation_score
            });
            setIsLoggedIn(true);
@@ -84,12 +135,15 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   };
 
   const login = async (role: UserRole, pin: string) => {
-    // Normal login process remains available if needed
-    const mockUser: UserProfile = { ...DEFAULT_FOUNDER, role, name: role === UserRole.FOUNDER ? 'Budi Utama' : 'Anggota Koperasi' };
-    setUser(mockUser);
-    setIsLoggedIn(true);
-    setIsLiveDatabase(false);
-    return true;
+    const targetProfile = ROLE_PROFILES[role];
+    if (targetProfile) {
+       setUser(targetProfile);
+       setIsLoggedIn(true);
+       setIsLiveDatabase(false);
+       setCurrentView(AppView.DASHBOARD);
+       return true;
+    }
+    return false;
   };
 
   const logout = () => {
@@ -97,6 +151,8 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
       setIsLoggedIn(false);
       setUser(null);
       setCurrentView(AppView.DASHBOARD);
+      setViewHistory([]);
+      window.history.replaceState({}, '', '/');
     }
   };
 

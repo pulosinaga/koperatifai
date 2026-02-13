@@ -47,21 +47,21 @@ const Header: React.FC = () => {
         
         <div className="flex flex-col">
            <div className="flex items-center gap-3">
-              <span className="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
-              <h2 className="text-sm font-black text-emerald-400 uppercase tracking-[0.2em] leading-none">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
+              <h2 className="text-[10px] md:text-sm font-black text-emerald-400 uppercase tracking-[0.2em] leading-none">
                 {getGreeting()} • {time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </h2>
            </div>
-           <h1 className="text-lg font-black text-white uppercase tracking-tighter italic mt-1 leading-none">
+           <h1 className="text-xs md:text-lg font-black text-white uppercase tracking-tighter italic mt-1 leading-none">
              {formatDate()}
            </h1>
         </div>
       </div>
 
       <div className="flex items-center gap-6">
-        <div className="hidden lg:flex flex-col items-end">
-           <span className="text-[12px] font-black text-indigo-400 uppercase tracking-widest">{getHeaderTitle()}</span>
-           <span className="text-[10px] font-black text-slate-500 uppercase">{user?.role}</span>
+        <div className="hidden md:flex flex-col items-end">
+           <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{getHeaderTitle()}</span>
+           <span className="text-[8px] font-black text-slate-500 uppercase">{user?.role} ACCESS</span>
         </div>
         
         <div className="flex items-center gap-3">
